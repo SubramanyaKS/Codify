@@ -3,7 +3,9 @@ import { Users, GitPullRequest, Activity, Star, AlertCircle, PlusCircle } from '
 import { useTheme } from '../context/ThemeContext'; // Adjust import path as needed
 import { useAuth } from '../store/auth';
 import Loader from '../components/Loader'
-
+import {motion} from "framer-motion"
+import { Link } from 'react-router-dom';
+import { FaBookOpen } from 'react-icons/fa';
 const ContributorsPage = () => {
     
   const [contributors, setContributors] = useState([]);
@@ -80,6 +82,8 @@ const ContributorsPage = () => {
   };
 
   // Stats
+    const backgroundVariants = { hidden: { opacity: 0, scale: 1.05 }, visible: { opacity: 1, scale: 1, transition: { duration: 1, ease: "easeOut" } } };
+
   const totalContributors = contributors.length;
   const totalPRs = contributors.reduce((sum, c) => sum + c.prs, 0);
   const totalContributions = contributors.reduce((sum, c) => sum + c.contributions, 0);
@@ -96,6 +100,17 @@ const ContributorsPage = () => {
       <div className={`min-h-screen flex items-center justify-center ${
         isDark ? 'bg-dark-bg-primary' : 'bg-light-bg-primary'
       }`}>
+         <motion.div 
+    variants={backgroundVariants} 
+    initial="hidden" 
+    animate="visible" 
+    className={`absolute inset-0 -z-8 bg-[size:30px_30px] ${
+      isDark ? 'bg-grid-pattern-dark' : 'bg-grid-pattern-light'
+    }`}
+  >
+    
+    
+  </motion.div>
         <div className="text-center max-w-md mx-auto p-6">
           <AlertCircle className="w-16 h-16 text-red-400 mx-auto mb-4" />
           <h2 className={`text-xl font-bold mb-2 ${
@@ -118,8 +133,20 @@ const ContributorsPage = () => {
   }
 
   return (
-    <div className={`min-h-screen ${isDark ? 'bg-dark-bg-primary' : 'bg-light-bg-primary'}`}>
+    <div className={`min-h-screen relative overflow-hidden ${isDark ? 'bg-dark-bg-primary' : 'bg-light-bg-primary'}`}>
       {/* Header Section */}
+      <motion.div 
+    variants={backgroundVariants} 
+    initial="hidden" 
+    animate="visible" 
+    className={`absolute inset-0 -z-8 bg-[size:30px_30px] ${
+      isDark ? 'bg-grid-pattern-dark' : 'bg-grid-pattern-light'
+    }`}
+  >
+    
+    
+  </motion.div>
+
       <div className="py-8 sm:py-12 lg:py-16 px-4 sm:px-6 text-center">
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-primary mb-4">
           GSSoC'25 Leaderboard
@@ -130,7 +157,6 @@ const ContributorsPage = () => {
           Celebrating the amazing contributions from GSSoC'25 participants.
         </p>
       </div>
-
       {/* Stats Section */}
       <div className="px-4 sm:px-6 mb-8 sm:mb-12">
         <div className="max-w-5xl mx-auto">
@@ -139,6 +165,9 @@ const ContributorsPage = () => {
             <StatCard icon={GitPullRequest} value={`${totalPRs}+`} label="Pull Requests" isDark={isDark} />
             <StatCard icon={PlusCircle} value={`${totalContributions}+`} label="Contributions" isDark={isDark} />
             <StatCard icon={Star} value={`${totalPoints}+`} label="Total Points" isDark={isDark} />
+          </div>
+          <div className='mt-4' >
+          <ContributorsGuideCard isDark={isDark}/>
           </div>
         </div>
       </div>
@@ -326,5 +355,20 @@ const StatCard = ({ icon: Icon, value, label, isDark }) => (
     <div className="text-primary text-xs sm:text-sm">{label}</div>
   </div>
 );
-
+const ContributorsGuideCard = ({isDark}) => {
+  return (
+    <Link 
+      to="/contributorGuide"
+      className="block w-full"
+    >
+      <div className={`p-4 sm:p-6 rounded-xl text-center border bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-secondary-1000 backdrop-blur-xl ${isDark ? 'border-dark-border' : 'border-light-border'} `}>
+        <FaBookOpen className="w-6 h-6 sm:w-8 sm:h-8 text-primary mx-auto mb-2 sm:mb-3" />
+        <div className={`text-xl sm:text-2xl lg:text-3xl font-bold mb-1 ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
+          Contributor's Guide
+        </div>
+        <div className="text-primary text-xs sm:text-sm">Learn how to contribute</div>
+      </div>
+    </Link>
+  );
+};
 export default ContributorsPage;

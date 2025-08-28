@@ -24,6 +24,8 @@ const Courses = lazy(() => import("./pages/Courses"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const CoursePlayer = lazy(() => import("./pages/CoursePlayer"));
 const Roadmap = lazy(() => import("./pages/Roadmap"));
+const NotesPage = lazy(() => import("./pages/NotesPage"));
+const Notes = lazy(() => import("./pages/NotesComponent.jsx"));
 const ContributorsGuide = lazy(() => import("./pages/ContributorGuide.jsx"))
 const ContributorsPage = lazy(()=>import("./components/Contributor.jsx"))
 const Bookmarks = lazy(() => import("./pages/Bookmarks"));
@@ -75,6 +77,8 @@ function App() {
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/logout" element={<LogOut />} />
                 <Route path="/contributors" element = {<ContributorsPage/>}/>
+                <Route path="/notes" element = {<NotesPage/>}/>
+                <Route path="/notes/:subjectname" element = {<Notes/>}/>
                 <Route path="*" element={<ErrorPage />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/contributorGuide" element={<ContributorsGuide />} />
