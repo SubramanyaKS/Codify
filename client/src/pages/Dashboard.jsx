@@ -32,32 +32,26 @@ function Dashboard() {
   const [continueWatchingCourses, setContinueWatchingCourses] = useState([]);
   const token = localStorage.getItem('token');
 
-const fetchBookmarks = useCallback(async () => {
-  try {
-    const response = await fetch(`${API}/api/v1/bookmarks`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-    });
+  const fetchBookmarks = useCallback(async () => {
+    try {
+      const response = await fetch(`${API}/api/v1/bookmarks`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+      });
 
-    if (response.ok) {
-      const data = await response.json();
-      setBookmarks(data.data || []);
-
-      // Optionally update stats if needed (savedCourses or bookmarks count)
-      setStats(prevStats => ({
-        ...prevStats,
-        savedCourses: data.data ? data.data.length : 0
-      }));
-    } else {
-      console.error('Failed to fetch bookmarks:', response.status, response.statusText);
+      if (response.ok) {
+        const data = await response.json();
+        setBookmarks(data.data || []);
+      } else {
+        console.error('Failed to fetch bookmarks:', response.status, response.statusText);
+      }
+    } catch (error) {
+      console.error('Error fetching bookmarks:', error);
     }
-  } catch (error) {
-    console.error('Error fetching bookmarks:', error);
-  }
-}, [API, token]);
+  }, [API, token]);
 
 
   // Fetch user's watchlist (Saved Courses) - memoized to prevent unnecessary re-renders
