@@ -3,7 +3,7 @@ import { useAuth } from "../store/auth";
 import { toast } from "react-toastify";
 import { useLoading } from "../components/loadingContext";
 import { useTheme } from "../context/ThemeContext";
-import { MdFeedback, MdDeleteOutline, MdSearch, MdEmail } from "react-icons/md";
+import { MdFeedback, MdDeleteOutline, MdSearch, MdEmail, MdSchedule } from "react-icons/md";
 import { FaSort, FaSortUp, FaSortDown, FaUser } from "react-icons/fa";
 
 function AdminContacts() {
@@ -123,157 +123,266 @@ function AdminContacts() {
   };
 
   return (
-    <div className="p-6">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-        <h2 className="text-2xl font-righteous flex items-center gap-2">
-          <MdFeedback className="text-primary" />
-          User Feedback
-        </h2>
-        
-        <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
-          {/* Search input */}
-          <div className={`relative flex-grow max-w-md`}>
-            <input
-              type="text"
-              placeholder="Search feedback..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className={`w-full pl-10 pr-4 py-2 rounded-lg ${
-                isDark 
-                  ? 'bg-dark-bg-tertiary text-dark-text-primary border-dark-border' 
-                  : 'bg-light-bg-tertiary text-light-text-primary border-light-border'
-              } border focus:outline-none focus:ring-2 focus:ring-primary`}
-            />
-            <MdSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary text-xl" />
+    <div className={`relative min-h-screen overflow-hidden ${isDark ? 'bg-dark-bg-primary text-dark-text-primary' : 'bg-light-bg-primary text-light-text-primary'}`}>
+      {/* Background with grid pattern */}
+      <div className={`absolute top-0 left-0 w-full h-full -z-10 bg-[size:30px_30px] ${isDark ? 'bg-grid-pattern-dark' : 'bg-grid-pattern-light'}`}>
+        <div className={`absolute inset-0 ${isDark ? 'bg-gradient-to-br from-dark-bg-primary/90 via-transparent to-dark-bg-primary/50' : 'bg-gradient-to-br from-light-bg-primary/90 via-transparent to-light-bg-primary/50'}`}></div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Header Section */}
+        <div className="text-center mb-12">
+          <div className="inline-block">
+            <h1 className={`text-4xl sm:text-5xl md:text-6xl font-righteous tracking-wider mb-4 ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
+              User Feedback
+            </h1>
+            <div className={`h-1 rounded-full bg-gradient-to-r ${isDark ? 'from-primary via-primary-dark to-primary' : 'from-primary via-primary-dark to-primary'}`}></div>
+          </div>
+          <p className={`mt-6 text-lg max-w-2xl mx-auto ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
+            Manage and review user feedback to improve the platform experience.
+          </p>
+        </div>
+
+        {/* Search and Controls */}
+        <div className="mb-8">
+          <div className={`relative p-6 rounded-2xl shadow-lg bg-gradient-to-br backdrop-blur-xl ${
+            isDark 
+              ? 'from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-secondary-1000' 
+              : 'from-blue-50 to-indigo-50 border border-light-border'
+          }`}>
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              <div className="flex items-center gap-3">
+                <div className={`w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center`}>
+                  <MdFeedback className="text-primary text-xl" />
+                </div>
+                <div>
+                  <h2 className={`text-xl font-righteous ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
+                    Feedback Management
+                  </h2>
+                  <p className={`text-sm ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
+                    Search and filter user submissions
+                  </p>
+                </div>
+              </div>
+              
+              <div className="relative w-full md:w-80">
+                <input
+                  type="text"
+                  placeholder="Search feedback..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className={`w-full pl-12 pr-4 py-3 rounded-xl ${
+                    isDark 
+                      ? 'bg-dark-bg-tertiary text-dark-text-primary border-dark-border' 
+                      : 'bg-white text-light-text-primary border-light-border'
+                  } border focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200`}
+                />
+                <MdSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-primary text-xl" />
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-      
-      {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-        <div className={`p-4 rounded-lg ${isDark ? 'bg-dark-bg-tertiary' : 'bg-light-bg-tertiary'} border ${isDark ? 'border-dark-border' : 'border-light-border'}`}>
-          <p className={`text-sm ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>Total Feedback</p>
-          <p className="text-2xl font-bold">{contacts.length}</p>
-        </div>
-        <div className={`p-4 rounded-lg ${isDark ? 'bg-dark-bg-tertiary' : 'bg-light-bg-tertiary'} border ${isDark ? 'border-dark-border' : 'border-light-border'}`}>
-          <p className={`text-sm ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>Unique Users</p>
-          <p className="text-2xl font-bold">
-            {new Set(contacts.map(contact => contact.email)).size}
-          </p>
-        </div>
-        <div className={`p-4 rounded-lg ${isDark ? 'bg-dark-bg-tertiary' : 'bg-light-bg-tertiary'} border ${isDark ? 'border-dark-border' : 'border-light-border'}`}>
-          <p className={`text-sm ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>Latest Feedback</p>
-          <p className="text-2xl font-bold">
-            {contacts.length > 0 ? formatDate(contacts[0].createdAt) : 'None'}
-          </p>
-        </div>
-      </div>
-      
-      {/* Contacts table */}
-      <div className="overflow-x-auto rounded-lg border ${isDark ? 'border-dark-border' : 'border-light-border'}">
-        <table className="w-full">
-          <thead className={`${isDark ? 'bg-dark-bg-tertiary' : 'bg-light-bg-tertiary'}`}>
-            <tr>
-              <th className="px-4 py-3 text-left">
-                <button 
-                  className="flex items-center gap-2 font-medium" 
-                  onClick={() => requestSort('username')}
-                >
-                  <FaUser className="text-primary" />
-                  Name {getSortIcon('username')}
-                </button>
-              </th>
-              <th className="px-4 py-3 text-left">
-                <button 
-                  className="flex items-center gap-2 font-medium" 
-                  onClick={() => requestSort('email')}
-                >
-                  <MdEmail className="text-primary" />
-                  Email {getSortIcon('email')}
-                </button>
-              </th>
-              <th className="px-4 py-3 text-left">Message</th>
-              <th className="px-4 py-3 text-center">
-                <button 
-                  className="flex items-center gap-2 font-medium justify-center" 
-                  onClick={() => requestSort('createdAt')}
-                >
-                  Date {getSortIcon('createdAt')}
-                </button>
-              </th>
-              <th className="px-4 py-3 text-center">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sortedContacts.length === 0 ? (
-              <tr>
-                <td colSpan="5" className="px-4 py-8 text-center">
-                  <p className={`${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
-                    No feedback found. {searchTerm && "Try a different search term."}
+        
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          {[
+            {
+              icon: MdFeedback,
+              label: "Total Feedback",
+              value: contacts.length,
+              color: "text-blue-500",
+              bgColor: "bg-blue-500/10"
+            },
+            {
+              icon: FaUser,
+              label: "Unique Users",
+              value: new Set(contacts.map(contact => contact.email)).size,
+              color: "text-green-500",
+              bgColor: "bg-green-500/10"
+            },
+            {
+              icon: MdEmail,
+              label: "Latest Feedback",
+              value: contacts.length > 0 ? formatDate(contacts[0].createdAt) : 'None',
+              color: "text-purple-500",
+              bgColor: "bg-purple-500/10"
+            }
+          ].map((stat, index) => (
+            <div
+              key={stat.label}
+              className={`group relative p-6 rounded-2xl shadow-lg bg-gradient-to-br transition-all duration-300 overflow-hidden hover:shadow-2xl hover:-translate-y-1 ${
+                isDark 
+                  ? 'from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-secondary-1000 backdrop-blur-xl' 
+                  : 'from-blue-50 to-indigo-50 border border-light-border hover:border-primary/50'
+              }`}
+            >
+              {/* Animated border on hover */}
+              <div className="absolute top-0 right-0 w-0 h-full bg-primary rounded-r-2xl group-hover:w-1 transition-all duration-300" />
+              <div className="absolute bottom-0 left-0 w-full h-0 bg-primary rounded-b-2xl group-hover:h-1 transition-all duration-300" />
+
+              <div className="flex items-center">
+                <div className={`w-14 h-14 rounded-xl ${stat.bgColor} flex items-center justify-center mr-4 group-hover:rotate-12 transition-transform duration-300`}>
+                  <stat.icon className={`${stat.color} text-2xl`} />
+                </div>
+                
+                <div>
+                  <p className={`text-sm ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
+                    {stat.label}
                   </p>
-                </td>
-              </tr>
-            ) : (
-              sortedContacts.map((contact, index) => (
-                <tr 
-                  key={contact._id} 
-                  className={`
-                    border-t ${isDark ? 'border-dark-border' : 'border-light-border'}
-                    ${index % 2 === 0 
-                      ? isDark ? 'bg-dark-bg-secondary' : 'bg-light-bg-secondary' 
-                      : isDark ? 'bg-dark-bg-primary' : 'bg-light-bg-primary'
-                    }
-                    hover:${isDark ? 'bg-dark-bg-tertiary' : 'bg-light-bg-tertiary'} transition-colors
-                  `}
+                  <h3 className={`text-2xl font-bold ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'} group-hover:text-primary transition-colors duration-300`}>
+                    {typeof stat.value === 'number' ? stat.value.toLocaleString() : stat.value}
+                  </h3>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        {/* Feedback Cards */}
+        <div className="space-y-6">
+          {sortedContacts.length === 0 ? (
+            <div className={`relative p-12 rounded-2xl shadow-lg bg-gradient-to-br backdrop-blur-xl text-center transition-all duration-300 ${
+              isDark 
+                ? 'from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-secondary-1000' 
+                : 'from-blue-50 to-indigo-50 border border-light-border'
+            }`}>
+              <div className={`w-20 h-20 mx-auto mb-6 rounded-xl flex items-center justify-center ${isDark ? 'bg-dark-bg-primary' : 'bg-light-bg-primary'}`}>
+                <MdFeedback className="text-primary text-3xl" />
+              </div>
+              <h3 className={`text-xl font-semibold mb-3 ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
+                No feedback found
+              </h3>
+              <p className={`${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
+                {searchTerm ? "Try adjusting your search terms." : "User feedback submissions will appear here."}
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {sortedContacts.map((contact, index) => (
+                <div
+                  key={contact._id}
+                  className={`group relative p-6 rounded-2xl shadow-lg bg-gradient-to-br backdrop-blur-xl transition-all duration-300 overflow-hidden hover:shadow-2xl hover:-translate-y-1 ${
+                    isDark 
+                      ? 'from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-secondary-1000' 
+                      : 'from-blue-50 to-indigo-50 border border-light-border hover:border-primary/50'
+                  }`}
                 >
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+                  {/* Animated border on hover */}
+                  <div className="absolute top-0 right-0 w-0 h-full bg-primary rounded-r-2xl group-hover:w-1 transition-all duration-300" />
+                  <div className="absolute bottom-0 left-0 w-full h-0 bg-primary rounded-b-2xl group-hover:h-1 transition-all duration-300" />
+
+                  {/* Header with user info and actions */}
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center gap-3 flex-1">
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center text-white font-semibold text-lg shadow-lg">
                         {contact.username.charAt(0).toUpperCase()}
                       </div>
-                      <span className="font-medium">{contact.username}</span>
+                      <div className="flex-1 min-w-0">
+                        <h4 className={`font-semibold text-lg ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'} group-hover:text-primary transition-colors duration-300`}>
+                          {contact.username}
+                        </h4>
+                        <p className={`text-sm ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'} truncate`}>
+                          {contact.email}
+                        </p>
+                      </div>
                     </div>
-                  </td>
-                  <td className="px-4 py-3">{contact.email}</td>
-                  <td className="px-4 py-3">
-                    <div className="max-w-xs overflow-hidden text-ellipsis">
-                      {contact.message.length > 50 
-                        ? `${contact.message.substring(0, 50)}...` 
-                        : contact.message
-                      }
-                    </div>
-                  </td>
-                  <td className="px-4 py-3 text-center">
-                    {formatDate(contact.createdAt)}
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center justify-center">
+                    
+                    <div className="flex items-center gap-3">
+                      <span className={`text-xs px-3 py-1 rounded-full font-medium ${
+                        isDark 
+                          ? 'bg-dark-bg-tertiary text-dark-text-secondary' 
+                          : 'bg-light-bg-tertiary text-light-text-secondary'
+                      }`}>
+                        {formatDate(contact.createdAt)}
+                      </span>
                       <button
                         onClick={() => deleteContact(contact._id)}
-                        className={`
-                          p-2 rounded-lg transition-colors
-                          ${isDark 
-                            ? 'bg-dark-bg-tertiary hover:bg-red-500/20 text-dark-text-primary' 
-                            : 'bg-light-bg-tertiary hover:bg-red-500/20 text-light-text-primary'
-                          }
-                        `}
+                        className={`p-2 rounded-lg transition-all duration-200 hover:scale-110 ${
+                          isDark 
+                            ? 'bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300' 
+                            : 'bg-red-500/10 hover:bg-red-500/20 text-red-500 hover:text-red-600'
+                        }`}
                         title="Delete feedback"
                       >
                         <MdDeleteOutline className="text-lg" />
                       </button>
                     </div>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+                  </div>
+                  
+                  {/* Message content */}
+                  <div className={`p-4 rounded-xl ${
+                    isDark 
+                      ? 'bg-dark-bg-tertiary/50 border border-dark-border/30' 
+                      : 'bg-white/50 border border-light-border/30'
+                  }`}>
+                    <div className="flex items-start gap-2 mb-2">
+                      <MdEmail className="text-primary text-lg mt-1 flex-shrink-0" />
+                      <span className={`text-sm font-medium ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
+                        Message:
+                      </span>
+                    </div>
+                    <p className={`text-sm leading-relaxed ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'} pl-6`}>
+                      {contact.message}
+                    </p>
+                  </div>
+
+                  {/* Feedback metadata */}
+                  <div className="flex items-center justify-between mt-4 pt-4 border-t border-opacity-20 border-gray-300">
+                    <div className="flex items-center gap-4 text-xs">
+                      <span className={`flex items-center gap-1 ${isDark ? 'text-dark-text-tertiary' : 'text-light-text-tertiary'}`}>
+                        <FaUser className="text-primary" />
+                        ID: {contact._id.slice(-6)}
+                      </span>
+                    </div>
+                    <div className={`text-xs ${isDark ? 'text-dark-text-tertiary' : 'text-light-text-tertiary'}`}>
+                      Feedback #{index + 1}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Sorting Controls */}
+        {contacts.length > 0 && (
+          <div className={`mt-8 p-4 rounded-xl ${
+            isDark 
+              ? 'bg-dark-bg-secondary border border-dark-border' 
+              : 'bg-light-bg-secondary border border-light-border'
+          }`}>
+            <div className="flex flex-wrap items-center gap-4">
+              <span className={`text-sm font-medium ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
+                Sort by:
+              </span>
+              
+              {[
+                { key: 'username', label: 'Name', icon: FaUser },
+                { key: 'email', label: 'Email', icon: MdEmail },
+                { key: 'createdAt', label: 'Date', icon: MdSchedule }
+              ].map((sortOption) => (
+                <button
+                  key={sortOption.key}
+                  onClick={() => requestSort(sortOption.key)}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    sortConfig?.key === sortOption.key
+                      ? 'bg-primary text-white shadow-md'
+                      : isDark
+                        ? 'bg-dark-bg-tertiary text-dark-text-primary hover:bg-dark-bg-primary'
+                        : 'bg-light-bg-tertiary text-light-text-primary hover:bg-light-bg-primary'
+                  }`}
+                >
+                  <sortOption.icon className="text-sm" />
+                  {sortOption.label}
+                  {sortConfig?.key === sortOption.key && getSortIcon(sortOption.key)}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
 export default AdminContacts;
-
-
-

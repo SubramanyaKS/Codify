@@ -7,6 +7,26 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { useLoading } from "../components/loadingContext";
 import { FaEnvelope, FaLock, FaSignInAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion"; // Added for animation
+
+// Animation variants (copied from Roadmap)
+const backgroundVariants = {
+  hidden: { opacity: 0, scale: 1.05 },
+  visible: { opacity: 1, scale: 1, transition: { duration: 1, ease: "easeOut" } }
+};
+const headerVariants = {
+  hidden: { opacity: 0, y: -20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+};
+const formVariants = {
+  hidden: { opacity: 0, y: 30, scale: 0.95 },
+  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.6, ease: "easeOut" } }
+};
+const buttonVariants = {
+  initial: { scale: 1 },
+  hover: { scale: 1.05, transition: { duration: 0.2, ease: "easeInOut" } },
+  tap: { scale: 0.98, transition: { duration: 0.1 } }
+};
 
 function Login() {
   const [user, setUser] = useState({
@@ -39,22 +59,6 @@ function Login() {
     e.preventDefault();
     try {
       setIsLoading(true);
-
-      // // Step 1: Send OTP immediately
-      // const otpResponse = await fetch(`${API}/api/v1/auth/send-otp`, {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify({ email: user.email }),
-      // });
-      // const otpData = await otpResponse.json();
-      // console.log("otpdata", otpData)
-      // if (otpResponse.ok) {
-      //   setServerOtp(otpData.otp);
-      //   setShowOtpModal(true);
-      //   toast.success("OTP sent to your email!");
-      // } else {
-      //   toast.error("Failed to send OTP");
-      // }
       const loginResponse = await fetch(`${API}/api/v1/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -78,13 +82,10 @@ function Login() {
     }
   };
 
-
   const verifyOtp = async () => {
     try {
       setIsLoading(true);
       const otpString = otp.join("");
-
-      // Verify OTP first
       const response = await fetch(`${API}/api/v1/auth/verify-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -94,7 +95,6 @@ function Login() {
       const result = await response.json();
 
       if (response.ok) {
-        // OTP is correct → now call actual login
         const loginResponse = await fetch(`${API}/api/v1/auth/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -143,32 +143,54 @@ function Login() {
     }
   };
 
-
   return (
     <>
-      <div className={`relative min-h-screen-minus-nav flex items-center justify-center p-4 md:p-8 overflow-hidden z-10 ${isDark ? 'bg-dark-bg-primary text-dark-text-primary' : 'bg-light-bg-primary text-light-text-primary'
-        }`}>
+      <div className={`relative min-h-screen flex items-center justify-center p-4 md:p-8 overflow-hidden z-10 ${isDark ? 'bg-dark-bg-primary text-dark-text-primary' : 'bg-light-bg-primary text-light-text-primary'}`}>
         {/* Animated background pattern */}
-        <div className={`absolute top-0 left-0 w-full h-full -z-10 bg-[size:30px_30px] opacity-30 ${isDark ? 'bg-grid-pattern-dark' : 'bg-grid-pattern-light'
-          }`}></div>
+        <motion.div
+          variants={backgroundVariants}
+          initial="hidden"
+          animate="visible"
+          className={`absolute top-0 left-0 w-full h-full -z-10 bg-[size:30px_30px] ${isDark ? 'bg-grid-pattern-dark' : 'bg-grid-pattern-light'}`}
+        >
+          <div className={`absolute inset-0 ${isDark ? 'bg-gradient-to-br from-dark-bg-primary/90 via-transparent to-dark-bg-primary/50' : 'bg-gradient-to-br from-light-bg-primary/90 via-transparent to-light-bg-primary/50'}`}></div>
+        </motion.div>
 
         {/* Decorative elements */}
-        <div className="absolute top-20 right-20 w-72 h-72 rounded-full bg-primary/10 blur-3xl -z-5"></div>
-        <div className="absolute bottom-20 left-20 w-72 h-72 rounded-full bg-primary/10 blur-3xl -z-5"></div>
+        <motion.div
+          initial={{ opacity: 0, scale: 1.1 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.2, delay: 0.2 }}
+          className="absolute top-20 right-20 w-72 h-72 rounded-full bg-primary/10 blur-3xl -z-5"
+        ></motion.div>
+        <motion.div
+          initial={{ opacity: 0, scale: 1.1 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.2, delay: 0.4 }}
+          className="absolute bottom-20 left-20 w-72 h-72 rounded-full bg-primary/10 blur-3xl -z-5"
+        ></motion.div>
 
         <div className="w-full max-w-6xl mx-auto">
           <div className="w-full flex flex-col md:flex-row items-center justify-between gap-8 md:gap-16">
             {/* Left side - Image and text */}
-            <div className="w-full md:w-1/2 flex flex-col items-center md:items-start">
+            <motion.div
+              variants={headerVariants}
+              initial="hidden"
+              animate="visible"
+              className="w-full md:w-1/2 flex flex-col items-center md:items-start"
+            >
               <h1 className="text-4xl md:text-5xl font-righteous text-center md:text-left tracking-wider mb-6">
                 <span className="text-primary">Welcome</span> Back!
               </h1>
-
-              <p className={`text-center md:text-left mb-8 max-w-md ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'
-                }`}>
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: "100%" }}
+                transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+                className={`h-1 rounded-full bg-gradient-to-r ${isDark ? 'from-primary via-primary-dark to-primary' : 'from-primary via-primary-dark to-primary'}`}
+              ></motion.div>
+              <p className={`text-center md:text-left mb-8 max-w-md ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
                 Sign in to continue your learning journey and access all your courses and progress.
               </p>
-
               <div className="relative max-w-md sm:w-full hidden md:block">
                 <img
                   src="login.svg"
@@ -177,18 +199,24 @@ function Login() {
                 />
                 <div className="absolute -bottom-4 left-0 w-full h-8 bg-gradient-to-t from-dark-bg-primary/30 to-transparent blur-sm"></div>
               </div>
-            </div>
+            </motion.div>
 
             {/* Right side - Form */}
-            <div className="w-full md:w-1/2 flex flex-col items-center">
-              <div className={`w-full max-w-md p-8 rounded-xl shadow-xl backdrop-blur-sm transition-all duration-300 hover:shadow-2xl ${isDark
+            <motion.div
+              variants={formVariants}
+              initial="hidden"
+              animate="visible"
+              className="w-full md:w-1/2 flex flex-col items-center"
+            >
+              <motion.div
+                className={`w-full max-w-md p-8 rounded-2xl shadow-lg backdrop-blur-xl transition-all duration-300 hover:shadow-2xl ${isDark
                   ? 'bg-dark-bg-secondary/90 border border-dark-border'
                   : 'bg-light-bg-secondary/90 border border-light-border'
-                }`}>
+                }`}
+              >
                 <h2 className="text-3xl font-righteous text-center mb-8">
                   Login
                 </h2>
-
                 <form onSubmit={handleSubmit}>
                   <div className="mb-6">
                     <label
@@ -208,13 +236,12 @@ function Login() {
                       placeholder="Enter your email"
                       value={user.email}
                       onChange={handleChange}
-                      className={`w-full px-4 py-3 rounded-lg ${isDark
-                          ? 'bg-dark-bg-tertiary text-dark-text-primary border-dark-border'
-                          : 'bg-light-bg-tertiary text-light-text-primary border-light-border'
-                        } border focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300`}
+                      className={`w-full px-4 py-3 rounded-xl bg-transparent border ${isDark
+                        ? 'border-dark-border text-dark-text-primary placeholder-dark-text-secondary'
+                        : 'border-light-border text-light-text-primary placeholder-light-text-secondary'
+                        } focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300`}
                     />
                   </div>
-
                   <div className="mb-6 relative">
                     <label
                       htmlFor="password"
@@ -233,10 +260,10 @@ function Login() {
                       placeholder="Enter your password"
                       value={user.password}
                       onChange={handleChange}
-                      className={`w-full px-4 py-3 rounded-lg ${isDark
-                          ? 'bg-dark-bg-tertiary text-dark-text-primary border-dark-border'
-                          : 'bg-light-bg-tertiary text-light-text-primary border-light-border'
-                        } border focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300`}
+                      className={`w-full px-4 py-3 rounded-xl bg-transparent border ${isDark
+                        ? 'border-dark-border text-dark-text-primary placeholder-dark-text-secondary'
+                        : 'border-light-border text-light-text-primary placeholder-light-text-secondary'
+                        } focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300`}
                     />
                     <div
                       className="absolute right-3 top-[42px] cursor-pointer text-xl p-1 rounded-full hover:bg-primary/10 transition-colors"
@@ -245,21 +272,22 @@ function Login() {
                       {show ? <AiOutlineEyeInvisible className="text-primary" /> : <AiOutlineEye className="text-primary" />}
                     </div>
                   </div>
-
                   <div className="flex justify-end mb-6">
                     <Link to="/forgot-password" className="text-sm text-primary hover:underline">
                       Forgot password?
                     </Link>
                   </div>
-
-                  <button
+                  <motion.button
                     type="submit"
-                    className="w-full py-3 px-4 bg-primary hover:bg-primary-dark text-white font-medium rounded-lg transition-all duration-300 transform hover:scale-[1.02] flex items-center justify-center"
+                    variants={buttonVariants}
+                    initial="initial"
+                    whileHover="hover"
+                    whileTap="tap"
+                    className="w-full py-3 px-4 bg-primary hover:bg-primary-dark text-white font-medium rounded-xl transition-all duration-300 flex items-center justify-center"
                   >
                     <FaSignInAlt className="mr-2" />
                     Login
-                  </button>
-
+                  </motion.button>
                   <div className="mt-6 text-center">
                     <p className={isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
                       Don't have an account?{' '}
@@ -269,8 +297,8 @@ function Login() {
                     </p>
                   </div>
                 </form>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           </div>
         </div>
       </div>
@@ -288,4 +316,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Login;  

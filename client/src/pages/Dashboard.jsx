@@ -1,8 +1,9 @@
 import React, { useState, useEffect, lazy, Suspense, useMemo, useCallback } from 'react';
 import { useAuth } from '../store/auth';
 import { useTheme } from '../context/ThemeContext';
-import { FaBookmark, FaGraduationCap, FaChartLine, FaClock, FaPlay } from 'react-icons/fa';
+import { FaBookmark, FaGraduationCap, FaChartLine, FaClock, FaPlay, FaStar } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import { motion } from "framer-motion";
 
 // Lazy loaded components
 const CardBody = lazy(() => import('../components/CardBody'));
@@ -374,106 +375,283 @@ function Dashboard() {
     }
   }, [userdata, token, API, fetchWatchlist, fetchUserActivity]);
 
-  return (
+  // Animation variants - matching Roadmaps
+  const backgroundVariants = {
+    hidden: { opacity: 0, scale: 1.05 },
+    visible: { 
+      opacity: 1, 
+      scale: 1,
+      transition: {
+        duration: 1,
+        ease: "easeOut"
+      }
+    }
+  };
+
+  const headerVariants = {
+    hidden: { opacity: 0, y: -20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: "easeOut"
+      }
+    }
+  };
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.08,
+        delayChildren: 0.3
+      }
+    }
+  };
+
+  const cardVariants = {
+    hidden: { 
+      opacity: 0, 
+      y: 30,
+      scale: 0.95
+    },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      scale: 1,
+      transition: {
+        duration: 0.5,
+        ease: "easeOut"
+      }
+    },
+    hover: {
+      y: -8,
+      scale: 1.02,
+      transition: {
+        duration: 0.2,
+        ease: "easeInOut"
+      }
+    }
+  };
+
+  const buttonVariants = {
+    initial: { scale: 1 },
+    hover: { 
+      scale: 1.05,
+      transition: {
+        duration: 0.2,
+        ease: "easeInOut"
+      }
+    },
+    tap: { 
+      scale: 0.98,
+      transition: {
+        duration: 0.1
+      }
+    }
+  };
+
+return (
     <div className={`relative min-h-screen-minus-nav overflow-hidden z-10 ${isDark ? 'bg-dark-bg-primary text-dark-text-primary' : 'bg-light-bg-primary text-light-text-primary'}`}>
-      {/* Background with gradient */}
-      <div className={`absolute top-0 left-0 w-full h-full -z-10 bg-[size:30px_30px] ${isDark ? 'bg-grid-pattern-dark' : 'bg-grid-pattern-light'}`}></div>
+      {/* Enhanced Background with gradient overlay - matching Roadmaps */}
+      <motion.div 
+        variants={backgroundVariants}
+        initial="hidden"
+        animate="visible"
+        className={`absolute top-0 left-0 w-full h-full -z-10 bg-[size:30px_30px] ${isDark ? 'bg-grid-pattern-dark' : 'bg-grid-pattern-light'}`}
+      >
+        <div className={`absolute inset-0 ${isDark ? 'bg-gradient-to-br from-dark-bg-primary/90 via-transparent to-dark-bg-primary/50' : 'bg-gradient-to-br from-light-bg-primary/90 via-transparent to-light-bg-primary/50'}`}></div>
+      </motion.div>
 
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        {/* Dashboard Header */}
-        <div className="mb-12">
-          <h1 className={`text-4xl font-bold mb-4 ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
-            Welcome back, <span className="text-primary">{userdata ? userdata.username : "Learner"}</span>!
-          </h1>
-          <p className={`text-lg ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
-            Track your progress, manage your courses, and continue your learning journey.
-          </p>
-        </div>
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          <div className={`p-6 rounded-xl ${isDark ? 'bg-dark-bg-secondary border-dark-border' : 'bg-light-bg-secondary border-light-border'} border shadow-md flex items-center`}>
-            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mr-4">
-              <FaBookmark className="text-primary text-xl" />
-            </div>
-            <div>
-              <p className={`text-sm ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>Saved Courses</p>
-              <h3 className="text-2xl font-bold">{stats.savedCourses}</h3>
-            </div>
+      <div className="max-w-7xl mx-auto px-4 py-12 md:py-16 lg:py-20">
+        {/* Enhanced Header Section - matching Roadmaps */}
+        <motion.div 
+          variants={headerVariants}
+          initial="hidden"
+          animate="visible"
+          className="text-center mb-12"
+        >
+          <div className="inline-block">
+            <h1 className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-righteous tracking-wider mb-4 ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
+              Learning Dashboard
+            </h1>
+            <motion.div 
+              initial={{ width: 0 }}
+              animate={{ width: "100%" }}
+              transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+              className={`h-1 rounded-full bg-gradient-to-r ${isDark ? 'from-primary via-primary-dark to-primary' : 'from-primary via-primary-dark to-primary'}`}
+            ></motion.div>
           </div>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+            className={`mt-6 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}
+          >
+            Welcome back, <span className="text-primary font-semibold">{userdata ? userdata.username : "Learner"}</span>! Track your progress and continue your learning journey.
+          </motion.p>
+        </motion.div>
 
-          <div className={`p-6 rounded-xl ${isDark ? 'bg-dark-bg-secondary border-dark-border' : 'bg-light-bg-secondary border-light-border'} border shadow-md flex items-center`}>
-            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mr-4">
-              <FaGraduationCap className="text-primary text-xl" />
-            </div>
-            <div>
-              <p className={`text-sm ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>Completed</p>
-              <h3 className="text-2xl font-bold">{stats.coursesCompleted}</h3>
-            </div>
-          </div>
+        {/* Enhanced Stats Cards - matching Roadmaps card style */}
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16"
+        >
+          {[
+            {
+              icon: FaBookmark,
+              label: "Saved Courses",
+              value: stats.savedCourses,
+              color: "text-blue-500",
+              bgColor: "bg-blue-500/10"
+            },
+            {
+              icon: FaGraduationCap,
+              label: "Completed",
+              value: stats.coursesCompleted,
+              color: "text-green-500",
+              bgColor: "bg-green-500/10"
+            },
+            {
+              icon: FaChartLine,
+              label: "In Progress",
+              value: stats.coursesInProgress,
+              color: "text-orange-500",
+              bgColor: "bg-orange-500/10"
+            },
+            {
+              icon: FaClock,
+              label: "Hours Learned",
+              value: stats.totalHoursLearned,
+              color: "text-purple-500",
+              bgColor: "bg-purple-500/10"
+            }
+          ].map((stat, index) => (
+            <motion.div
+              key={stat.label}
+              variants={cardVariants}
+              whileHover="hover"
+              className={`group relative p-6 lg:p-8 rounded-2xl shadow-lg flex items-center bg-gradient-to-br transition-all duration-300 overflow-hidden ${
+                isDark 
+                  ? 'from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-secondary-1000 backdrop-blur-xl' 
+                  : 'from-blue-50 to-indigo-50 border border-light-border hover:border-primary/50'
+              }`}
+            >
+              {/* Animated border on hover */}
+              <motion.div 
+                className="absolute top-0 right-0 w-0 h-full bg-primary rounded-r-2xl"
+                whileHover={{ 
+                  width: "3px",
+                  transition: { duration: 0.3, ease: "easeOut" }
+                }}
+              />
+              <motion.div 
+                className="absolute bottom-0 left-0 w-full h-0 bg-primary rounded-b-2xl"
+                whileHover={{ 
+                  height: "3px",
+                  transition: { duration: 0.3, ease: "easeOut", delay: 0.05 }
+                }}
+              />
 
-          <div className={`p-6 rounded-xl ${isDark ? 'bg-dark-bg-secondary border-dark-border' : 'bg-light-bg-secondary border-light-border'} border shadow-md flex items-center`}>
-            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mr-4">
-              <FaChartLine className="text-primary text-xl" />
-            </div>
-            <div>
-              <p className={`text-sm ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>In Progress</p>
-              <h3 className="text-2xl font-bold">{stats.coursesInProgress}</h3>
-            </div>
-          </div>
-
-          <div className={`p-6 rounded-xl ${isDark ? 'bg-dark-bg-secondary border-dark-border' : 'bg-light-bg-secondary border-light-border'} border shadow-md flex items-center`}>
-            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mr-4">
-              <FaClock className="text-primary text-xl" />
-            </div>
-            <div>
-              <p className={`text-sm ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>Hours Learned</p>
-              <h3 className="text-2xl font-bold">{stats.totalHoursLearned}</h3>
-            </div>
-          </div>
-        </div>
+              <motion.div 
+                className={`w-12 h-12 sm:w-16 sm:h-16 rounded-xl ${stat.bgColor} flex items-center justify-center mr-4`}
+                whileHover={{ rotate: 360 }}
+                transition={{ duration: 0.5 }}
+              >
+                <stat.icon className={`${stat.color} text-xl sm:text-2xl`} />
+              </motion.div>
+              
+              <div>
+                <p className={`text-sm ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
+                  {stat.label}
+                </p>
+                <h3 className={`text-2xl sm:text-3xl font-bold ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'} group-hover:text-primary transition-colors duration-300`}>
+                  {stat.value}
+                </h3>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
 
         {/* Main Dashboard Content */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Current Course & Modules */}
           <div className="lg:col-span-2 space-y-8">
             {/* Current Course Section */}
-            <div>
-              <div className="mb-4 flex justify-between items-center">
-                <h2 className={`text-2xl font-bold ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8 }}
+            >
+              <div className="mb-6 flex justify-between items-center">
+                <h2 className={`text-2xl sm:text-3xl font-righteous tracking-wide ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
                   Continue Learning
                 </h2>
               </div>
 
               {selectedCourse ? (
                 <div className="space-y-6">
-                  {/* YouTubePlayer removed from dashboard */}
-                  <div className={`p-6 rounded-lg ${isDark ? 'bg-dark-bg-secondary' : 'bg-light-bg-secondary'} border ${isDark ? 'border-dark-border' : 'border-light-border'} shadow-md`}>
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className={`text-xl font-bold ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
+                  <motion.div 
+                    whileHover={{ y: -4 }}
+                    transition={{ duration: 0.3 }}
+                    className={`relative p-6 lg:p-8 rounded-2xl shadow-lg bg-gradient-to-br backdrop-blur-xl transition-all duration-300 hover:shadow-2xl overflow-hidden ${
+                      isDark 
+                        ? 'from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-secondary-1000' 
+                        : 'from-blue-50 to-indigo-50 border border-light-border'
+                    }`}
+                  >
+                    {/* Animated border on hover */}
+                    <motion.div 
+                      className="absolute top-0 right-0 w-0 h-full bg-primary rounded-r-2xl"
+                      whileHover={{ 
+                        width: "3px",
+                        transition: { duration: 0.3, ease: "easeOut" }
+                      }}
+                    />
+                    <motion.div 
+                      className="absolute bottom-0 left-0 w-full h-0 bg-primary rounded-b-2xl"
+                      whileHover={{ 
+                        height: "3px",
+                        transition: { duration: 0.3, ease: "easeOut", delay: 0.05 }
+                      }}
+                    />
+
+                    <div className="flex items-center justify-between mb-6">
+                      <h3 className={`text-xl lg:text-2xl font-semibold ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'} group-hover:text-primary transition-colors duration-300`}>
                         {selectedCourse.course_title}
                       </h3>
-                      <Link
-                        to={`/courses/${selectedCourse._id}`}
-                        className="py-2 px-4 bg-primary hover:bg-primary-dark text-white rounded-lg transition-colors text-sm flex items-center"
+                      <motion.div
+                        variants={buttonVariants}
+                        initial="initial"
+                        whileHover="hover"
+                        whileTap="tap"
                       >
-                        <FaPlay className="mr-2" /> Continue Watching
-                      </Link>
+                        <Link
+                          to={`/courses/${selectedCourse._id}`}
+                          className="py-3 px-6 bg-primary hover:bg-primary-dark text-white rounded-xl transition-colors text-sm flex items-center font-semibold"
+                        >
+                          <FaPlay className="mr-2" /> Continue Watching
+                        </Link>
+                      </motion.div>
                     </div>
 
                     <div className="flex items-center mb-4">
                       <img
                         src={selectedCourse.course_image || 'https://via.placeholder.com/150'}
                         alt={selectedCourse.course_title}
-                        className="w-20 h-20 object-cover rounded-md mr-4"
+                        className="w-20 h-20 object-cover rounded-xl mr-4 shadow-md"
                       />
-                      <div>
+                      <div className="flex-1">
                         <p className={`text-sm ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'} mb-1`}>
                           By {selectedCourse.creator_name}
                         </p>
                         {selectedCourseProgress && (
                           <div className="mt-2">
-                            <div className="flex justify-between items-center text-xs mb-1">
+                            <div className="flex justify-between items-center text-xs mb-2">
                               <span className={`${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
                                 {selectedCourseProgress.progress || 0}% complete
                               </span>
@@ -482,9 +660,9 @@ function Dashboard() {
                                 {Math.round(selectedCourseProgress.totalHoursSpent || 0)}h
                               </span>
                             </div>
-                            <div className="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-700">
+                            <div className={`w-full rounded-full h-2 ${isDark ? 'bg-gray-700' : 'bg-gray-200'}`}>
                               <div
-                                className="bg-primary h-2 rounded-full"
+                                className="bg-primary h-2 rounded-full transition-all duration-300"
                                 style={{ width: `${selectedCourseProgress.progress || 0}%` }}
                               ></div>
                             </div>
@@ -492,11 +670,15 @@ function Dashboard() {
                         )}
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
 
                   <Suspense fallback={
                     <div className="flex items-center justify-center h-40">
-                      <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary"></div>
+                      <motion.div
+                        animate={{ rotate: 360 }} 
+                        transition={{ repeat: Infinity, duration: 1, ease: "linear" }} 
+                        className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full"
+                      />
                     </div>
                   }>
                     <CourseModules
@@ -507,35 +689,74 @@ function Dashboard() {
                   </Suspense>
                 </div>
               ) : (
-                <div className={`p-12 rounded-xl ${isDark ? 'bg-dark-bg-secondary border-dark-border' : 'bg-light-bg-secondary border-light-border'} border shadow-md text-center`}>
-                  <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
-                    <FaGraduationCap className="text-primary text-2xl" />
-                  </div>
+                <motion.div 
+                  whileHover={{ y: -4 }}
+                  transition={{ duration: 0.3 }}
+                  className={`relative p-12 rounded-2xl shadow-lg bg-gradient-to-br backdrop-blur-xl text-center transition-all duration-300 hover:shadow-2xl overflow-hidden ${
+                    isDark 
+                      ? 'from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-secondary-1000' 
+                      : 'from-blue-50 to-indigo-50 border border-light-border'
+                  }`}
+                >
+                  {/* Animated border on hover */}
+                  <motion.div 
+                    className="absolute top-0 right-0 w-0 h-full bg-primary rounded-r-2xl"
+                    whileHover={{ 
+                      width: "3px",
+                      transition: { duration: 0.3, ease: "easeOut" }
+                    }}
+                  />
+                  <motion.div 
+                    className="absolute bottom-0 left-0 w-full h-0 bg-primary rounded-b-2xl"
+                    whileHover={{ 
+                      height: "3px",
+                      transition: { duration: 0.3, ease: "easeOut", delay: 0.05 }
+                    }}
+                  />
+
+                  <motion.div 
+                    className={`w-20 h-20 mx-auto mb-6 rounded-xl flex items-center justify-center ${isDark ? 'bg-dark-bg-primary' : 'bg-light-bg-primary'}`}
+                    whileHover={{ rotate: 360 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <FaGraduationCap className="text-primary text-3xl" />
+                  </motion.div>
                   <h3 className={`text-xl font-semibold mb-3 ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
                     No courses in progress
                   </h3>
                   <p className={`mb-6 ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
                     Start learning by adding courses to your watchlist.
                   </p>
-                  <Link
-                    to="/courses"
-                    className="py-2 px-6 bg-primary hover:bg-primary-dark text-white rounded-lg transition-colors"
+                  <motion.div
+                    variants={buttonVariants}
+                    initial="initial"
+                    whileHover="hover"
+                    whileTap="tap"
                   >
-                    Explore Courses
-                  </Link>
-                </div>
+                    <Link
+                      to="/courses"
+                      className="py-3 px-6 bg-primary hover:bg-primary-dark text-white rounded-xl transition-colors font-semibold"
+                    >
+                      Explore Courses
+                    </Link>
+                  </motion.div>
+                </motion.div>
               )}
-            </div>
+            </motion.div>
 
             {/* Watchlist Section */}
-            <div>
-              <div className="mb-4 flex justify-between items-center">
-                <h2 className={`text-2xl font-bold ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.0 }}
+            >
+              <div className="mb-6 flex justify-between items-center">
+                <h2 className={`text-2xl sm:text-3xl font-righteous tracking-wide ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
                   Your Watchlist
                 </h2>
                 <Link
                   to="/courses"
-                  className="text-primary hover:text-primary-dark transition-colors"
+                  className="text-primary hover:text-primary-dark transition-colors font-medium"
                 >
                   Browse more courses
                 </Link>
@@ -547,7 +768,11 @@ function Dashboard() {
                     <div key={course._id}>
                       <Suspense fallback={
                         <div className="flex items-center justify-center h-40">
-                          <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary"></div>
+                          <motion.div
+                            animate={{ rotate: 360 }} 
+                            transition={{ repeat: Infinity, duration: 1, ease: "linear" }} 
+                            className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full"
+                          />
                         </div>
                       }>
                         <CardBody
@@ -561,112 +786,404 @@ function Dashboard() {
                   ))}
                 </div>
               ) : (
-                <div className={`p-8 rounded-xl ${isDark ? 'bg-dark-bg-secondary border-dark-border' : 'bg-light-bg-secondary border-light-border'} border shadow-md text-center`}>
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
+                <motion.div 
+                  whileHover={{ y: -4 }}
+                  transition={{ duration: 0.3 }}
+                  className={`relative p-8 lg:p-12 rounded-2xl shadow-lg bg-gradient-to-br backdrop-blur-xl text-center transition-all duration-300 hover:shadow-2xl overflow-hidden ${
+                    isDark 
+                      ? 'from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-secondary-1000' 
+                      : 'from-blue-50 to-indigo-50 border border-light-border'
+                  }`}
+                >
+                  {/* Animated border on hover */}
+                  <motion.div 
+                    className="absolute top-0 right-0 w-0 h-full bg-primary rounded-r-2xl"
+                    whileHover={{ 
+                      width: "3px",
+                      transition: { duration: 0.3, ease: "easeOut" }
+                    }}
+                  />
+                  <motion.div 
+                    className="absolute bottom-0 left-0 w-full h-0 bg-primary rounded-b-2xl"
+                    whileHover={{ 
+                      height: "3px",
+                      transition: { duration: 0.3, ease: "easeOut", delay: 0.05 }
+                    }}
+                  />
+
+                  <motion.div 
+                    className={`w-16 h-16 mx-auto mb-4 rounded-xl flex items-center justify-center ${isDark ? 'bg-dark-bg-primary' : 'bg-light-bg-primary'}`}
+                    whileHover={{ rotate: 360 }}
+                    transition={{ duration: 0.5 }}
+                  >
                     <FaBookmark className="text-primary text-xl" />
-                  </div>
+                  </motion.div>
                   <h3 className={`text-lg font-semibold mb-2 ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
                     Your watchlist is empty
                   </h3>
                   <p className={`mb-4 ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
                     Save courses to watch later and track your learning progress.
                   </p>
-                  <Link
-                    to="/courses"
-                    className="py-2 px-4 bg-primary hover:bg-primary-dark text-white rounded-lg transition-colors text-sm"
+                  <motion.div
+                    variants={buttonVariants}
+                    initial="initial"
+                    whileHover="hover"
+                    whileTap="tap"
                   >
-                    Explore Courses
-                  </Link>
-                </div>
+                    <Link
+                      to="/courses"
+                      className="py-2 px-4 bg-primary hover:bg-primary-dark text-white rounded-xl transition-colors text-sm font-semibold"
+                    >
+                      Explore Courses
+                    </Link>
+                  </motion.div>
+                </motion.div>
               )}
-            </div>
+            </motion.div>
           </div>
 
-          {/* Right Column - Stats & Activity */}
+          {/* Right Column - Stats & Activity with Updated Card Styling */}
           <div className="space-y-8">
-            {/* Continue Watching Section */}
-            <Suspense fallback={
-              <div className="flex items-center justify-center h-40">
-                <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary"></div>
-              </div>
-            }>
-              <ContinueWatching
-                courses={continueWatchingCourses}
-                onCourseSelect={handleCourseSelect}
+            {/* Continue Watching Section - Updated with Roadmaps card style */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.6 }}
+              whileHover={{ y: -4 }}
+              className={`relative p-6 lg:p-8 rounded-2xl shadow-lg bg-gradient-to-br backdrop-blur-xl transition-all duration-300 hover:shadow-2xl overflow-hidden ${
+                isDark 
+                  ? 'from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-secondary-1000' 
+                  : 'from-blue-50 to-indigo-50 border border-light-border'
+              }`}
+            >
+              {/* Animated border on hover */}
+              <motion.div 
+                className="absolute top-0 right-0 w-0 h-full bg-primary rounded-r-2xl"
+                whileHover={{ 
+                  width: "3px",
+                  transition: { duration: 0.3, ease: "easeOut" }
+                }}
               />
-            </Suspense>
+              <motion.div 
+                className="absolute bottom-0 left-0 w-full h-0 bg-primary rounded-b-2xl"
+                whileHover={{ 
+                  height: "3px",
+                  transition: { duration: 0.3, ease: "easeOut", delay: 0.05 }
+                }}
+              />
 
-            {/* User Activity */}
-            <Suspense fallback={
-              <div className="flex items-center justify-center h-40">
-                <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary"></div>
-              </div>
-            }>
-              <UserActivity activities={activities} />
-            </Suspense>
+              <h3 className={`text-xl font-righteous tracking-wide mb-6 ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
+                Continue Watching
+              </h3>
 
-            {/* Learning Recommendations */}
-            <div className={`p-6 rounded-xl ${isDark ? 'bg-dark-bg-secondary border-dark-border' : 'bg-light-bg-secondary border-light-border'} border shadow-md`}>
-              <h3 className={`text-xl font-bold mb-4 ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
+              <Suspense fallback={
+                <div className="flex items-center justify-center h-40">
+                  <motion.div
+                    animate={{ rotate: 360 }} 
+                    transition={{ repeat: Infinity, duration: 1, ease: "linear" }} 
+                    className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full"
+                  />
+                </div>
+              }>
+                {continueWatchingCourses.length > 0 ? (
+                  <div className="space-y-4">
+                    {continueWatchingCourses.map((course, index) => (
+                      <motion.div
+                        key={course._id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.6 + index * 0.1 }}
+                        whileHover={{ scale: 1.02, x: 4 }}
+                        className={`p-4 rounded-xl cursor-pointer transition-all duration-300 ${
+                          isDark 
+                            ? 'bg-dark-bg-tertiary border border-dark-border hover:border-primary/50' 
+                            : 'bg-white border border-light-border hover:border-primary/50'
+                        } hover:shadow-md`}
+                        onClick={() => onCourseSelect && onCourseSelect(course)}
+                      >
+                        <div className="flex items-center space-x-3">
+                          <img
+                            src={course.course_image || 'https://via.placeholder.com/60'}
+                            alt={course.course_title}
+                            className="w-12 h-12 object-cover rounded-lg"
+                          />
+                          <div className="flex-1">
+                            <h4 className={`font-semibold text-sm mb-1 ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'} group-hover:text-primary transition-colors duration-300`}>
+                              {course.course_title}
+                            </h4>
+                            <p className={`text-xs ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
+                              {course.creator_name}
+                            </p>
+                          </div>
+                          <FaPlay className="text-primary text-sm opacity-60" />
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <motion.div 
+                      className={`w-16 h-16 mx-auto mb-4 rounded-xl flex items-center justify-center ${isDark ? 'bg-dark-bg-primary' : 'bg-light-bg-primary'}`}
+                      whileHover={{ rotate: 360 }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      <FaPlay className="text-primary text-xl" />
+                    </motion.div>
+                    <p className={`text-sm ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
+                      No courses in progress
+                    </p>
+                    <p className={`text-xs mt-1 ${isDark ? 'text-dark-text-tertiary' : 'text-light-text-tertiary'}`}>
+                      Start watching courses to see them here
+                    </p>
+                  </div>
+                )}
+              </Suspense>
+            </motion.div>
+
+            {/* User Activity Section - Updated with Roadmaps card style */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.8 }}
+              whileHover={{ y: -4 }}
+              className={`relative p-6 lg:p-8 rounded-2xl shadow-lg bg-gradient-to-br backdrop-blur-xl transition-all duration-300 hover:shadow-2xl overflow-hidden ${
+                isDark 
+                  ? 'from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-secondary-1000' 
+                  : 'from-blue-50 to-indigo-50 border border-light-border'
+              }`}
+            >
+              {/* Animated border on hover */}
+              <motion.div 
+                className="absolute top-0 right-0 w-0 h-full bg-primary rounded-r-2xl"
+                whileHover={{ 
+                  width: "3px",
+                  transition: { duration: 0.3, ease: "easeOut" }
+                }}
+              />
+              <motion.div 
+                className="absolute bottom-0 left-0 w-full h-0 bg-primary rounded-b-2xl"
+                whileHover={{ 
+                  height: "3px",
+                  transition: { duration: 0.3, ease: "easeOut", delay: 0.05 }
+                }}
+              />
+
+              <h3 className={`text-xl font-righteous tracking-wide mb-6 ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
+                Recent Activity
+              </h3>
+
+              <Suspense fallback={
+                <div className="flex items-center justify-center h-40">
+                  <motion.div
+                    animate={{ rotate: 360 }} 
+                    transition={{ repeat: Infinity, duration: 1, ease: "linear" }} 
+                    className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full"
+                  />
+                </div>
+              }>
+                {activities && activities.length > 0 ? (
+                  <div className="space-y-4">
+                    {activities.map((activity, index) => (
+                      <motion.div
+                        key={activity.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.8 + index * 0.1 }}
+                        className={`p-4 rounded-xl ${
+                          isDark 
+                            ? 'bg-dark-bg-tertiary border border-dark-border' 
+                            : 'bg-white border border-light-border'
+                        }`}
+                      >
+                        <div className="flex items-start space-x-3">
+                          <motion.div 
+                            className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                              activity.type === 'completed' ? 'bg-green-500/10' :
+                              activity.type === 'started' ? 'bg-blue-500/10' :
+                              'bg-orange-500/10'
+                            }`}
+                            whileHover={{ rotate: 360 }}
+                            transition={{ duration: 0.5 }}
+                          >
+                            {activity.type === 'completed' ? (
+                              <FaGraduationCap className="text-green-500 text-sm" />
+                            ) : activity.type === 'started' ? (
+                              <FaPlay className="text-blue-500 text-sm" />
+                            ) : (
+                              <FaBookmark className="text-orange-500 text-sm" />
+                            )}
+                          </motion.div>
+                          <div className="flex-1">
+                            <p className={`text-sm font-medium ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
+                              {activity.description}
+                            </p>
+                            <p className={`text-xs ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
+                              {activity.timestamp}
+                            </p>
+                          </div>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <motion.div 
+                      className={`w-16 h-16 mx-auto mb-4 rounded-xl flex items-center justify-center ${isDark ? 'bg-dark-bg-primary' : 'bg-light-bg-primary'}`}
+                      whileHover={{ rotate: 360 }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      <FaChartLine className="text-primary text-xl" />
+                    </motion.div>
+                    <p className={`text-sm ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
+                      No recent activity
+                    </p>
+                    <p className={`text-xs mt-1 ${isDark ? 'text-dark-text-tertiary' : 'text-light-text-tertiary'}`}>
+                      Your learning activities will appear here
+                    </p>
+                  </div>
+                )}
+              </Suspense>
+            </motion.div>
+
+            {/* Enhanced Learning Recommendations - matching Roadmaps card style */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 1.0 }}
+              whileHover={{ y: -4 }}
+              className={`relative p-6 lg:p-8 rounded-2xl shadow-lg bg-gradient-to-br backdrop-blur-xl transition-all duration-300 hover:shadow-2xl overflow-hidden ${
+                isDark 
+                  ? 'from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-secondary-1000' 
+                  : 'from-blue-50 to-indigo-50 border border-light-border'
+              }`}
+            >
+              {/* Animated border on hover */}
+              <motion.div 
+                className="absolute top-0 right-0 w-0 h-full bg-primary rounded-r-2xl"
+                whileHover={{ 
+                  width: "3px",
+                  transition: { duration: 0.3, ease: "easeOut" }
+                }}
+              />
+              <motion.div 
+                className="absolute bottom-0 left-0 w-full h-0 bg-primary rounded-b-2xl"
+                whileHover={{ 
+                  height: "3px",
+                  transition: { duration: 0.3, ease: "easeOut", delay: 0.05 }
+                }}
+              />
+
+              <h3 className={`text-xl font-righteous tracking-wide mb-6 ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
                 Recommended For You
               </h3>
 
               <div className="space-y-4">
-                <div
-                  className={`p-3 rounded-lg ${isDark ? 'bg-dark-bg-tertiary' : 'bg-light-bg-tertiary'} border ${isDark ? 'border-dark-border' : 'border-light-border'} hover:border-primary transition-colors cursor-pointer`}
-                  onClick={() => window.open("https://www.youtube.com/watch?v=8zKuNo4ay8E", "_blank")}
-                >
-                  <h4 className={`font-medium ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>Advanced JavaScript Concepts</h4>
-                  <p className={`text-sm ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'} mb-2`}>
-                    Take your JS skills to the next level
-                  </p>
-                  <div className="flex items-center text-xs text-primary">
-                    <span className="bg-primary/10 px-2 py-1 rounded">Intermediate</span>
-                    <span className="ml-2">4.8 ★</span>
-                  </div>
-                </div>
-
-                <div
-                  className={`p-3 rounded-lg ${isDark ? 'bg-dark-bg-tertiary' : 'bg-light-bg-tertiary'} border ${isDark ? 'border-dark-border' : 'border-light-border'} hover:border-primary transition-colors cursor-pointer`}
-                  onClick={() => window.open("https://www.youtube.com/watch?v=7A5X_iwWdvw", "_blank")}
-                >
-                  <h4 className={`font-medium ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>React Performance Optimization</h4>
-                  <p className={`text-sm ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'} mb-2`}>
-                    Learn techniques to optimize React apps
-                  </p>
-                  <div className="flex items-center text-xs text-primary">
-                    <span className="bg-primary/10 px-2 py-1 rounded">Advanced</span>
-                    <span className="ml-2">4.9 ★</span>
-                  </div>
-                </div>
-
-                <div
-                  className={`p-3 rounded-lg ${isDark ? 'bg-dark-bg-tertiary' : 'bg-light-bg-tertiary'} border ${isDark ? 'border-dark-border' : 'border-light-border'} hover:border-primary transition-colors cursor-pointer`}
-                  onClick={() => window.open("https://www.youtube.com/watch?v=ktjafK4SgWM", "_blank")}
-                >
-                  <h4 className={`font-medium ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>Full Stack Development with MERN</h4>
-                  <p className={`text-sm ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'} mb-2`}>
-                    Build complete web applications
-                  </p>
-                  <div className="flex items-center text-xs text-primary">
-                    <span className="bg-primary/10 px-2 py-1 rounded">Intermediate</span>
-                    <span className="ml-2">4.7 ★</span>
-                  </div>
-                </div>
+                {[
+                  {
+                    title: "Advanced JavaScript Concepts",
+                    description: "Take your JS skills to the next level",
+                    level: "Intermediate",
+                    rating: "4.8",
+                    url: "https://www.youtube.com/watch?v=8zKuNo4ay8E"
+                  },
+                  {
+                    title: "React Performance Optimization",
+                    description: "Learn techniques to optimize React apps",
+                    level: "Advanced",
+                    rating: "4.9",
+                    url: "https://www.youtube.com/watch?v=7A5X_iwWdvw"
+                  },
+                  {
+                    title: "Full Stack Development with MERN",
+                    description: "Build complete web applications",
+                    level: "Intermediate",
+                    rating: "4.7",
+                    url: "https://www.youtube.com/watch?v=ktjafK4SgWM"
+                  }
+                ].map((course, index) => (
+                  <motion.div
+                    key={course.title}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.2 + index * 0.1 }}
+                    whileHover={{ scale: 1.02, x: 4 }}
+                    className={`p-4 rounded-xl cursor-pointer transition-all duration-300 ${
+                      isDark 
+                        ? 'bg-dark-bg-tertiary border border-dark-border hover:border-primary/50' 
+                        : 'bg-white border border-light-border hover:border-primary/50'
+                    } hover:shadow-md`}
+                    onClick={() => window.open(course.url, "_blank")}
+                  >
+                    <h4 className={`font-semibold mb-2 ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'} group-hover:text-primary transition-colors duration-300`}>
+                      {course.title}
+                    </h4>
+                    <p className={`text-sm mb-3 ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
+                      {course.description}
+                    </p>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className={`px-3 py-1 rounded-full font-medium ${
+                        course.level === 'Advanced' 
+                          ? 'bg-red-500/10 text-red-500' 
+                          : 'bg-primary/10 text-primary'
+                      }`}>
+                        {course.level}
+                      </span>
+                      <div className="flex items-center text-yellow-500">
+                        <FaStar className="mr-1" />
+                        <span>{course.rating}</span>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
               </div>
 
-              <Link
-                to="/courses"
-                className="mt-4 text-primary hover:text-primary-dark transition-colors text-sm flex justify-end items-center"
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.5 }}
+                className="mt-6"
               >
-                View all recommendations
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                </svg>
-              </Link>
-            </div>
+                <Link
+                  to="/courses"
+                  className="text-primary hover:text-primary-dark transition-colors text-sm flex justify-end items-center font-medium"
+                >
+                  View all recommendations
+                  <motion.svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    className="h-4 w-4 ml-1" 
+                    viewBox="0 0 20 20" 
+                    fill="currentColor"
+                    whileHover={{ x: 2 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                  </motion.svg>
+                </Link>
+              </motion.div>
+            </motion.div>
           </div>
         </div>
+
+        {/* Call to Action Section - matching Roadmaps */}
+        <motion.section 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.8, duration: 0.6, ease: "easeOut" }}
+          className={`mt-24 text-center p-8 sm:p-12 rounded-3xl ${
+            isDark ? 'bg-gradient-to-r from-dark-bg-secondary to-dark-bg-secondary border border-dark-border' : 'bg-gradient-to-r from-light-bg-secondary to-light-bg-secondary border border-light-border'
+          }`}
+        >
+          <h3 className={`text-xl sm:text-2xl md:text-3xl font-righteous mb-4 ${
+            isDark ? 'text-dark-text-primary' : 'text-light-text-primary'
+          }`}>
+            Keep Learning, Keep Growing
+          </h3>
+          <p className={`text-base sm:text-lg ${
+            isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'
+          } max-w-2xl mx-auto`}>
+            Your learning journey is unique. Track your progress, set new goals, and unlock your potential with our comprehensive learning platform.
+          </p>
+        </motion.section>
       </div>
     </div>
   );
