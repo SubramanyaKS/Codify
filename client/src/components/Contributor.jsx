@@ -1,374 +1,614 @@
-import React, { useState, useEffect } from 'react';
-import { Users, GitPullRequest, Activity, Star, AlertCircle, PlusCircle } from 'lucide-react';
-import { useTheme } from '../context/ThemeContext'; // Adjust import path as needed
-import { useAuth } from '../store/auth';
-import Loader from '../components/Loader'
-import {motion} from "framer-motion"
-import { Link } from 'react-router-dom';
-import { FaBookOpen } from 'react-icons/fa';
-const ContributorsPage = () => {
-    
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { FaTrophy, FaStar, FaCode, FaUsers, FaGithub, FaSearch } from "react-icons/fa";
+import { ChevronRight, ChevronLeft } from "lucide-react";
+import { useTheme } from "../context/ThemeContext"; // Add theme context
+
+const GITHUB_REPO = "Roshansuthar1105/Codify";
+
+// Points configuration for different PR levels
+const POINTS = {
+  "level 1": 3, // Easy
+  "level 2": 7, // Medium
+  "level 3": 10, // Hard/Feature
+};
+
+// Badge component for PR counts
+const Badge = ({ count, label, color }) => (
+  <div
+    className={`flex items-center px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium ${color} bg-opacity-20`}
+  >
+    <FaCode className="mr-1 sm:mr-1.5 text-xs" />
+    <span>
+      {count} {label}
+    </span>
+  </div>
+);
+
+// Skeleton Loader Component
+const SkeletonLoader = () => (
+  <div className="bg-white dark:bg-[#1a202e] rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+    <div className="hidden sm:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-[#232a3a] border-b border-gray-100 dark:border-gray-700">
+      <div className="col-span-1 text-sm font-medium text-gray-500 dark:text-gray-400">
+        #
+      </div>
+      <div className="col-span-6 md:col-span-7 text-sm font-medium text-gray-500 dark:text-gray-400">
+        Contributor
+      </div>
+      <div className="col-span-5 md:col-span-4 text-sm font-medium text-gray-500 dark:text-gray-400 text-right">
+        Contributions
+      </div>
+    </div>
+    <div className="divide-y divide-gray-100 dark:divide-gray-700">
+      {[...Array(10)].map((_, i) => (
+        <div
+          key={i}
+          className="p-4 sm:grid sm:grid-cols-12 sm:gap-4 sm:items-center sm:px-6 sm:py-4"
+        >
+          <div className="flex items-center space-x-3 sm:hidden">
+            <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse flex-shrink-0"></div>
+            <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse flex-shrink-0"></div>
+            <div className="flex-1 space-y-2">
+              <div className="w-24 h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+              <div className="flex space-x-2">
+                <div className="w-12 h-6 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"></div>
+                <div className="w-12 h-6 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"></div>
+              </div>
+            </div>
+          </div>
+          <div className="hidden sm:contents">
+            <div className="col-span-1">
+              <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse"></div>
+            </div>
+            <div className="col-span-6 md:col-span-7">
+              <div className="flex items-center space-x-4">
+                <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse"></div>
+                <div className="space-y-2">
+                  <div className="w-32 h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                  <div className="w-24 h-3 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                </div>
+              </div>
+            </div>
+            <div className="col-span-5 md:col-span-4">
+              <div className="flex items-center justify-end space-x-3">
+                <div className="w-16 h-8 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"></div>
+                <div className="w-16 h-8 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
+export default function LeaderBoard() {
   const [contributors, setContributors] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [sortBy, setSortBy] = useState('points');
-  
-  const { theme } = useTheme();
-  const isDark = theme === 'dark';
-  const API = import.meta.env.VITE_SERVER_API;
-  // console.log(API);
-  const API_ENDPOINT = `${API}/api/v1/leaderboard`;
+  const [stats, setStats] = useState({
+    totalPRs: 0,
+    totalContributors: 0,
+    totalPoints: 0,
+  });
+  const [searchTerm, setSearchTerm] = useState(""); // Add search state
+  const { isDark } = useTheme(); // Theme context
 
   useEffect(() => {
-    fetchContributors();
+    const fetchContributorsWithPoints = async () => {
+      try {
+        let contributorsMap = {};
+        let page = 1;
+        const MAX_PAGES = 10;
+        let keepFetching = true;
+
+        // --- GITHUB API NOTE ---
+        // The endpoint used below only returns contributors, not PRs.
+        // To get PRs, you must use the /pulls endpoint and you need a GitHub token for private or high-volume requests.
+        // For public repos and small requests, token is not strictly necessary, but rate limits are very low.
+        // If you want to fetch PRs with labels, you MUST use the /pulls endpoint and pass your token in the headers.
+        // See below for a correct fetch example.
+
+        while (keepFetching && page <= MAX_PAGES) {
+          const res = await fetch(
+            `https://api.github.com/repos/${GITHUB_REPO}/pulls?state=closed&per_page=100&page=${page}`,
+            {
+              headers: {
+                Accept: "application/vnd.github.v3+json",
+              },
+            }
+          );
+          const prs = await res.json();
+
+          console.log(prs)
+
+          if (!Array.isArray(prs) || prs.length === 0 || (prs.length === 1 && prs[0].message)) {
+            keepFetching = false;
+            break;
+          }
+
+          prs.forEach((pr) => {
+            if (!pr.merged_at) return;
+
+            // PR labels
+            const labels = pr.labels.map((l) => l.name.toLowerCase());
+            if (!labels.includes("gssoc25")) return;
+
+            const author = pr.user.login;
+            let points = 0;
+            labels.forEach((label) => {
+              if (POINTS[label]) points += POINTS[label];
+            });
+
+            if (!contributorsMap[author]) {
+              contributorsMap[author] = {
+                username: author,
+                avatar: pr.user.avatar_url,
+                profile: pr.user.html_url,
+                points: 0,
+                prs: 0,
+              };
+            }
+
+            contributorsMap[author].points += points;
+            contributorsMap[author].prs += 1;
+          });
+
+          page += 1;
+        }
+
+        setContributors(
+          Object.values(contributorsMap).sort((a, b) => b.points - a.points)
+        );
+      } catch (error) {
+        console.error("Error fetching contributors:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchContributorsWithPoints();
   }, []);
 
-  const fetchContributors = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      
-      const response = await fetch(API_ENDPOINT);
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-      
-      const data = await response.json();
-      if (data.success && Array.isArray(data.data)) {
-        setContributors(data.data);
-      } else {
-        throw new Error('Invalid data format received from server');
-      }
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    if (contributors.length > 0) {
+      const totalPRs = contributors.reduce((sum, c) => sum + Number(c.prs), 0);
+      const totalPoints = contributors.reduce(
+        (sum, c) => sum + Number(c.points),
+        0
+      );
+
+      const flooredTotalPRs = Math.floor(totalPRs / 10) * 10;
+      const flooredTotalPoints = Math.floor(totalPoints / 10) * 10;
+      const flooredContributorsCount =
+        Math.floor(contributors.length / 10) * 10;
+
+      setStats({
+        flooredTotalPRs,
+        totalContributors: flooredContributorsCount,
+        flooredTotalPoints,
+      });
     }
-  };
+  }, [contributors]);
 
-  const gradientBg = "bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-secondary-1000 backdrop-blur-xl";
+  // Filter contributors by search term (username)
+  const filteredContributors = contributors.filter((c) =>
+    c.username.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-  const sortedContributors = [...contributors].sort((a, b) => {
-    switch(sortBy) {
-      case 'points': return b.points - a.points;
-      case 'prs': return b.prs - a.prs;
-      case 'contributions': return b.contributions - a.contributions;
-      case 'username': return a.username.localeCompare(b.username);
-      default: return b.points - a.points;
-    }
-  });
+  // Pagination variables and states
+  const PAGE_SIZE = 10;
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const getRankBadge = (index) => {
-    if (index === 0) return (
-      <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
-        1
-      </div>
-    );
-    if (index === 1) return (
-      <div className="w-8 h-8 bg-gradient-to-br from-gray-300 to-gray-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
-        2
-      </div>
-    );
-    if (index === 2) return (
-      <div className="w-8 h-8 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
-        3
-      </div>
-    );
-    return (
-      <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
-        isDark ? 'bg-gray-600 text-gray-300' : 'bg-gray-300 text-gray-700'
-      }`}>
-        {index + 1}
-      </div>
-    );
-  };
+  // Calculate which contributors to show on current page
+  const indexOfLast = currentPage * PAGE_SIZE;
+  const indexOfFirst = indexOfLast - PAGE_SIZE;
+  const currentContributors = filteredContributors.slice(indexOfFirst, indexOfLast);
 
-  // Stats
-    const backgroundVariants = { hidden: { opacity: 0, scale: 1.05 }, visible: { opacity: 1, scale: 1, transition: { duration: 1, ease: "easeOut" } } };
-
-  const totalContributors = contributors.length;
-  const totalPRs = contributors.reduce((sum, c) => sum + c.prs, 0);
-  const totalContributions = contributors.reduce((sum, c) => sum + c.contributions, 0);
-  const totalPoints = contributors.reduce((sum, c) => sum + c.points, 0);
-
-  if (loading) {
-    return (
-      <Loader />
-    );
-  }
-
-  if (error) {
-    return (
-      <div className={`min-h-screen flex items-center justify-center ${
-        isDark ? 'bg-dark-bg-primary' : 'bg-light-bg-primary'
-      }`}>
-         <motion.div 
-    variants={backgroundVariants} 
-    initial="hidden" 
-    animate="visible" 
-    className={`absolute inset-0 -z-8 bg-[size:30px_30px] ${
-      isDark ? 'bg-grid-pattern-dark' : 'bg-grid-pattern-light'
-    }`}
-  >
-    
-    
-  </motion.div>
-        <div className="text-center max-w-md mx-auto p-6">
-          <AlertCircle className="w-16 h-16 text-red-400 mx-auto mb-4" />
-          <h2 className={`text-xl font-bold mb-2 ${
-            isDark ? 'text-dark-text-primary' : 'text-light-text-primary'
-          }`}>
-            Failed to Load Contributors
-          </h2>
-          <p className={`mb-4 ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
-            {error}
-          </p>
-          <button 
-            onClick={fetchContributors}
-            className="bg-primary hover:bg-primary-600 text-white px-6 py-2 rounded-lg transition-colors"
-          >
-            Try Again
-          </button>
-        </div>
-      </div>
-    );
-  }
+  const totalPages = Math.ceil(filteredContributors.length / PAGE_SIZE);
 
   return (
-    <div className={`min-h-screen relative overflow-hidden ${isDark ? 'bg-dark-bg-primary' : 'bg-light-bg-primary'}`}>
-      {/* Header Section */}
-      <motion.div 
-    variants={backgroundVariants} 
-    initial="hidden" 
-    animate="visible" 
-    className={`absolute inset-0 -z-8 bg-[size:30px_30px] ${
-      isDark ? 'bg-grid-pattern-dark' : 'bg-grid-pattern-light'
-    }`}
-  >
-    
-    
-  </motion.div>
+    <div className={`${isDark ? "bg-[#0B1120]" : "bg-gray-50"} min-h-screen py-6 sm:py-12 px-2 sm:px-4`}>
+      <div className="max-w-5xl mx-auto">
+        {/* Header */}
+        <motion.div
+          className="text-center mb-8 sm:mb-12 px-2"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <h1 className={`text-2xl sm:text-4xl font-bold mb-2 sm:mb-4 ${isDark ? "text-blue-400" : "text-primary-600"}`}>
+            GSSoC'25 Leaderboard
+          </h1>
+          <p className={`text-sm sm:text-lg max-w-3xl mx-auto leading-relaxed ${isDark ? "text-gray-300" : "text-gray-600"}`}>
+            Celebrating the amazing contributions from GSSoC'25 participants.
+            Join us in building something incredible together!
+          </p>
+        </motion.div>
 
-      <div className="py-8 sm:py-12 lg:py-16 px-4 sm:px-6 text-center">
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-primary mb-4">
-          GSSoC'25 Leaderboard
-        </h1>
-        <p className={`text-base sm:text-lg max-w-2xl mx-auto ${
-          isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'
-        }`}>
-          Celebrating the amazing contributions from GSSoC'25 participants.
-        </p>
-      </div>
-      {/* Stats Section */}
-      <div className="px-4 sm:px-6 mb-8 sm:mb-12">
-        <div className="max-w-5xl mx-auto">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            <StatCard icon={Users} value={`${totalContributors}+`} label="Contributors" isDark={isDark} />
-            <StatCard icon={GitPullRequest} value={`${totalPRs}+`} label="Pull Requests" isDark={isDark} />
-            <StatCard icon={PlusCircle} value={`${totalContributions}+`} label="Contributions" isDark={isDark} />
-            <StatCard icon={Star} value={`${totalPoints}+`} label="Total Points" isDark={isDark} />
-          </div>
-          <div className='mt-4' >
-          <ContributorsGuideCard isDark={isDark}/>
+        {/* Search Bar */}
+        <div className="flex justify-center mb-6 px-2">
+          <div className={`relative w-full max-w-xs`}>
+            <input
+              type="text"
+              placeholder="Search contributor..."
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1); // Reset to first page on search
+              }}
+              className={`w-full pl-10 pr-4 py-2 rounded-lg border focus:outline-none transition-colors ${
+                isDark
+                  ? "bg-[#232a3a] border-gray-700 text-white placeholder:text-gray-400"
+                  : "bg-white border-gray-300 text-gray-800 placeholder:text-gray-500"
+              }`}
+            />
+            <FaSearch
+              className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${
+                isDark ? "text-gray-400" : "text-gray-500"
+              }`}
+            />
           </div>
         </div>
-      </div>
 
-      {/* Leaderboard */}
-      <div className="px-4 sm:px-6 pb-12">
-        <div className="max-w-5xl mx-auto">
-          {/* Desktop Table */}
-          <div className={`hidden lg:block rounded-xl overflow-hidden border ${gradientBg} ${isDark ? 'border-dark-border' : 'border-light-border'}`}>
-            {/* Table Header */}
-            <div className={`p-4 border-b ${isDark ? 'border-dark-border' : 'border-light-border'}`}>
-              <div className="grid grid-cols-12 gap-4 items-center text-sm font-medium">
-                <div className={`col-span-1 ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>#</div>
-                <div className={`col-span-3 ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>Contributor</div>
-                <div className={`col-span-2 text-center ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>PRs</div>
-                <div className={`col-span-2 text-center ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>Contributions</div>
-                <div className={`col-span-1 text-center ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>Points</div>
-                <div className={`col-span-3 text-center ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>Progress</div>
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6 mb-8 sm:mb-12 px-2">
+          <div className={`${isDark ? "bg-[#1a202e] border-gray-700" : "bg-white border-gray-100"} p-4 sm:p-6 rounded-xl shadow-sm border`}>
+            <div className="flex items-center">
+              <div className={`p-2 sm:p-3 rounded-lg ${isDark ? "bg-blue-900/30 text-blue-400" : "bg-blue-100 text-blue-600"} mr-3 sm:mr-4 flex-shrink-0`}>
+                <FaUsers className="text-lg sm:text-2xl" />
+              </div>
+              <div className="min-w-0">
+                <p className={`text-xs sm:text-sm ${isDark ? "text-gray-400" : "text-gray-500"}`}>
+                  Contributors
+                </p>
+                <p className={`text-lg sm:text-2xl font-bold ${isDark ? "text-white" : "text-gray-800"}`}>
+                  {loading ? "..." : stats.totalContributors}+
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className={`${isDark ? "bg-[#1a202e] border-gray-700" : "bg-white border-gray-100"} p-4 sm:p-6 rounded-xl shadow-sm border`}>
+            <div className="flex items-center">
+              <div className={`p-2 sm:p-3 rounded-lg ${isDark ? "bg-green-900/30 text-green-400" : "bg-green-100 text-green-600"} mr-3 sm:mr-4 flex-shrink-0`}>
+                <FaCode className="text-lg sm:text-2xl" />
+              </div>
+              <div className="min-w-0">
+                <p className={`text-xs sm:text-sm ${isDark ? "text-gray-400" : "text-gray-500"}`}>
+                  Pull Requests
+                </p>
+                <p className={`text-lg sm:text-2xl font-bold ${isDark ? "text-white" : "text-gray-800"}`}>
+                  {loading ? "..." : stats.flooredTotalPRs}+
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className={`${isDark ? "bg-[#1a202e] border-gray-700" : "bg-white border-gray-100"} p-4 sm:p-6 rounded-xl shadow-sm border sm:col-span-2 md:col-span-1`}>
+            <div className="flex items-center">
+              <div className={`p-2 sm:p-3 rounded-lg ${isDark ? "bg-purple-900/30 text-purple-400" : "bg-purple-100 text-purple-600"} mr-3 sm:mr-4 flex-shrink-0`}>
+                <FaStar className="text-lg sm:text-2xl" />
+              </div>
+              <div className="min-w-0">
+                <p className={`text-xs sm:text-sm ${isDark ? "text-gray-400" : "text-gray-500"}`}>
+                  Total Points
+                </p>
+                <p className={`text-lg sm:text-2xl font-bold ${isDark ? "text-white" : "text-gray-800"}`}>
+                  {loading ? "..." : stats.flooredTotalPoints}+
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {loading ? (
+          <SkeletonLoader />
+        ) : (
+          <div className={`${isDark ? "bg-[#1a202e] border-gray-700" : "bg-white border-gray-100"} rounded-xl shadow-sm border overflow-hidden mx-2 sm:mx-0`}>
+            {/* Desktop Table Header - Hidden on mobile */}
+            <div className={`hidden sm:grid grid-cols-12 gap-4 px-6 py-4 ${isDark ? "bg-[#232a3a] border-gray-700" : "bg-gray-50 border-gray-100"} border-b`}>
+              <div className="col-span-1 text-sm font-medium text-gray-500 dark:text-gray-400">
+                #
+              </div>
+              <div className="col-span-6 md:col-span-7 text-sm font-medium text-gray-500 dark:text-gray-400">
+                Contributor
+              </div>
+              <div className="col-span-5 md:col-span-4 text-sm font-medium text-gray-500 dark:text-gray-400 text-right">
+                Contributions
               </div>
             </div>
 
             {/* Contributors List */}
-            <div className={`divide-y ${isDark ? 'divide-dark-border' : 'divide-light-border'}`}>
-              {sortedContributors.map((contributor, index) => (
-                <div key={contributor.username} className={`p-4 transition-colors ${isDark ? 'hover:bg-dark-bg-tertiary' : 'hover:bg-light-bg-tertiary'}`}>
-                  <div className="grid grid-cols-12 gap-4 items-center">
-                    {/* Rank */}
-                    <div className="col-span-1 flex justify-center">
-                      {getRankBadge(index)}
-                    </div>
+            <div className="divide-y divide-gray-100 dark:divide-gray-700">
+              {currentContributors.length === 0 ? (
+                <div className="text-center py-8 text-gray-400">
+                  No contributors found.
+                </div>
+              ) : (
+                currentContributors.map((contributor, index) => (
+                  <motion.div
+                    key={contributor.username}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.03 }}
+                    className={`group ${isDark ? "hover:bg-[#232a3a]" : "hover:bg-gray-50"} transition-colors`}
+                  >
+                    {/* Mobile Layout */}
+                    <div className="sm:hidden p-4">
+                      <div className="flex items-center space-x-3">
+                        {/* Rank Badge */}
+                        <div
+                          className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium flex-shrink-0 ${
+                            index === 0
+                              ? isDark
+                                ? "bg-yellow-900/30 text-yellow-400"
+                                : "bg-yellow-100 text-yellow-600"
+                              : index === 1
+                              ? isDark
+                                ? "bg-gray-800 text-gray-300"
+                                : "bg-gray-100 text-gray-600"
+                              : index === 2
+                              ? isDark
+                                ? "bg-amber-900/30 text-amber-400"
+                                : "bg-amber-100 text-amber-600"
+                              : isDark
+                                ? "bg-gray-800/50 text-gray-400"
+                                : "bg-gray-100 text-gray-500"
+                          }`}
+                        >
+                          {indexOfFirst + index + 1}
+                        </div>
 
-                    {/* Contributor Info */}
-                    <div className="col-span-3 flex items-center space-x-3">
-                      <a href={contributor.profileUrl} target="_blank" rel="noopener noreferrer">
+                        {/* Avatar */}
                         <img
                           src={contributor.avatar}
                           alt={contributor.username}
-                          className="w-10 h-10 rounded-full ring-2 ring-primary/50"
-                          onError={(e) => {
-                            e.target.src = `https://ui-avatars.com/api/?name=${contributor.username}&background=6366f1&color=ffffff`;
-                          }}
+                          className={`w-10 h-10 rounded-full border-2 ${isDark ? "border-gray-700" : "border-white"} shadow-sm flex-shrink-0`}
                         />
-                      </a>
-                      <div>
-                        <a 
-                          href={contributor.profileUrl} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className={`font-medium hover:underline ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}
-                        >
-                          {contributor.username}
-                        </a>
-                        <div className={`text-xs hover:underline ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
-                          <a href={contributor.profileUrl} target="_blank" rel="noopener noreferrer">
-                            View Contributions →
-                          </a>
+
+                        {/* User Info */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                            <div className="min-w-0">
+                              <a
+                                href={contributor.profile}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={`font-medium ${isDark ? "text-white hover:text-blue-400" : "text-gray-900 hover:text-primary-600"} transition-colors text-sm truncate block`}
+                              >
+                                {contributor.username}
+                              </a>
+                              <a
+                                href={`https://github.com/${GITHUB_REPO}/pulls?q=is:pr+author:${contributor.username}+is:merged`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={`text-xs ${isDark ? "text-gray-400 hover:text-blue-400" : "text-gray-500 hover:text-primary-600"} transition-colors block`}
+                              >
+                                View Contributions →
+                              </a>
+                            </div>
+                          </div>
+
+                          {/* Badges */}
+                          <div className="flex items-center space-x-2 mt-2">
+                            <Badge
+                              count={contributor.prs}
+                              label={`PR${contributor.prs !== 1 ? "s" : ""}`}
+                              color={isDark ? "bg-blue-900/30 text-blue-400" : "bg-blue-100 text-blue-700"}
+                            />
+                            <Badge
+                              count={contributor.points}
+                              label="Points"
+                              color={isDark ? "bg-purple-900/30 text-purple-400" : "bg-purple-100 text-purple-700"}
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
 
-                    {/* PRs */}
-                    <div className="col-span-2 text-center">
-                      <div className="text-primary font-semibold">{contributor.prs}</div>
-                    </div>
+                    {/* Desktop Layout - Hidden on mobile */}
+                    <div className="hidden sm:grid grid-cols-12 gap-4 items-center px-6 py-4">
+                      <div className="col-span-1">
+                        <div
+                          className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                            index === 0
+                              ? isDark
+                                ? "bg-yellow-900/30 text-yellow-400"
+                                : "bg-yellow-100 text-yellow-600"
+                              : index === 1
+                              ? isDark
+                                ? "bg-gray-800 text-gray-300"
+                                : "bg-gray-100 text-gray-600"
+                              : index === 2
+                              ? isDark
+                                ? "bg-amber-900/30 text-amber-400"
+                                : "bg-amber-100 text-amber-600"
+                              : isDark
+                                ? "bg-gray-800/50 text-gray-400"
+                                : "bg-gray-100 text-gray-500"
+                          }`}
+                        >
+                          <span className="font-medium">
+                            {indexOfFirst + index + 1}
+                          </span>
+                        </div>
+                      </div>
 
-                    {/* Contributions */}
-                    <div className="col-span-2 text-center">
-                      <div className="text-primary font-semibold">{contributor.contributions}</div>
-                    </div>
+                      <div className="col-span-6 md:col-span-7">
+                        <div className="flex items-center space-x-4">
+                          <img
+                            src={contributor.avatar}
+                            alt={contributor.username}
+                            className={`w-10 h-10 rounded-full border-2 ${isDark ? "border-gray-700" : "border-white"} shadow-sm`}
+                          />
+                          <div>
+                            <a
+                              href={contributor.profile}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={`font-medium ${isDark ? "text-white hover:text-blue-400" : "text-gray-900 hover:text-primary-600"} transition-colors`}
+                            >
+                              {contributor.username}
+                            </a>
+                            <div className="flex items-center mt-1 space-x-2">
+                              <a
+                                href={`https://github.com/${GITHUB_REPO}/pulls?q=is:pr+author:${contributor.username}+is:merged`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={`text-xs ${isDark ? "text-gray-400 hover:text-blue-400" : "text-gray-500 hover:text-primary-600"} transition-colors`}
+                              >
+                                View Contributions →
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
 
-                    {/* Points */}
-                    <div className="col-span-1 text-center">
-                      <div className="text-primary font-semibold">{contributor.points}</div>
-                    </div>
-                     
-                    {/* Progress */}
-                    <div className="col-span-3">
-                      <div className="flex items-center space-x-2">
-                        <div className={`flex-1 rounded-full h-2 overflow-hidden ${isDark ? 'bg-dark-bg-tertiary' : 'bg-light-bg-tertiary'}`}>
-                          <div
-                            className="bg-primary h-full transition-all duration-1000 rounded-full"
-                            style={{ width: `${Math.min(contributor.progress, 100)}%` }}
+                      <div className="col-span-5 md:col-span-4">
+                        <div className="flex items-center justify-end space-x-3">
+                          <Badge
+                            count={contributor.prs}
+                            label={`PR${contributor.prs !== 1 ? "s" : ""}`}
+                            color={isDark ? "bg-blue-900/30 text-blue-400" : "bg-blue-100 text-blue-700"}
+                          />
+                          <Badge
+                            count={contributor.points}
+                            label="Points"
+                            color={isDark ? "bg-purple-900/30 text-purple-400" : "bg-purple-100 text-purple-700"}
                           />
                         </div>
-                        <span className={`text-xs w-10 text-right ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
-                          {contributor.progress}%
-                        </span>
                       </div>
                     </div>
-                  </div>
-                </div>
-              ))}
+                  </motion.div>
+                ))
+              )}
+            </div>
+            
+
+            {/* Pagination Controls */}
+
+            <div className={`flex justify-center items-center gap-2 py-4 border-t ${isDark ? "border-gray-700" : "border-gray-200"}`}>
+              {/* Left Arrow Button (Previous Page) */}
+              <button
+                disabled={currentPage === 1} // Disable if we are already on the first page
+                onClick={() => setCurrentPage((p) => p - 1)} // Go back one page when clicked
+                className={`px-3 py-1 rounded-md ${isDark ? "bg-[#232a3a] text-white" : "bg-gray-50 text-black"} text-sm disabled:opacity-50 flex items-center justify-center mt-5`}
+              >
+                {/* ChevronLeft Icon for Previous */}
+                <ChevronLeft size={16} />
+              </button>
+
+
+
+              {/* Page Numbers Section */}
+              <div className="flex justify-center gap-2 mt-4">
+                {Array.from(
+                  { length: Math.ceil(filteredContributors.length / PAGE_SIZE) }, // Create an array with total number of pages
+                  (_, i) => (
+                    <button
+                      key={i + 1} // Unique key for each page button
+                      onClick={() => setCurrentPage(i + 1)} // Set page number on click
+                      className={`px-3 py-1 rounded ${
+                        currentPage === i + 1
+                          ? isDark
+                            ? "bg-blue-500 text-white"
+                            : "bg-blue-500 text-white"
+                          : isDark
+                            ? "bg-[#232a3a] text-white"
+                            : "bg-gray-200 text-black"
+                      }`}
+                    >
+
+
+
+                      {/* Display the page number */}
+                      {i + 1}
+                    </button>
+
+
+
+                  )
+                )}
+              </div>
+
+              {/* Right Arrow Button (Next Page) */}
+              <button
+                disabled={currentPage === totalPages} // Disable if we are already on the last page
+                onClick={() => setCurrentPage((p) => p + 1)} // Move forward one page when clicked
+                className={`px-3 py-1 rounded-md ${isDark ? "bg-[#232a3a] text-white" : "bg-gray-50 text-black"} text-sm disabled:opacity-50 flex items-center justify-center mt-5`}
+              >
+
+
+
+                {/* ChevronRight Icon for Next */}
+                <ChevronRight size={16} />
+              </button>
+            </div>
+
+
+
+
+            {/* CTA Footer */}
+            <div className={`${isDark ? "bg-[#232a3a] border-gray-700" : "bg-gray-50 border-gray-100"} px-4 sm:px-6 py-4 text-center border-t`}>
+              <p className={`text-xs sm:text-sm ${isDark ? "text-gray-400" : "text-gray-500"} mb-3`}>
+                Want to see your name here? Join GSSoC'25 and start
+                contributing!
+              </p>
+              <a
+                href="https://gssoc.girlscript.tech/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`inline-flex items-center px-3 sm:px-4 py-2 ${isDark ? "bg-blue-500 hover:bg-blue-600" : "bg-primary-600 hover:bg-primary-700"} text-white text-xs sm:text-sm font-medium rounded-lg transition-colors`}
+              >
+                <FaGithub className="mr-1.5 sm:mr-2" /> Join GSSoC'25
+              </a>
             </div>
           </div>
+        )}
 
-          {/* Mobile and Tablet Cards */}
-          <div className="lg:hidden space-y-4">
-            {sortedContributors.map((contributor, index) => (
-              <div key={contributor.username} className={`rounded-xl p-4 border ${gradientBg} ${isDark ? 'border-dark-border' : 'border-light-border'}`}>
-                <div className="flex items-center space-x-3 mb-4">
-                  {getRankBadge(index)}
-                  <a href={contributor.profileUrl} target="_blank" rel="noopener noreferrer">
-                    <img
-                      src={contributor.avatar}
-                      alt={contributor.username}
-                      className="w-12 h-12 rounded-full ring-2 ring-primary/50"
-                      onError={(e) => {
-                        e.target.src = `https://ui-avatars.com/api/?name=${contributor.username}&background=6366f1&color=ffffff`;
-                      }}
-                    />
-                  </a>
-                  <div className="flex-1">
-                    <a 
-                      href={contributor.profileUrl} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className={`font-medium hover:underline block ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}
-                    >
-                      {contributor.username}
-                    </a>
-                    <div className={`text-xs hover:underline ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
-                      <a href={contributor.profileUrl} target="_blank" rel="noopener noreferrer">
-                        View Contributions →
-                      </a>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
-                  <div className="text-center">
-                    <div className="text-primary font-semibold text-lg sm:text-xl">{contributor.prs}</div>
-                    <div className={`text-xs ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>PRs</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-primary font-semibold text-lg sm:text-xl">{contributor.contributions}</div>
-                    <div className={`text-xs ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>Contributions</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-primary font-semibold text-lg sm:text-xl">{contributor.points}</div>
-                    <div className={`text-xs ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>Points</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-primary font-semibold text-lg sm:text-xl">{contributor.progress}%</div>
-                    <div className={`text-xs ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>Progress</div>
-                  </div>
-                </div>
-                
-                <div className="flex items-center space-x-2">
-                  <div className={`flex-1 rounded-full h-2 overflow-hidden ${isDark ? 'bg-dark-bg-tertiary' : 'bg-light-bg-tertiary'}`}>
-                    <div
-                      className="bg-primary h-full transition-all duration-1000 rounded-full"
-                      style={{ width: `${Math.min(contributor.progress, 100)}%` }}
-                    />
-                  </div>
-                  <span className={`text-xs w-10 text-right ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
-                    {contributor.progress}%
-                  </span>
-                </div>
+        {/* About GSSoC Section */}
+        <div className={`mt-8 sm:mt-12 ${isDark ? "bg-[#1a202e] border-gray-700" : "bg-white border-gray-100"} rounded-xl shadow-sm border p-4 sm:p-6 mx-2 sm:mx-0`}>
+          <h2 className={`text-xl sm:text-2xl font-bold mb-4 ${isDark ? "text-white" : "text-gray-800"}`}>
+            About GSSoC'25
+          </h2>
+          <div className="prose dark:prose-invert max-w-none">
+            <p className={`text-sm sm:text-base mb-4 ${isDark ? "text-gray-300" : "text-gray-600"}`}>
+              <strong>GirlScript Summer of Code</strong> is a 3-month long open
+              source program organized by GirlScript Foundation to help
+              beginners get started with Open Source Development.
+            </p>
+            <p className={`text-sm sm:text-base mb-4 ${isDark ? "text-gray-300" : "text-gray-600"}`}>
+              Participants contribute to various projects under the guidance of
+              experienced mentors. This leaderboard tracks the contributions
+              made by GSSoC'25 participants to the AnimateHub project.
+            </p>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mt-6">
+              <div className={`${isDark ? "bg-blue-900/20" : "bg-blue-50"} p-3 sm:p-4 rounded-lg`}>
+                <h3 className={`font-semibold mb-2 text-sm sm:text-base ${isDark ? "text-blue-400" : "text-blue-700"}`}>
+                  How to Participate
+                </h3>
+                <ul className={`text-xs sm:text-sm ${isDark ? "text-gray-300" : "text-gray-600"} space-y-1 sm:space-y-2`}>
+                  <li>• Register on the GSSoC'25 platform</li>
+                  <li>• Join the AnimateHub project</li>
+                  <li>• Start working on beginner-friendly issues</li>
+                  <li>• Submit your pull requests</li>
+                </ul>
               </div>
-            ))}
-          </div>
-
-          {/* Refresh Button */}
-          <div className="text-center mt-8">
-            <button
-              onClick={fetchContributors}
-              className="bg-primary hover:bg-primary-600 text-white px-6 py-3 rounded-lg transition-colors flex items-center mx-auto space-x-2"
-            >
-              <Activity className="w-4 h-4" />
-              <span>Refresh Leaderboard</span>
-            </button>
+              <div className={`${isDark ? "bg-purple-900/20" : "bg-purple-50"} p-3 sm:p-4 rounded-lg`}>
+                <h3 className={`font-semibold mb-2 text-sm sm:text-base ${isDark ? "text-purple-400" : "text-purple-700"}`}>
+                  Contribution Guidelines
+                </h3>
+                <ul className={`text-xs sm:text-sm ${isDark ? "text-gray-300" : "text-gray-600"} space-y-1 sm:space-y-2`}>
+                  <li>• Read our contribution guidelines</li>
+                  <li>• Follow the code of conduct</li>
+                  <li>• Start with good first issues</li>
+                  <li>• Ask for help in the community</li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   );
-};
-
-const StatCard = ({ icon: Icon, value, label, isDark }) => (
-  <div className={`p-4 sm:p-6 rounded-xl text-center border bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-secondary-1000 backdrop-blur-xl ${isDark ? 'border-dark-border' : 'border-light-border'}`}>
-    <Icon className="w-6 h-6 sm:w-8 sm:h-8 text-primary mx-auto mb-2 sm:mb-3" />
-    <div className={`text-xl sm:text-2xl lg:text-3xl font-bold mb-1 ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
-      {value}
-    </div>
-    <div className="text-primary text-xs sm:text-sm">{label}</div>
-  </div>
-);
-const ContributorsGuideCard = ({isDark}) => {
-  return (
-    <Link 
-      to="/contributorGuide"
-      className="block w-full"
-    >
-      <div className={`p-4 sm:p-6 rounded-xl text-center border bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-secondary-1000 backdrop-blur-xl ${isDark ? 'border-dark-border' : 'border-light-border'} `}>
-        <FaBookOpen className="w-6 h-6 sm:w-8 sm:h-8 text-primary mx-auto mb-2 sm:mb-3" />
-        <div className={`text-xl sm:text-2xl lg:text-3xl font-bold mb-1 ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
-          Contributor's Guide
-        </div>
-        <div className="text-primary text-xs sm:text-sm">Learn how to contribute</div>
-      </div>
-    </Link>
-  );
-};
-export default ContributorsPage;
+}
