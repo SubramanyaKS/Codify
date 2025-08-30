@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { FaTrophy, FaStar, FaCode, FaUsers, FaGithub, FaSearch } from "react-icons/fa";
 import { ChevronRight, ChevronLeft } from "lucide-react";
-import { useTheme } from "../context/ThemeContext"; // Add theme context
+import { useTheme } from "../context/ThemeContext"; // Theme context
 
 const GITHUB_REPO = "Roshansuthar1105/Codify";
+const token = import.meta.env.VITE_GITHUB_TOKEN;
 
 // Points configuration for different PR levels
 const POINTS = {
@@ -26,9 +27,9 @@ const Badge = ({ count, label, color }) => (
 );
 
 // Skeleton Loader Component
-const SkeletonLoader = () => (
-  <div className="bg-white dark:bg-[#1a202e] rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
-    <div className="hidden sm:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-[#232a3a] border-b border-gray-100 dark:border-gray-700">
+const SkeletonLoader = ({ isDark }) => (
+  <div className={`${isDark ? "bg-dark-bg-primary border-dark-border" : "bg-white border-gray-100"} rounded-xl shadow-sm border overflow-hidden`}>
+    <div className={`hidden sm:grid grid-cols-12 gap-4 px-6 py-4 ${isDark ? "bg-dark-bg-secondary border-dark-border" : "bg-gray-50 border-gray-100"} border-b`}>
       <div className="col-span-1 text-sm font-medium text-gray-500 dark:text-gray-400">
         #
       </div>
@@ -39,40 +40,40 @@ const SkeletonLoader = () => (
         Contributions
       </div>
     </div>
-    <div className="divide-y divide-gray-100 dark:divide-gray-700">
+    <div className="divide-y divide-gray-100 dark:divide-dark-border">
       {[...Array(10)].map((_, i) => (
         <div
           key={i}
           className="p-4 sm:grid sm:grid-cols-12 sm:gap-4 sm:items-center sm:px-6 sm:py-4"
         >
           <div className="flex items-center space-x-3 sm:hidden">
-            <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse flex-shrink-0"></div>
-            <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse flex-shrink-0"></div>
+            <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-dark-bg-tertiary animate-pulse flex-shrink-0"></div>
+            <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-dark-bg-tertiary animate-pulse flex-shrink-0"></div>
             <div className="flex-1 space-y-2">
-              <div className="w-24 h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+              <div className="w-24 h-4 bg-gray-200 dark:bg-dark-bg-tertiary rounded animate-pulse"></div>
               <div className="flex space-x-2">
-                <div className="w-12 h-6 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"></div>
-                <div className="w-12 h-6 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"></div>
+                <div className="w-12 h-6 bg-gray-200 dark:bg-dark-bg-tertiary rounded-full animate-pulse"></div>
+                <div className="w-12 h-6 bg-gray-200 dark:bg-dark-bg-tertiary rounded-full animate-pulse"></div>
               </div>
             </div>
           </div>
           <div className="hidden sm:contents">
             <div className="col-span-1">
-              <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse"></div>
+              <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-dark-bg-tertiary animate-pulse"></div>
             </div>
             <div className="col-span-6 md:col-span-7">
               <div className="flex items-center space-x-4">
-                <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse"></div>
+                <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-dark-bg-tertiary animate-pulse"></div>
                 <div className="space-y-2">
-                  <div className="w-32 h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
-                  <div className="w-24 h-3 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                  <div className="w-32 h-4 bg-gray-200 dark:bg-dark-bg-tertiary rounded animate-pulse"></div>
+                  <div className="w-24 h-3 bg-gray-200 dark:bg-dark-bg-tertiary rounded animate-pulse"></div>
                 </div>
               </div>
             </div>
             <div className="col-span-5 md:col-span-4">
               <div className="flex items-center justify-end space-x-3">
-                <div className="w-16 h-8 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"></div>
-                <div className="w-16 h-8 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"></div>
+                <div className="w-16 h-8 bg-gray-200 dark:bg-dark-bg-tertiary rounded-full animate-pulse"></div>
+                <div className="w-16 h-8 bg-gray-200 dark:bg-dark-bg-tertiary rounded-full animate-pulse"></div>
               </div>
             </div>
           </div>
@@ -90,8 +91,9 @@ export default function LeaderBoard() {
     totalContributors: 0,
     totalPoints: 0,
   });
-  const [searchTerm, setSearchTerm] = useState(""); // Add search state
-  const { isDark } = useTheme(); // Theme context
+  const [searchTerm, setSearchTerm] = useState("");
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   useEffect(() => {
     const fetchContributorsWithPoints = async () => {
@@ -101,25 +103,17 @@ export default function LeaderBoard() {
         const MAX_PAGES = 10;
         let keepFetching = true;
 
-        // --- GITHUB API NOTE ---
-        // The endpoint used below only returns contributors, not PRs.
-        // To get PRs, you must use the /pulls endpoint and you need a GitHub token for private or high-volume requests.
-        // For public repos and small requests, token is not strictly necessary, but rate limits are very low.
-        // If you want to fetch PRs with labels, you MUST use the /pulls endpoint and pass your token in the headers.
-        // See below for a correct fetch example.
-
         while (keepFetching && page <= MAX_PAGES) {
           const res = await fetch(
             `https://api.github.com/repos/${GITHUB_REPO}/pulls?state=closed&per_page=100&page=${page}`,
             {
               headers: {
                 Accept: "application/vnd.github.v3+json",
+                ...(token ? { Authorization: `Bearer ${token}` } : {}),
               },
             }
           );
           const prs = await res.json();
-
-          console.log(prs)
 
           if (!Array.isArray(prs) || prs.length === 0 || (prs.length === 1 && prs[0].message)) {
             keepFetching = false;
@@ -128,8 +122,6 @@ export default function LeaderBoard() {
 
           prs.forEach((pr) => {
             if (!pr.merged_at) return;
-
-            // PR labels
             const labels = pr.labels.map((l) => l.name.toLowerCase());
             if (!labels.includes("gssoc25")) return;
 
@@ -206,8 +198,17 @@ export default function LeaderBoard() {
 
   const totalPages = Math.ceil(filteredContributors.length / PAGE_SIZE);
 
+  // Gradient backgrounds from Footer.jsx theme
+  const gradientBg = isDark
+    ? "bg-gradient-to-br from-dark-bg-primary to-dark-bg-secondary"
+    : "bg-gradient-to-br from-blue-50 to-indigo-50 backdrop-blur-xl";
+
+  const cardBg = isDark
+    ? "bg-dark-bg-tertiary border-dark-border"
+    : "bg-light-bg-tertiary border-light-border";
+
   return (
-    <div className={`${isDark ? "bg-[#0B1120]" : "bg-gray-50"} min-h-screen py-6 sm:py-12 px-2 sm:px-4`}>
+    <div className={`${isDark ? "bg-dark-bg-primary" : "bg-gray-50"} min-h-screen py-6 sm:py-12 px-2 sm:px-4`}>
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <motion.div
@@ -216,10 +217,12 @@ export default function LeaderBoard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <h1 className={`text-2xl sm:text-4xl font-bold mb-2 sm:mb-4 ${isDark ? "text-blue-400" : "text-primary-600"}`}>
+          <h1
+            className={`text-2xl sm:text-4xl font-bold mb-2 sm:mb-4 text-primary-600`}
+          >
             GSSoC'25 Leaderboard
           </h1>
-          <p className={`text-sm sm:text-lg max-w-3xl mx-auto leading-relaxed ${isDark ? "text-gray-300" : "text-gray-600"}`}>
+          <p className={`text-sm sm:text-lg max-w-3xl mx-auto leading-relaxed ${isDark ? "text-dark-text-secondary" : "text-light-text-secondary"}`}>
             Celebrating the amazing contributions from GSSoC'25 participants.
             Join us in building something incredible together!
           </p>
@@ -234,66 +237,66 @@ export default function LeaderBoard() {
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);
-                setCurrentPage(1); // Reset to first page on search
+                setCurrentPage(1);
               }}
               className={`w-full pl-10 pr-4 py-2 rounded-lg border focus:outline-none transition-colors ${
                 isDark
-                  ? "bg-[#232a3a] border-gray-700 text-white placeholder:text-gray-400"
-                  : "bg-white border-gray-300 text-gray-800 placeholder:text-gray-500"
+                  ? "bg-dark-bg-secondary border-dark-border text-dark-text-primary placeholder:text-dark-text-secondary"
+                  : "bg-white border-light-border text-light-text-primary placeholder:text-light-text-secondary"
               }`}
             />
             <FaSearch
               className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${
-                isDark ? "text-gray-400" : "text-gray-500"
+                isDark ? "text-dark-text-secondary" : "text-light-text-secondary"
               }`}
             />
           </div>
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6 mb-8 sm:mb-12 px-2">
-          <div className={`${isDark ? "bg-[#1a202e] border-gray-700" : "bg-white border-gray-100"} p-4 sm:p-6 rounded-xl shadow-sm border`}>
+        <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6 mb-8 sm:mb-12 px-2`}>
+          <div className={`p-4 sm:p-6 rounded-xl shadow-sm border ${gradientBg} ${isDark ? "border-dark-border" : "border-light-border"}`}>
             <div className="flex items-center">
               <div className={`p-2 sm:p-3 rounded-lg ${isDark ? "bg-blue-900/30 text-blue-400" : "bg-blue-100 text-blue-600"} mr-3 sm:mr-4 flex-shrink-0`}>
                 <FaUsers className="text-lg sm:text-2xl" />
               </div>
               <div className="min-w-0">
-                <p className={`text-xs sm:text-sm ${isDark ? "text-gray-400" : "text-gray-500"}`}>
+                <p className={`text-xs sm:text-sm ${isDark ? "text-dark-text-secondary" : "text-light-text-secondary"}`}>
                   Contributors
                 </p>
-                <p className={`text-lg sm:text-2xl font-bold ${isDark ? "text-white" : "text-gray-800"}`}>
+                <p className={`text-lg sm:text-2xl font-bold ${isDark ? "text-dark-text-primary" : "text-light-text-primary"}`}>
                   {loading ? "..." : stats.totalContributors}+
                 </p>
               </div>
             </div>
           </div>
 
-          <div className={`${isDark ? "bg-[#1a202e] border-gray-700" : "bg-white border-gray-100"} p-4 sm:p-6 rounded-xl shadow-sm border`}>
+          <div className={`p-4 sm:p-6 rounded-xl shadow-sm border ${gradientBg} ${isDark ? "border-dark-border" : "border-light-border"}`}>
             <div className="flex items-center">
               <div className={`p-2 sm:p-3 rounded-lg ${isDark ? "bg-green-900/30 text-green-400" : "bg-green-100 text-green-600"} mr-3 sm:mr-4 flex-shrink-0`}>
                 <FaCode className="text-lg sm:text-2xl" />
               </div>
               <div className="min-w-0">
-                <p className={`text-xs sm:text-sm ${isDark ? "text-gray-400" : "text-gray-500"}`}>
+                <p className={`text-xs sm:text-sm ${isDark ? "text-dark-text-secondary" : "text-light-text-secondary"}`}>
                   Pull Requests
                 </p>
-                <p className={`text-lg sm:text-2xl font-bold ${isDark ? "text-white" : "text-gray-800"}`}>
+                <p className={`text-lg sm:text-2xl font-bold ${isDark ? "text-dark-text-primary" : "text-light-text-primary"}`}>
                   {loading ? "..." : stats.flooredTotalPRs}+
                 </p>
               </div>
             </div>
           </div>
 
-          <div className={`${isDark ? "bg-[#1a202e] border-gray-700" : "bg-white border-gray-100"} p-4 sm:p-6 rounded-xl shadow-sm border sm:col-span-2 md:col-span-1`}>
+          <div className={`p-4 sm:p-6 rounded-xl shadow-sm border ${gradientBg} ${isDark ? "border-dark-border" : "border-light-border"} sm:col-span-2 md:col-span-1`}>
             <div className="flex items-center">
               <div className={`p-2 sm:p-3 rounded-lg ${isDark ? "bg-purple-900/30 text-purple-400" : "bg-purple-100 text-purple-600"} mr-3 sm:mr-4 flex-shrink-0`}>
                 <FaStar className="text-lg sm:text-2xl" />
               </div>
               <div className="min-w-0">
-                <p className={`text-xs sm:text-sm ${isDark ? "text-gray-400" : "text-gray-500"}`}>
+                <p className={`text-xs sm:text-sm ${isDark ? "text-dark-text-secondary" : "text-light-text-secondary"}`}>
                   Total Points
                 </p>
-                <p className={`text-lg sm:text-2xl font-bold ${isDark ? "text-white" : "text-gray-800"}`}>
+                <p className={`text-lg sm:text-2xl font-bold ${isDark ? "text-dark-text-primary" : "text-light-text-primary"}`}>
                   {loading ? "..." : stats.flooredTotalPoints}+
                 </p>
               </div>
@@ -302,26 +305,26 @@ export default function LeaderBoard() {
         </div>
 
         {loading ? (
-          <SkeletonLoader />
+          <SkeletonLoader isDark={isDark} />
         ) : (
-          <div className={`${isDark ? "bg-[#1a202e] border-gray-700" : "bg-white border-gray-100"} rounded-xl shadow-sm border overflow-hidden mx-2 sm:mx-0`}>
+          <div className={`rounded-xl shadow-sm border overflow-hidden mx-2 sm:mx-0 ${gradientBg} ${isDark ? "border-dark-border" : "border-light-border"}`}>
             {/* Desktop Table Header - Hidden on mobile */}
-            <div className={`hidden sm:grid grid-cols-12 gap-4 px-6 py-4 ${isDark ? "bg-[#232a3a] border-gray-700" : "bg-gray-50 border-gray-100"} border-b`}>
-              <div className="col-span-1 text-sm font-medium text-gray-500 dark:text-gray-400">
+            <div className={`hidden sm:grid grid-cols-12 gap-4 px-6 py-4 ${isDark ? "bg-dark-bg-secondary border-dark-border" : "bg-gray-50 border-light-border"} border-b`}>
+              <div className="col-span-1 text-sm font-medium text-dark-text-secondary">
                 #
               </div>
-              <div className="col-span-6 md:col-span-7 text-sm font-medium text-gray-500 dark:text-gray-400">
+              <div className="col-span-6 md:col-span-7 text-sm font-medium text-dark-text-secondary">
                 Contributor
               </div>
-              <div className="col-span-5 md:col-span-4 text-sm font-medium text-gray-500 dark:text-gray-400 text-right">
+              <div className="col-span-5 md:col-span-4 text-sm font-medium text-dark-text-secondary text-right">
                 Contributions
               </div>
             </div>
 
             {/* Contributors List */}
-            <div className="divide-y divide-gray-100 dark:divide-gray-700">
+            <div className="divide-y divide-gray-100 dark:divide-dark-border">
               {currentContributors.length === 0 ? (
-                <div className="text-center py-8 text-gray-400">
+                <div className="text-center py-8 text-dark-text-secondary">
                   No contributors found.
                 </div>
               ) : (
@@ -331,7 +334,7 @@ export default function LeaderBoard() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3, delay: index * 0.03 }}
-                    className={`group ${isDark ? "hover:bg-[#232a3a]" : "hover:bg-gray-50"} transition-colors`}
+                    className={`group ${isDark ? "hover:bg-dark-bg-secondary" : "hover:bg-light-bg-secondary"} transition-colors`}
                   >
                     {/* Mobile Layout */}
                     <div className="sm:hidden p-4">
@@ -352,8 +355,8 @@ export default function LeaderBoard() {
                                 ? "bg-amber-900/30 text-amber-400"
                                 : "bg-amber-100 text-amber-600"
                               : isDark
-                                ? "bg-gray-800/50 text-gray-400"
-                                : "bg-gray-100 text-gray-500"
+                                ? "bg-dark-bg-tertiary text-dark-text-secondary"
+                                : "bg-light-bg-tertiary text-light-text-secondary"
                           }`}
                         >
                           {indexOfFirst + index + 1}
@@ -363,7 +366,7 @@ export default function LeaderBoard() {
                         <img
                           src={contributor.avatar}
                           alt={contributor.username}
-                          className={`w-10 h-10 rounded-full border-2 ${isDark ? "border-gray-700" : "border-white"} shadow-sm flex-shrink-0`}
+                          className={`w-10 h-10 rounded-full border-2 ${isDark ? "border-dark-border" : "border-white"} shadow-sm flex-shrink-0`}
                         />
 
                         {/* User Info */}
@@ -374,7 +377,7 @@ export default function LeaderBoard() {
                                 href={contributor.profile}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className={`font-medium ${isDark ? "text-white hover:text-blue-400" : "text-gray-900 hover:text-primary-600"} transition-colors text-sm truncate block`}
+                                className={`font-medium ${isDark ? "text-dark-text-primary hover:text-blue-400" : "text-light-text-primary hover:text-primary"} transition-colors text-sm truncate block`}
                               >
                                 {contributor.username}
                               </a>
@@ -382,7 +385,7 @@ export default function LeaderBoard() {
                                 href={`https://github.com/${GITHUB_REPO}/pulls?q=is:pr+author:${contributor.username}+is:merged`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className={`text-xs ${isDark ? "text-gray-400 hover:text-blue-400" : "text-gray-500 hover:text-primary-600"} transition-colors block`}
+                                className={`text-xs ${isDark ? "text-dark-text-secondary hover:text-blue-400" : "text-light-text-secondary hover:text-primary"} transition-colors block`}
                               >
                                 View Contributions →
                               </a>
@@ -424,8 +427,8 @@ export default function LeaderBoard() {
                                 ? "bg-amber-900/30 text-amber-400"
                                 : "bg-amber-100 text-amber-600"
                               : isDark
-                                ? "bg-gray-800/50 text-gray-400"
-                                : "bg-gray-100 text-gray-500"
+                                ? "bg-dark-bg-tertiary text-dark-text-secondary"
+                                : "bg-light-bg-tertiary text-light-text-secondary"
                           }`}
                         >
                           <span className="font-medium">
@@ -439,14 +442,14 @@ export default function LeaderBoard() {
                           <img
                             src={contributor.avatar}
                             alt={contributor.username}
-                            className={`w-10 h-10 rounded-full border-2 ${isDark ? "border-gray-700" : "border-white"} shadow-sm`}
+                            className={`w-10 h-10 rounded-full border-2 ${isDark ? "border-dark-border" : "border-white"} shadow-sm`}
                           />
                           <div>
                             <a
                               href={contributor.profile}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className={`font-medium ${isDark ? "text-white hover:text-blue-400" : "text-gray-900 hover:text-primary-600"} transition-colors`}
+                              className={`font-medium ${isDark ? "text-dark-text-primary hover:text-blue-400" : "text-light-text-primary hover:text-primary"} transition-colors`}
                             >
                               {contributor.username}
                             </a>
@@ -455,7 +458,7 @@ export default function LeaderBoard() {
                                 href={`https://github.com/${GITHUB_REPO}/pulls?q=is:pr+author:${contributor.username}+is:merged`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className={`text-xs ${isDark ? "text-gray-400 hover:text-blue-400" : "text-gray-500 hover:text-primary-600"} transition-colors`}
+                                className={`text-xs ${isDark ? "text-dark-text-secondary hover:text-blue-400" : "text-light-text-secondary hover:text-primary"} transition-colors`}
                               >
                                 View Contributions →
                               </a>
@@ -483,74 +486,48 @@ export default function LeaderBoard() {
                 ))
               )}
             </div>
-            
 
             {/* Pagination Controls */}
-
-            <div className={`flex justify-center items-center gap-2 py-4 border-t ${isDark ? "border-gray-700" : "border-gray-200"}`}>
-              {/* Left Arrow Button (Previous Page) */}
+            <div className={`flex justify-center items-center gap-2 py-4 border-t ${isDark ? "border-dark-border" : "border-light-border"}`}>
               <button
-                disabled={currentPage === 1} // Disable if we are already on the first page
-                onClick={() => setCurrentPage((p) => p - 1)} // Go back one page when clicked
-                className={`px-3 py-1 rounded-md ${isDark ? "bg-[#232a3a] text-white" : "bg-gray-50 text-black"} text-sm disabled:opacity-50 flex items-center justify-center mt-5`}
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage((p) => p - 1)}
+                className={`px-3 py-1 rounded-md ${cardBg} text-sm disabled:opacity-50 flex items-center justify-center mt-5`}
               >
-                {/* ChevronLeft Icon for Previous */}
                 <ChevronLeft size={16} />
               </button>
-
-
-
-              {/* Page Numbers Section */}
               <div className="flex justify-center gap-2 mt-4">
                 {Array.from(
-                  { length: Math.ceil(filteredContributors.length / PAGE_SIZE) }, // Create an array with total number of pages
+                  { length: Math.ceil(filteredContributors.length / PAGE_SIZE) },
                   (_, i) => (
                     <button
-                      key={i + 1} // Unique key for each page button
-                      onClick={() => setCurrentPage(i + 1)} // Set page number on click
+                      key={i + 1}
+                      onClick={() => setCurrentPage(i + 1)}
                       className={`px-3 py-1 rounded ${
                         currentPage === i + 1
                           ? isDark
                             ? "bg-blue-500 text-white"
-                            : "bg-blue-500 text-white"
-                          : isDark
-                            ? "bg-[#232a3a] text-white"
-                            : "bg-gray-200 text-black"
+                            : "bg-primary text-white"
+                          : cardBg
                       }`}
                     >
-
-
-
-                      {/* Display the page number */}
                       {i + 1}
                     </button>
-
-
-
                   )
                 )}
               </div>
-
-              {/* Right Arrow Button (Next Page) */}
               <button
-                disabled={currentPage === totalPages} // Disable if we are already on the last page
-                onClick={() => setCurrentPage((p) => p + 1)} // Move forward one page when clicked
-                className={`px-3 py-1 rounded-md ${isDark ? "bg-[#232a3a] text-white" : "bg-gray-50 text-black"} text-sm disabled:opacity-50 flex items-center justify-center mt-5`}
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage((p) => p + 1)}
+                className={`px-3 py-1 rounded-md ${cardBg} text-sm disabled:opacity-50 flex items-center justify-center mt-5`}
               >
-
-
-
-                {/* ChevronRight Icon for Next */}
                 <ChevronRight size={16} />
               </button>
             </div>
 
-
-
-
             {/* CTA Footer */}
-            <div className={`${isDark ? "bg-[#232a3a] border-gray-700" : "bg-gray-50 border-gray-100"} px-4 sm:px-6 py-4 text-center border-t`}>
-              <p className={`text-xs sm:text-sm ${isDark ? "text-gray-400" : "text-gray-500"} mb-3`}>
+            <div className={`px-4 sm:px-6 py-4 text-center border-t ${cardBg}`}>
+              <p className={`text-xs sm:text-sm ${isDark ? "text-dark-text-secondary" : "text-light-text-secondary"} mb-3`}>
                 Want to see your name here? Join GSSoC'25 and start
                 contributing!
               </p>
@@ -558,7 +535,7 @@ export default function LeaderBoard() {
                 href="https://gssoc.girlscript.tech/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`inline-flex items-center px-3 sm:px-4 py-2 ${isDark ? "bg-blue-500 hover:bg-blue-600" : "bg-primary-600 hover:bg-primary-700"} text-white text-xs sm:text-sm font-medium rounded-lg transition-colors`}
+                className={`inline-flex items-center px-3 sm:px-4 py-2 ${isDark ? "bg-blue-500 hover:bg-blue-600" : "bg-primary hover:bg-primary-dark"} text-white text-xs sm:text-sm font-medium rounded-lg transition-colors`}
               >
                 <FaGithub className="mr-1.5 sm:mr-2" /> Join GSSoC'25
               </a>
@@ -567,17 +544,17 @@ export default function LeaderBoard() {
         )}
 
         {/* About GSSoC Section */}
-        <div className={`mt-8 sm:mt-12 ${isDark ? "bg-[#1a202e] border-gray-700" : "bg-white border-gray-100"} rounded-xl shadow-sm border p-4 sm:p-6 mx-2 sm:mx-0`}>
-          <h2 className={`text-xl sm:text-2xl font-bold mb-4 ${isDark ? "text-white" : "text-gray-800"}`}>
+        <div className={`mt-8 sm:mt-12 rounded-xl shadow-sm border p-4 sm:p-6 mx-2 sm:mx-0 ${cardBg}`}>
+          <h2 className={`text-xl sm:text-2xl font-bold mb-4 ${isDark ? "text-dark-text-primary" : "text-light-text-primary"}`}>
             About GSSoC'25
           </h2>
           <div className="prose dark:prose-invert max-w-none">
-            <p className={`text-sm sm:text-base mb-4 ${isDark ? "text-gray-300" : "text-gray-600"}`}>
+            <p className={`text-sm sm:text-base mb-4 ${isDark ? "text-dark-text-secondary" : "text-light-text-secondary"}`}>
               <strong>GirlScript Summer of Code</strong> is a 3-month long open
               source program organized by GirlScript Foundation to help
               beginners get started with Open Source Development.
             </p>
-            <p className={`text-sm sm:text-base mb-4 ${isDark ? "text-gray-300" : "text-gray-600"}`}>
+            <p className={`text-sm sm:text-base mb-4 ${isDark ? "text-dark-text-secondary" : "text-light-text-secondary"}`}>
               Participants contribute to various projects under the guidance of
               experienced mentors. This leaderboard tracks the contributions
               made by GSSoC'25 participants to the AnimateHub project.
@@ -587,7 +564,7 @@ export default function LeaderBoard() {
                 <h3 className={`font-semibold mb-2 text-sm sm:text-base ${isDark ? "text-blue-400" : "text-blue-700"}`}>
                   How to Participate
                 </h3>
-                <ul className={`text-xs sm:text-sm ${isDark ? "text-gray-300" : "text-gray-600"} space-y-1 sm:space-y-2`}>
+                <ul className={`text-xs sm:text-sm ${isDark ? "text-dark-text-secondary" : "text-light-text-secondary"} space-y-1 sm:space-y-2`}>
                   <li>• Register on the GSSoC'25 platform</li>
                   <li>• Join the AnimateHub project</li>
                   <li>• Start working on beginner-friendly issues</li>
@@ -598,7 +575,7 @@ export default function LeaderBoard() {
                 <h3 className={`font-semibold mb-2 text-sm sm:text-base ${isDark ? "text-purple-400" : "text-purple-700"}`}>
                   Contribution Guidelines
                 </h3>
-                <ul className={`text-xs sm:text-sm ${isDark ? "text-gray-300" : "text-gray-600"} space-y-1 sm:space-y-2`}>
+                <ul className={`text-xs sm:text-sm ${isDark ? "text-dark-text-secondary" : "text-light-text-secondary"} space-y-1 sm:space-y-2`}>
                   <li>• Read our contribution guidelines</li>
                   <li>• Follow the code of conduct</li>
                   <li>• Start with good first issues</li>
