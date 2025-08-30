@@ -18,7 +18,7 @@ const languageConfig = {
   python: {
     id: 71,
     extension: python(),
-    defaultCode: `# Read a line from input and print it\nname = input("Enter your name: ")\nprint(f"Hello, {name}!")`,
+    defaultCode: `# Read a line from input and print it\nname = input()\nprint(f"Hello, {name}!")`,
     executionModel: 'server',
   },
   cpp: {
@@ -174,7 +174,7 @@ const UniversalCodePlayground = ({ defaultLanguage = 'javascript', isDark = true
               disabled={isLoading}
               className="px-3 py-1.5 rounded-md bg-green-600 text-white text-sm hover:bg-green-700 disabled:bg-gray-500"
             >
-              {isLoading ? 'Running...' : 'Run ▶'}
+              {isLoading ? 'Running...' : 'Run '}
             </button>
           </div>
           <CodeMirror

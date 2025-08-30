@@ -1,8 +1,8 @@
 import React from 'react';
 // Make sure this path is correct for your project structure
 
-import UniversalCodePlayground from '../components/CodeEditor.';
 
+import UniversalCodePlayground from '../components/CodePlayground';
 const CodeEditor = () => {
   return (
     <div className="w-full px-4 py-8">
@@ -17,7 +17,7 @@ const CodeEditor = () => {
         {/* CHANGED: Passed a new height prop to make the editor taller */}
         <UniversalCodePlayground 
           defaultLanguage="python" 
-          height="100vh" 
+          height="25vw" 
         />
       </div>
     </div>
