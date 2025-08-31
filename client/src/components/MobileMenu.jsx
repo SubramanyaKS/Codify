@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom';
 import { RiCloseLargeLine } from 'react-icons/ri';
 import { FaBook, FaBookReader, FaEnvelope, FaGraduationCap, FaHome, FaRoad, FaSignInAlt, FaSignOutAlt, FaUser, FaUserPlus, FaUserTie } from 'react-icons/fa';
 import { useTheme } from '../context/ThemeContext';
+import { Calendar, ListTodo, X } from "lucide-react";
 
 function MobileMenu({ isOpen, onClose, isLoggedIn, userdata }) {
   const { theme } = useTheme();
@@ -235,6 +236,19 @@ function MobileMenu({ isOpen, onClose, isLoggedIn, userdata }) {
                         <FaUserTie className='text-xl' /> <span className='text-xl'>Admin Panel</span>
                       </NavLink>
                     )}
+
+                    <NavLink
+
+                      to="/calendar"
+                    >
+                       <Calendar className={`w-6 h-6 ${isDark ? "text-white" : "text-black"}`} />
+                    </NavLink>
+
+                    <NavLink
+                     to="/todo"
+                    >
+                      <ListTodo className={`w-6 h-6 ${isDark ? "text-white" : "text-black"}`} />
+                    </NavLink>
 
                     <NavLink
                       to="/logout"

@@ -18,8 +18,8 @@ const PopupProvider = ({ children }) => {
    
 
   // Popup state
-  const [showTodo, setShowTodo] = useState(false);
-  const [showCalendar, setShowCalendar] = useState(false);
+  const [showTodo, setShowTodo] = useState(true);
+  const [showCalendar, setShowCalendar] = useState(true);
 
   // Todo state
   const [todos, setTodos] = useState([]);

@@ -19,13 +19,16 @@ export default function TodoList() {
 
   if (!showTodo) return null;
 
+  // Ensure todos is always an array
+  const todoList = Array.isArray(todos) ? todos : [];
+
   return (
     <div className="p-4 rounded-2xl shadow-card bg-white dark:bg-dark-bg-primary transition-colors w-full">
       {/* Header */}
       <h2 className="text-xl font-bold mb-4 flex justify-between items-center text-black dark:text-dark-text-primary">
         Todo List
         <span className="text-sm text-gray-600 dark:text-dark-text-secondary flex items-center gap-2">
-          <CheckCircle className="text-success" /> {todos.filter(t => t.completed).length} / {todos.length}
+          <CheckCircle className="text-success" /> {todoList.filter(t => t.completed).length} / {todoList.length}
         </span>
       </h2>
 
@@ -34,10 +37,14 @@ export default function TodoList() {
       )}
 
       {/* Todos */}
-      <ul className="space-y-2 max-h-64 overflow-y-auto">
-        <AnimatePresence>
-          {Array.isArray(todos) &&
-            todos.map(todo => (
+      {todoList.length === 0 ? (
+        <p className="text-sm text-gray-500 dark:text-dark-text-secondary text-center py-4">
+          No tasks available.
+        </p>
+      ) : (
+        <ul className="space-y-2 max-h-64 overflow-y-auto">
+          <AnimatePresence>
+            {todoList.map(todo => (
               <motion.li
                 key={todo._id || todo.id}
                 initial={{ opacity: 0, y: -10 }}
@@ -75,8 +82,9 @@ export default function TodoList() {
                 </button>
               </motion.li>
             ))}
-        </AnimatePresence>
-      </ul>
+          </AnimatePresence>
+        </ul>
+      )}
 
       {/* Input + Add Button */}
       <div className="flex gap-2 mt-4">
