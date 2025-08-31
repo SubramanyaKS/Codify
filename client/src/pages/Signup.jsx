@@ -1,4 +1,4 @@
-import React, { useState,useRef } from "react";
+import React, { useState,useRef,useEffect  } from "react";
 import { useAuth } from "../store/auth";
 import { useTheme } from "../context/ThemeContext";
 import { toast } from "react-toastify";
@@ -7,6 +7,7 @@ import { useLoading } from "../components/loadingContext";
 import { FaUser, FaEnvelope, FaPhone, FaLock, FaUserPlus, FaExclamationCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import OtpModal from "../components/OtpModal";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 function Signup() {
   const [user, setUser] = useState({
@@ -27,6 +28,20 @@ function Signup() {
   const [serverOtp, setServerOtp] = useState(null);
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [resending, setResending] = useState(false);
+  const [params] = useSearchParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  //If Google Signup fails
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const error = params.get("error");
+    if (error) {
+      toast.error(error);
+      // Remove query from URL after toast display 
+      navigate("/signup", { replace: true });
+    }
+  }, [location, navigate]);
 
   const validateField = (name, value) => {
     let error = "";
@@ -366,6 +381,23 @@ const handleResendOtp = async () => {
                   <FaUserPlus className="mr-2" />
                   Create Account
                 </button>
+
+                  {/* Google Oauth  */}
+                  <div className="mt-4 flex flex-col items-center gap-3">
+                    <span className={`text-sm ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
+                      Or continue with
+                    </span>
+                    <a
+                      href={`${API}/api/v1/auth/google/signup`} // API pointing to your backend auth route
+                      className="w-full py-3 px-4 flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium transition-all duration-300"
+                    >
+                      <svg className="w-5 h-5" viewBox="0 0 488 512" fill="currentColor">
+                        {/* Google icon path */}
+                        <path d="M488 261.8c0-17.8-1.6-35-4.8-51.7H249v97.9h134.3c-5.8 31.4-23.5 58-50 75.8l80.8 62.8c47-43.5 74-107.2 74-184.8zM249 492c67 0 123.3-22.1 164.3-60l-80.8-62.8c-22.6 15-51.6 23.8-83.5 23.8-64 0-118.1-43.3-137.3-101.4l-82 63.4C57.6 423.8 146.3 492 249 492zM111.2 295.6c-4.9-14.8-7.7-30.6-7.7-46.6 0-16 2.8-31.8 7.7-46.6l-82-63.4C9.5 180 0 214.8 0 249.4c0 34.6 9.5 69.4 29.2 99.4l82-63.2zM249 97.2c35.6 0 67.7 12.3 92.9 36.5l69.7-69.7C372.3 28 316 0 249 0 146.3 0 57.6 68.2 29.2 164.6l82 63.4C130.9 140.5 185 97.2 249 97.2z" />
+                      </svg>
+                      Continue with Google
+                    </a>
+                  </div>
                 
                 <div className="mt-6 text-center">
                   <p className={isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>

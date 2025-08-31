@@ -5,6 +5,8 @@ import bcryptjs from "bcryptjs";
 import { generateOTP } from "../utils/generateOTP.js";
 import { sendEmail } from "../utils/sendEmail.js";
 const otpStore = {}; // temporary in-memory store
+import passport from "passport";
+
 const homePage = async (req, res) => {
   try {
     res.status(202).send("home page");
@@ -165,4 +167,39 @@ const resetPassword = async (req, res) => {
   }
 };
 
-export { homePage, regPage, login, contact , user ,courses ,defcontroller,sendOTP,verifyOTP ,resetPassword,forgotPasswordCheck  };
+//Google Login 
+const googleLogin = async (req, res, next) => {
+  try {
+    passport.authenticate("google-login", (err, data, info) => {
+      if (err) return res.redirect(`${process.env.FRONTEND_URL}/login?error=server_error`);
+      if (!data) {
+        const errorMsg = encodeURIComponent(info?.message || "Authentication failed");
+        return res.redirect(`${process.env.FRONTEND_URL}/login?error=${errorMsg}`);
+      }
+      // Upon Successful Login, Redirect URL with token to frontend
+      const { token } = data;
+      res.redirect(`${process.env.FRONTEND_URL}/oauth/callback?token=${token}`); 
+    })(req, res, next);
+  } catch (error) {
+    return res.redirect(`${process.env.FRONTEND_URL}/login?error=server_error`);
+  }
+};
+//Google Signup
+const googleSignup = async (req, res, next) => {
+  try {
+    passport.authenticate("google-signup", (err, data, info) => {
+      if (err) return res.redirect(`${process.env.FRONTEND_URL}/signup?error=server_error`);
+      if (!data) {
+        const errorMsg = encodeURIComponent(info?.message || "Authentication failed");
+        return res.redirect(`${process.env.FRONTEND_URL}/signup?error=${errorMsg}`); 
+      }
+      // Upon Successful Signup, Redirect URL with token to frontend
+      const { token } = data;
+      res.redirect(`${process.env.FRONTEND_URL}/oauth/callback?token=${token}`);
+    })(req, res, next);
+  } catch (error) {
+    return res.redirect(`${process.env.FRONTEND_URL}/signup?error=server_error`);
+  }
+};
+
+export { homePage, regPage, login, contact , user ,courses ,defcontroller,sendOTP,verifyOTP ,resetPassword,forgotPasswordCheck , googleLogin, googleSignup };
