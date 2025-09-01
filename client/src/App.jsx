@@ -10,8 +10,6 @@ import NavBar from "./components/NavBar";
 import Footer from "./components/Footer.jsx";
 import Loader from "./components/Loader";
 import ScrollToTopButton from "./components/ScrollToTopButton.jsx";
- 
-
 // Lazy loaded components
 const Home = lazy(() => import("./pages/Home"));
 const About = lazy(() => import("./pages/About"));
@@ -29,6 +27,14 @@ const Notes = lazy(() => import("./pages/NotesComponent.jsx"));
 const ContributorsGuide = lazy(() => import("./pages/ContributorGuide.jsx"))
 const ContributorsPage = lazy(()=>import("./components/Contributor.jsx"))
 const Bookmarks = lazy(() => import("./pages/Bookmarks"));
+const JavaScriptFundamentals = lazy(() =>
+  import("./pages/JavaScriptFundamentals")
+);
+const GitNotes = lazy(() => import("./pages/GitNotes"));
+const ReactPattern = lazy(() => import("./pages/ReactPattern.jsx"));
+
+
+const PythonNotes = lazy(() => import("./pages/PythonNotes"));
 
 // Admin components
 const AdminLayout = lazy(() => import("./layouts/AdminLayout"));
@@ -72,6 +78,7 @@ function App() {
                 <Route path="/about" element={<About />} />
                 <Route path="/courses" element={<Courses />} />
                 <Route path="/courses/:courseId" element={<CoursePlayer />} />
+                <Route path="/editor" element={<CodeEditor />} />
                 <Route path="/roadmap" element={<Roadmap />} />
                 <Route path="/bookmarks" element={<Bookmarks />} />
                 <Route path="/contact" element={<ContactUs />} />
@@ -95,6 +102,10 @@ function App() {
                   <Route path="courses/add" element={<AddNewCourse />} />
                   <Route path="courses/update/:id" element={<CourseUpdate />} />
                 </Route>
+                <Route path="/notes/python" element={<PythonNotes />} />
+                <Route path="/notes/javascript" element={<JavaScriptFundamentals />} />
+                <Route path="/notes/git" element={<GitNotes />} />
+               <Route path="/notes/react" element={<ReactPattern />} />
               </Routes>
             </Suspense>
           </main>
