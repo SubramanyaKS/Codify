@@ -219,7 +219,7 @@ const Footer = () => {
             <ul className="flex flex-col gap-3">
               <li className={`${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'} flex items-start`}>
                 <FaMapMarkerAlt className="text-primary mt-1 mr-3 flex-shrink-0" />
-                <span>123 Coding Street, Tech Valley, CA 94043, USA</span>
+               <a href='https://maps.app.goo.gl/aRVCuJ6Xmrqj3X4f8' target="_blank"> <span>Sitapura,Jaipur</span></a>
               </li>
               <li className={`${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'} flex items-center`}>
                 <FaPhone className="text-primary mr-3 flex-shrink-0" />
@@ -227,7 +227,7 @@ const Footer = () => {
               </li>
               <li className={`${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'} flex items-center`}>
                 <FaEnvelope className="text-primary mr-3 flex-shrink-0" />
-                <span>support@codify.com</span>
+                <a href="mailto:rscodify@gmail.com"><span>support@codify.com</span></a>
               </li>
             </ul>
           </div>
