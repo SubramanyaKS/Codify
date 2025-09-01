@@ -6,7 +6,7 @@ import YouTubePlayer from '../components/YouTubePlayer';
 import CodePlayground from '../components/CodePlayground';
 import YouTubePlaylist from '../components/YouTubePlaylist';
 import CourseModules from '../components/CourseModules';
-import UniversalCodePlayground from '../components/CodeEditor.jsx';
+import UniversalCodePlayground from '../components/CodeEditor.';
 import { getYouTubeUrlType, extractPlaylistId, extractVideoId } from '../utils/youtubeUtils';
 import { FaArrowLeft, FaBookmark, FaPlay, FaShare, FaEye, FaThumbsUp } from 'react-icons/fa';
 // import UniversalCodePlayground from '../components/CodePlayground';
@@ -614,15 +614,6 @@ const CoursePlayer = () => {
               </p>
             </div>
 
-            {/* Interactive Code Playground */}
-            <div className={`p-6 rounded-lg ${isDark ? 'bg-dark-bg-secondary' : 'bg-light-bg-secondary'}`}>
-              <h3 className="text-xl font-bold mb-4">Try it yourself</h3>
-              <p className={`mb-3 ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
-                Experiment with them directly below. Write code and click Run to see output instantly.
-              </p>
-              {/* <CodePlayground isDark={isDark} /> */}
-               <UniversalCodePlayground />
-            </div>
 
             {/* Course Modules */}
             {/* <CourseModules
@@ -643,7 +634,16 @@ const CoursePlayer = () => {
             )}
           </div>
         </div>
-      </div>
+          {/* Interactive Code Playground */}
+          <div className={`mt-6 p-6 rounded-lg ${isDark ? 'bg-dark-bg-secondary' : 'bg-light-bg-secondary'}`}>
+              <h3 className="text-xl font-bold mb-4">Try it yourself</h3>
+              <p className={`mb-3 ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
+                Experiment with them directly below. Write code and click Run to see output instantly.
+              </p>
+              {/* <CodePlayground isDark={isDark} /> */}
+               <UniversalCodePlayground />
+            </div>
+      </div>  
     </div>
   );
 };
