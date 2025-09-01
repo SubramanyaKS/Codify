@@ -6,10 +6,10 @@ import YouTubePlayer from '../components/YouTubePlayer';
 import CodePlayground from '../components/CodePlayground';
 import YouTubePlaylist from '../components/YouTubePlaylist';
 import CourseModules from '../components/CourseModules';
-import UniversalCodePlayground from '../components/CodeEditor.';
+import UniversalCodePlayground from '../components/CodeEditor.jsx';
 import { getYouTubeUrlType, extractPlaylistId, extractVideoId } from '../utils/youtubeUtils';
 import { FaArrowLeft, FaBookmark, FaPlay, FaShare, FaEye, FaThumbsUp } from 'react-icons/fa';
-import UniversalCodePlayground from '../components/CodePlayground';
+// import UniversalCodePlayground from '../components/CodePlayground';
 
 const CoursePlayer = () => {
   const { courseId } = useParams();
