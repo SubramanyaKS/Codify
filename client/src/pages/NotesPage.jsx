@@ -1,71 +1,12 @@
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import React, { useState, useEffect, useRef, forwardRef } from "react";
 import { useTheme } from "../context/ThemeContext";
-import { toast } from "react-toastify";
 import { Link } from 'react-router-dom';
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Notes from "../assets/json/notes.json";
 
-const backgroundVariants = {
-    hidden: { opacity: 0, scale: 1.05 },
-    visible: {
-        opacity: 1,
-        scale: 1,
-        transition: {
-            duration: 1,
-            ease: "easeOut"
-        }
-    }
-};
-
-const headerVariants = {
-    hidden: { opacity: 0, y: -20 },
-    visible: {
-        opacity: 1,
-        y: 0,
-        transition: {
-            duration: 0.6,
-            ease: "easeOut"
-        }
-    }
-};
-
-const searchVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-        opacity: 1,
-        y: 0,
-        transition: {
-            duration: 0.5,
-            delay: 0.8,
-            ease: "easeOut"
-        }
-    }
-};
-
-const cardVariants = {
-    hidden: {
-        opacity: 0,
-        y: 30,
-        scale: 0.95
-    },
-    visible: {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        transition: {
-            duration: 0.5,
-            ease: "easeOut"
-        }
-    },
-    hover: {
-        y: -8,
-        scale: 1.02,
-        transition: {
-            duration: 0.2,
-            ease: "easeInOut"
-        }
-    }
-};
+gsap.registerPlugin(ScrollTrigger);
 
 const NotesPage = () => {
     const { theme } = useTheme();
@@ -73,7 +14,7 @@ const NotesPage = () => {
     const [searchQuery, setSearchQuery] = useState('');
 
     // Filter notes based on search query
-    const filteredNotes = Notes.filter(note => 
+    const filteredNotes = Notes.filter(note =>
         note.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         note.content.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -86,54 +27,73 @@ const NotesPage = () => {
         setSearchQuery('');
     };
 
+    // refs for GSAP animations
+    const lineRef = useRef(null);
+    const cardsRef = useRef([]);
+
+    useEffect(() => {
+        // Title line animation
+        gsap.fromTo(
+            lineRef.current,
+            { width: 0 },
+            {
+                width: "100%",
+                duration: 1,
+                ease: "power3.out",
+                delay: 0.8,
+            }
+        );
+
+        // Cards scroll animation
+        cardsRef.current.forEach((card, i) => {
+            gsap.fromTo(
+                card,
+                { opacity: 0, y: 50, scale: 0.95 },
+                {
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                    duration: 0.8,
+                    ease: "power4.out",
+                    scrollTrigger: {
+                        trigger: card,
+                        start: "top 85%",
+                        toggleActions: "play none none reverse",
+                    },
+                    delay: i * 0.1,
+                }
+            );
+        });
+    }, []);
+
     return (
         <div className={`relative min-h-screen-minus-nav overflow-hidden z-10 ${isDark ? 'bg-dark-bg-primary text-dark-text-primary' : 'bg-light-bg-primary text-light-text-primary'}`}>
-            {/* Enhanced Background with gradient overlay */}
-            <motion.div
-                variants={backgroundVariants}
-                initial="hidden"
-                animate="visible"
+            {/* Background */}
+            <div
                 className={`absolute top-0 left-0 w-full h-full -z-10 bg-[size:30px_30px] ${isDark ? 'bg-grid-pattern-dark' : 'bg-grid-pattern-light'}`}
             >
                 <div className={`absolute inset-0 ${isDark ? 'bg-gradient-to-br from-dark-bg-primary/90 via-transparent to-dark-bg-primary/50' : 'bg-gradient-to-br from-light-bg-primary/90 via-transparent to-light-bg-primary/50'}`}></div>
-            </motion.div>
+            </div>
 
             <div className="max-w-7xl mx-auto px-4 py-12 md:py-16 lg:py-20">
-                {/* Enhanced Header Section */}
-                <motion.div
-                    variants={headerVariants}
-                    initial="hidden"
-                    animate="visible"
-                    className="text-center mb-12"
-                >
+                {/* Header Section */}
+                <div className="text-center mb-12">
                     <div className="inline-block">
                         <h1 className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-righteous tracking-wider mb-4 ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
                             Notes & Resources
                         </h1>
-                        <motion.div
-                            initial={{ width: 0 }}
-                            animate={{ width: "100%" }}
-                            transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+                        <div
+                            ref={lineRef}
                             className={`h-1 rounded-full bg-gradient-to-r ${isDark ? 'from-primary via-primary-dark to-primary' : 'from-primary via-primary-dark to-primary'}`}
-                        ></motion.div>
+                        ></div>
                     </div>
-                    <motion.p
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.6, delay: 0.6 }}
-                        className={`mt-6 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}
-                    >
+                    <p className={`mt-6 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
                         Access curated notes, study materials, and resources to enhance your learning journey.
-                    </motion.p>
-                </motion.div>
+                    </p>
+                </div>
 
-                {/* Search Bar Section */}
-                <motion.div
-                    variants={searchVariants}
-                    initial="hidden"
-                    animate="visible"
-                    className="max-w-2xl mx-auto mb-12"
-                >
+                {/* Search Bar */}
+                <div className="max-w-2xl mx-auto mb-12">
                     <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <svg className={`h-5 w-5 ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -175,24 +135,23 @@ const NotesPage = () => {
                             }
                         </motion.p>
                     )}
-                </motion.div>
+                </div>
 
-                {/* Notes Content Section */}
+                {/* Notes Section */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filteredNotes.length > 0 ? (
-                        filteredNotes.map((item, ind) => {
-                            return (
-                                <NotesCard 
-                                    key={ind} 
-                                    isDark={isDark} 
-                                    name={item.name} 
-                                    content={item.content} 
-                                    icon={item.icon} 
-                                    link={item.link}
-                                    searchQuery={searchQuery}
-                                />
-                            )
-                        })
+                        filteredNotes.map((item, ind) => (
+                            <NotesCard
+                                key={ind}
+                                ref={(el) => (cardsRef.current[ind] = el)}
+                                isDark={isDark}
+                                name={item.name}
+                                content={item.content}
+                                icon={item.icon}
+                                link={item.link}
+                                searchQuery={searchQuery}
+                            />
+                        ))
                     ) : searchQuery ? (
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
@@ -223,15 +182,13 @@ const NotesPage = () => {
     );
 };
 
-const NotesCard = ({ isDark, name, content, link, icon, searchQuery }) => {
-    // Function to highlight search terms
+// ForwardRef NotesCard with search highlighting
+const NotesCard = forwardRef(({ isDark, name, content, link, icon, searchQuery }, ref) => {
     const highlightText = (text, query) => {
         if (!query) return text;
-        
         const regex = new RegExp(`(${query})`, 'gi');
         const parts = text.split(regex);
-        
-        return parts.map((part, index) => 
+        return parts.map((part, index) =>
             regex.test(part) ? (
                 <span key={index} className="bg-yellow-200 dark:bg-yellow-600 px-1 rounded">
                     {part}
@@ -241,11 +198,8 @@ const NotesCard = ({ isDark, name, content, link, icon, searchQuery }) => {
     };
 
     return (
-        <motion.div
-            variants={cardVariants}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
+        <div
+            ref={ref}
             className={`group relative p-4 sm:p-6 lg:p-8 rounded-2xl shadow-lg flex flex-col justify-between min-h-[200px] hover:border-b-2 hover:border-r-2 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-secondary-1000 backdrop-blur-xl ${isDark ? 'bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-secondary-1000 backdrop-blur-xl' : 'bg-light-bg-secondary border border-light-border hover:border-primary/50'} transition-all duration-300 overflow-hidden`}
         >
             <span className="text-xl sm:text-2xl">{icon || "⚡"}</span>
@@ -261,8 +215,8 @@ const NotesCard = ({ isDark, name, content, link, icon, searchQuery }) => {
             >
                 View Notes
             </Link>
-        </motion.div>
+        </div>
     );
-}
+});
 
 export default NotesPage;

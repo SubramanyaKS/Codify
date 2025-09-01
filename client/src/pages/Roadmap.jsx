@@ -6,7 +6,7 @@ import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../store/auth"; 
 import { FaRegBookmark, FaBookmark } from "react-icons/fa";
 import { toast } from "react-toastify";
-
+import { Link } from 'react-router-dom';
 const Roadmap = () => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
@@ -353,6 +353,16 @@ const Roadmap = () => {
           >
             Discover comprehensive learning paths designed to guide your journey from beginner to expert in various roles and skills.
           </motion.p>
+          {/* View Bookmarks Button */}
+          <div className="mt-6 flex justify-center">
+            <Link
+              to="/bookmarks"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-primary hover:bg-primary-dark text-white font-semibold rounded-xl transition-colors duration-300 text-sm sm:text-base"
+            >
+              <FaBookmark />
+              View Bookmarks
+            </Link>
+          </div>
         </motion.div>
 
         {/* Enhanced Search Section */}
@@ -528,7 +538,7 @@ const Roadmap = () => {
                   key={`role-${item.roadmap_name}-${index}`}
                   variants={cardVariants}
                   whileHover="hover"
-                  className={`group relative p-4 sm:p-6 lg:p-8 rounded-2xl shadow-lg flex flex-col justify-between min-h-[200px] hover:border-b-2 hover:border-r-2 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-secondary-1000 backdrop-blur-xl ${isDark ? 'bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-secondary-1000 backdrop-blur-xl' : 'bg-light-bg-secondary border border-light-border hover:border-primary/50'} transition-all duration-300 overflow-hidden`}
+                  className={`group relative p-4 sm:p-6 lg:p-8 rounded-2xl shadow-lg flex flex-col justify-between min-h-[200px] c}
                 >
                   {/* Bookmark Button */}
                   <button
