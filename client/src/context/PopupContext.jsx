@@ -19,7 +19,7 @@ const PopupProvider = ({ children }) => {
 
   // Popup state
   const [showTodo, setShowTodo] = useState(true);
-  const [showCalendar, setShowCalendar] = useState(true);
+   
 
   // Todo state
   const [todos, setTodos] = useState([]);
@@ -87,10 +87,8 @@ const PopupProvider = ({ children }) => {
     setShowTodo((prev) => !prev);
     if (!showTodo) setShowCalendar(false);
   };
-  const toggleCalendar = () => {
-    setShowCalendar((prev) => !prev);
-    if (!showCalendar) setShowTodo(false);
-  };
+  
+  
   const closeAll = () => {
     setShowTodo(false);
     setShowCalendar(false);
@@ -100,9 +98,7 @@ const PopupProvider = ({ children }) => {
     <PopupContext.Provider
       value={{
         showTodo,
-        showCalendar,
         toggleTodo,
-        toggleCalendar,
         closeAll,
         todos,
         setTodos,
