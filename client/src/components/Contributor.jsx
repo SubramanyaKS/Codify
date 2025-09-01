@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { FaTrophy, FaStar, FaCode, FaUsers, FaGithub, FaSearch } from "react-icons/fa";
+import { FaTrophy, FaStar, FaCode, FaUsers, FaGithub, FaSearch, FaBook, FaBookOpen } from "react-icons/fa";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import { useTheme } from "../context/ThemeContext"; // Theme context
+import { useNavigate } from 'react-router-dom'
 
 const GITHUB_REPO = "Roshansuthar1105/Codify";
 const token = import.meta.env.VITE_GITHUB_TOKEN;
@@ -94,6 +95,7 @@ export default function LeaderBoard() {
   const [searchTerm, setSearchTerm] = useState("");
   const { theme } = useTheme();
   const isDark = theme === 'dark';
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchContributorsWithPoints = async () => {
@@ -302,6 +304,13 @@ export default function LeaderBoard() {
               </div>
             </div>
           </div>
+        </div>
+
+        <div onClick={()=>navigate('/contributorGuide')} className={`flex items-center justify-center flex-col mb-8 sm:mb-12 px-2 py-10 rounded-xl shadow-sm border ${gradientBg} ${isDark ? "border-dark-border" : "border-light-border"}`}>
+          <div>
+            <FaBookOpen className="h-8 w-8" />
+          </div>
+          <div className="text-2xl">Contributor Guide</div>
         </div>
 
         {loading ? (
