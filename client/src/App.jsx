@@ -45,8 +45,8 @@ const AdminUpdate = lazy(() => import("./layouts/AdminUpdate"));
 const AddNewCourse = lazy(() => import("./layouts/CourseLayout/AddNewCourse.jsx"));
 const CourseUpdate = lazy(() => import("./layouts/CourseLayout/CourseUpdate"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
- 
-  import TodoList from "./components/TodoList.jsx" 
+const CodeEditor = lazy(()=>import("./components/CodeEditor..jsx"))
+  
 const ScrollToTop = ({ children }) => {
   const location = useLocation();
 
@@ -86,7 +86,6 @@ function App() {
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/logout" element={<LogOut />} />
                 <Route path="/contributors" element = {<ContributorsPage/>}/>
-                <Route path="/todo" element = {<TodoList/>}/>
                 <Route path="/notes" element = {<NotesPage/>}/>
                 <Route path="/notes/:subjectname" element = {<Notes/>}/>
                 <Route path="*" element={<ErrorPage />} />

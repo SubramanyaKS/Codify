@@ -6,7 +6,6 @@ import { FaBook, FaBookReader,FaBookmark , FaEnvelope, FaGraduationCap, FaHome, 
 import { useTheme } from '../context/ThemeContext';
 import { FaCode } from "react-icons/fa";  
 
-
 function MobileMenu({ isOpen, onClose, isLoggedIn, userdata }) {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
@@ -275,19 +274,6 @@ function MobileMenu({ isOpen, onClose, isLoggedIn, userdata }) {
                         <FaUserTie className='text-xl' /> <span className='text-xl'>Admin Panel</span>
                       </NavLink>
                     )}
-
-                    <NavLink
-
-                      to="/calendar"
-                    >
-                       <Calendar className={`w-6 h-6 ${isDark ? "text-white" : "text-black"}`} />
-                    </NavLink>
-
-                    <NavLink
-                     to="/todo"
-                    >
-                      <ListTodo className={`w-6 h-6 ${isDark ? "text-white" : "text-black"}`} />
-                    </NavLink>
 
                     <NavLink
                       to="/logout"
