@@ -1,8 +1,20 @@
 import Course from "../models/courseSchema.js";
+import CourseYt from "../models/courseYtSchema.js";
 import UserActivity from "../models/userActivitySchema.js";
 import User from "../models/userSchema.js";
 
 // Get all courses
+const ytCourses = async(req,res)=>{
+    try {
+      const response = await CourseYt.find({});
+      if(!response){
+        return res.status(400).send(`fetching courses error : ${error}`);
+      }
+      res.status(200).json( {data:response});
+    } catch (error) {
+      res.status(400).send(`fetching courses error :  ${error}`);
+    }
+}
 const courses = async(req,res)=>{
     try {
       const response = await Course.find({});
@@ -54,4 +66,4 @@ const enrollCourse = async (req, res) => {
     }
 };
 
-export { courses as default, enrollCourse };
+export { courses as default, enrollCourse, ytCourses };
