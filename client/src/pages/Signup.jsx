@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState,useRef,useEffect  } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "../store/auth";
 import { useTheme } from "../context/ThemeContext";
@@ -8,6 +8,7 @@ import { useLoading } from "../components/loadingContext";
 import { FaUser, FaEnvelope, FaPhone, FaLock, FaUserPlus, FaExclamationCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import OtpModal from "../components/OtpModal";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 function Signup() {
   const [user, setUser] = useState({
@@ -28,6 +29,20 @@ function Signup() {
   const [serverOtp, setServerOtp] = useState(null);
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [resending, setResending] = useState(false);
+  const [params] = useSearchParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  //If Google Signup fails
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const error = params.get("error");
+    if (error) {
+      toast.error(error);
+      // Remove query from URL after toast display 
+      navigate("/signup", { replace: true });
+    }
+  }, [location, navigate]);
 
   const validateField = (name, value) => {
     let error = "";
@@ -344,270 +359,151 @@ function Signup() {
               </motion.div>
             </motion.div>
 
-            {/* Right side - Enhanced Form */}
-            <motion.div 
-              variants={formVariants}
-              initial="hidden"
-              animate="visible"
-              className="w-full lg:w-1/2 flex flex-col items-center"
-            >
-              <motion.div 
-                whileHover={{ y: -5 }}
-                transition={{ duration: 0.3 }}
-                className={`w-full max-w-lg p-8 md:p-10 rounded-2xl shadow-lg backdrop-blur-xl transition-all duration-300 ${
-                  isDark 
-                    ? 'bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-secondary-1000' 
-                    : 'bg-gradient-to-br from-blue-50 to-indigo-50 border border-light-border'
-                }`}
-              >
-                <motion.h2 
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.4 }}
-                  className="text-3xl md:text-4xl font-righteous text-center mb-8 tracking-wide"
+          {/* Right side - Form */}
+          <div className="w-full md:w-1/2 flex flex-col items-center">
+            <div className={`w-full max-w-md p-8 rounded-xl shadow-xl backdrop-blur-sm transition-all duration-300 hover:shadow-2xl ${
+              isDark 
+                ? 'bg-dark-bg-secondary/90 border border-dark-border' 
+                : 'bg-light-bg-secondary/90 border border-light-border'
+            }`}>
+              <h2 className="text-3xl font-righteous text-center mb-8">
+                Create Account
+              </h2>
+              
+              <form onSubmit={handleSubmit} noValidate>
+                <div className="mb-5">
+                  <label
+                    htmlFor="username"
+                    className={`block mb-2 text-sm font-medium ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}
+                  >
+                    <div className="flex items-center">
+                      <FaUser className="mr-2 text-primary" />
+                      Username
+                    </div>
+                  </label>
+                  <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    placeholder="Enter your name"
+                    value={user.username}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    className={`w-full px-4 py-3 rounded-lg ${
+                      isDark 
+                        ? 'bg-dark-bg-tertiary text-dark-text-primary border-dark-border' 
+                        : 'bg-light-bg-tertiary text-light-text-primary border-light-border'
+                    } border focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300 ${errors.username ? 'border-red-500' : ''}`}
+                  />
+                  {errors.username && <p className="text-red-500 text-xs mt-1 flex items-center"><FaExclamationCircle className="mr-1" />{errors.username}</p>}
+                </div>
+
+                <div className="mb-5">
+                  <label
+                    htmlFor="email"
+                    className={`block mb-2 text-sm font-medium ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}
+                  >
+                    <div className="flex items-center">
+                      <FaEnvelope className="mr-2 text-primary" />
+                      Email
+                    </div>
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Enter your email"
+                    value={user.email}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    className={`w-full px-4 py-3 rounded-lg ${
+                      isDark 
+                        ? 'bg-dark-bg-tertiary text-dark-text-primary border-dark-border' 
+                        : 'bg-light-bg-tertiary text-light-text-primary border-light-border'
+                    } border focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300 ${errors.email ? 'border-red-500' : ''}`}
+                  />
+                  {errors.email && <p className="text-red-500 text-xs mt-1 flex items-center"><FaExclamationCircle className="mr-1" />{errors.email}</p>}
+                </div>
+
+                <div className="mb-5">
+                  <label
+                    htmlFor="phone"
+                    className={`block mb-2 text-sm font-medium ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}
+                  >
+                    <div className="flex items-center">
+                      <FaPhone className="mr-2 text-primary" />
+                      Phone Number
+                    </div>
+                  </label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    placeholder="Enter your phone"
+                    value={user.phone}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    className={`w-full px-4 py-3 rounded-lg ${
+                      isDark 
+                        ? 'bg-dark-bg-tertiary text-dark-text-primary border-dark-border' 
+                        : 'bg-light-bg-tertiary text-light-text-primary border-light-border'
+                    } border focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300 ${errors.phone ? 'border-red-500' : ''}`}
+                  />
+                  {errors.phone && <p className="text-red-500 text-xs mt-1 flex items-center"><FaExclamationCircle className="mr-1" />{errors.phone}</p>}
+                </div>
+
+                <div className="mb-6 relative">
+                  <label
+                    htmlFor="password"
+                    className={`block mb-2 text-sm font-medium ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}
+                  >
+                    <div className="flex items-center">
+                      <FaLock className="mr-2 text-primary" />
+                      Password
+                    </div>
+                  </label>
+                  <input
+                    type={show ? "text" : "password"}
+                    id="password"
+                    name="password"
+                    autoComplete="new-password"
+                    placeholder="Enter your password"
+                    value={user.password}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    className={`w-full px-4 py-3 rounded-lg ${
+                      isDark 
+                        ? 'bg-dark-bg-tertiary text-dark-text-primary border-dark-border' 
+                        : 'bg-light-bg-tertiary text-light-text-primary border-light-border'
+                    } border focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300 ${errors.password ? 'border-red-500' : ''}`}
+                  />
+                  {errors.password && <p className="text-red-500 text-xs mt-1 flex items-center"><FaExclamationCircle className="mr-1" />{errors.password}</p>}
+                  <div
+                    className="absolute right-3 top-[42px] cursor-pointer text-xl p-1 rounded-full hover:bg-primary/10 transition-colors"
+                    onClick={() => setShow(!show)}
+                  >
+                    {show ? <AiOutlineEyeInvisible className="text-primary" /> : <AiOutlineEye className="text-primary" />}
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full py-3 px-4 bg-primary hover:bg-primary-dark text-white font-medium rounded-lg transition-all duration-300 transform hover:scale-[1.02] flex items-center justify-center"
                 >
+                  <FaUserPlus className="mr-2" />
                   Create Account
-                </motion.h2>
+                </button>
                 
-                <form onSubmit={handleSubmit} noValidate className="space-y-6">
-                  {/* Enhanced Username Field */}
-                  <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.6, delay: 0.5 }}
-                  >
-                    <label
-                      htmlFor="username"
-                      className={`block mb-3 text-sm font-semibold ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}
-                    >
-                      <div className="flex items-center">
-                        <FaUser className="mr-3 text-primary text-lg" />
-                        Username
-                      </div>
-                    </label>
-                    <motion.div
-                      variants={inputVariants}
-                      whileFocus="focus"
-                      className="relative"
-                    >
-                      <input
-                        type="text"
-                        id="username"
-                        name="username"
-                        placeholder="Enter your username"
-                        value={user.username}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        className={`w-full px-4 py-4 text-lg rounded-xl ${
-                          isDark 
-                            ? 'bg-dark-bg-tertiary/50 text-dark-text-primary border-dark-border placeholder-dark-text-secondary' 
-                            : 'bg-light-bg-tertiary/50 text-light-text-primary border-light-border placeholder-light-text-secondary'
-                        } border-2 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-300 ${errors.username ? 'border-red-500' : ''}`}
-                      />
-                      {errors.username && (
-                        <motion.p 
-                          initial={{ opacity: 0, y: -10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          className="text-red-500 text-sm mt-2 flex items-center"
-                        >
-                          <FaExclamationCircle className="mr-2" />
-                          {errors.username}
-                        </motion.p>
-                      )}
-                    </motion.div>
-                  </motion.div>
-
-                  {/* Enhanced Email Field */}
-                  <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.6, delay: 0.6 }}
-                  >
-                    <label
-                      htmlFor="email"
-                      className={`block mb-3 text-sm font-semibold ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}
-                    >
-                      <div className="flex items-center">
-                        <FaEnvelope className="mr-3 text-primary text-lg" />
-                        Email Address
-                      </div>
-                    </label>
-                    <motion.div
-                      variants={inputVariants}
-                      whileFocus="focus"
-                      className="relative"
-                    >
-                      <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        placeholder="Enter your email address"
-                        value={user.email}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        className={`w-full px-4 py-4 text-lg rounded-xl ${
-                          isDark 
-                            ? 'bg-dark-bg-tertiary/50 text-dark-text-primary border-dark-border placeholder-dark-text-secondary' 
-                            : 'bg-light-bg-tertiary/50 text-light-text-primary border-light-border placeholder-light-text-secondary'
-                        } border-2 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-300 ${errors.email ? 'border-red-500' : ''}`}
-                      />
-                      {errors.email && (
-                        <motion.p 
-                          initial={{ opacity: 0, y: -10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          className="text-red-500 text-sm mt-2 flex items-center"
-                        >
-                          <FaExclamationCircle className="mr-2" />
-                          {errors.email}
-                        </motion.p>
-                      )}
-                    </motion.div>
-                  </motion.div>
-
-                  {/* Enhanced Phone Field */}
-                  <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.6, delay: 0.7 }}
-                  >
-                    <label
-                      htmlFor="phone"
-                      className={`block mb-3 text-sm font-semibold ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}
-                    >
-                      <div className="flex items-center">
-                        <FaPhone className="mr-3 text-primary text-lg" />
-                        Phone Number
-                      </div>
-                    </label>
-                    <motion.div
-                      variants={inputVariants}
-                      whileFocus="focus"
-                      className="relative"
-                    >
-                      <input
-                        type="tel"
-                        id="phone"
-                        name="phone"
-                        placeholder="Enter your phone number"
-                        value={user.phone}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        className={`w-full px-4 py-4 text-lg rounded-xl ${
-                          isDark 
-                            ? 'bg-dark-bg-tertiary/50 text-dark-text-primary border-dark-border placeholder-dark-text-secondary' 
-                            : 'bg-light-bg-tertiary/50 text-light-text-primary border-light-border placeholder-light-text-secondary'
-                        } border-2 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-300 ${errors.phone ? 'border-red-500' : ''}`}
-                      />
-                      {errors.phone && (
-                        <motion.p 
-                          initial={{ opacity: 0, y: -10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          className="text-red-500 text-sm mt-2 flex items-center"
-                        >
-                          <FaExclamationCircle className="mr-2" />
-                          {errors.phone}
-                        </motion.p>
-                      )}
-                    </motion.div>
-                  </motion.div>
-
-                  {/* Enhanced Password Field */}
-                  <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.6, delay: 0.8 }}
-                    className="relative"
-                  >
-                    <label
-                      htmlFor="password"
-                      className={`block mb-3 text-sm font-semibold ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}
-                    >
-                      <div className="flex items-center">
-                        <FaLock className="mr-3 text-primary text-lg" />
-                        Password
-                      </div>
-                    </label>
-                    <motion.div
-                      variants={inputVariants}
-                      whileFocus="focus"
-                      className="relative"
-                    >
-                      <input
-                        type={show ? "text" : "password"}
-                        id="password"
-                        name="password"
-                        autoComplete="new-password"
-                        placeholder="Create a secure password"
-                        value={user.password}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        className={`w-full px-4 py-4 pr-12 text-lg rounded-xl ${
-                          isDark 
-                            ? 'bg-dark-bg-tertiary/50 text-dark-text-primary border-dark-border placeholder-dark-text-secondary' 
-                            : 'bg-light-bg-tertiary/50 text-light-text-primary border-light-border placeholder-light-text-secondary'
-                        } border-2 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-300 ${errors.password ? 'border-red-500' : ''}`}
-                      />
-                      <motion.button
-                        type="button"
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        className="absolute right-4 top-1/2 transform -translate-y-1/2 text-primary hover:text-primary-dark transition-colors duration-200"
-                        onClick={() => setShow(!show)}
-                      >
-                        {show ? <AiOutlineEyeInvisible size={24} /> : <AiOutlineEye size={24} />}
-                      </motion.button>
-                      {errors.password && (
-                        <motion.p 
-                          initial={{ opacity: 0, y: -10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          className="text-red-500 text-sm mt-2 flex items-center"
-                        >
-                          <FaExclamationCircle className="mr-2" />
-                          {errors.password}
-                        </motion.p>
-                      )}
-                    </motion.div>
-                  </motion.div>
-
-                  {/* Enhanced Submit Button */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.9 }}
-                  >
-                    <motion.button
-                      type="submit"
-                      variants={buttonVariants}
-                      initial="initial"
-                      whileHover="hover"
-                      whileTap="tap"
-                      className="w-full py-4 px-6 bg-gradient-to-r from-primary to-primary-dark hover:from-primary-dark hover:to-primary text-white font-semibold text-lg rounded-xl transition-all duration-300 transform focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 flex items-center justify-center shadow-lg"
-                    >
-                      <FaUserPlus className="mr-3" />
-                      Create Account
-                    </motion.button>
-                  </motion.div>
-                  
-                  {/* Enhanced Login Link */}
-                  <motion.div 
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.6, delay: 1.0 }}
-                    className="mt-8 text-center"
-                  >
-                    <p className={`text-lg ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
-                      Already have an account?{' '}
-                      <Link 
-                        to="/login" 
-                        className="text-primary hover:text-primary-dark font-semibold hover:underline transition-colors duration-200"
-                      >
-                        Sign in here
-                      </Link>
-                    </p>
-                  </motion.div>
-                </form>
-              </motion.div>
-            </motion.div>
+                <div className="mt-6 text-center">
+                  <p className={isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
+                    Already have an account?{' '}
+                    <Link to="/login" className="text-primary hover:underline font-medium">
+                      Login
+                    </Link>
+                  </p>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       </div>

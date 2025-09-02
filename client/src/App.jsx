@@ -27,6 +27,7 @@ const Notes = lazy(() => import("./pages/NotesComponent.jsx"));
 const ContributorsGuide = lazy(() => import("./pages/ContributorGuide.jsx"))
 const ContributorsPage = lazy(()=>import("./components/Contributor.jsx"))
 const Bookmarks = lazy(() => import("./pages/Bookmarks"));
+const  OAuthCallback = lazy(() => import("./pages/OAuthCallback"));
 const JavaScriptFundamentals = lazy(() =>
   import("./pages/JavaScriptFundamentals")
 );
@@ -74,6 +75,7 @@ function App() {
             }>
               <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="/oauth/callback" element={<OAuthCallback />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/courses" element={<Courses />} />
                 <Route path="/courses/:courseId" element={<CoursePlayer />} />
