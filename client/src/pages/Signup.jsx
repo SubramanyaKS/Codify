@@ -1,4 +1,5 @@
 import React, { useState,useRef,useEffect  } from "react";
+import { motion } from "framer-motion";
 import { useAuth } from "../store/auth";
 import { useTheme } from "../context/ThemeContext";
 import { toast } from "react-toastify";
@@ -101,151 +102,262 @@ function Signup() {
     });
   };
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  const newErrors = {};
-  Object.keys(user).forEach((key) => {
-    const error = validateField(key, user[key]);
-    if (error) newErrors[key] = error;
-  });
-
-  setErrors(newErrors);
-  if (Object.keys(newErrors).length > 0) {
-    toast.error("Please fix the errors before submitting.");
-    return;
-  }
-
-  // Save user data in localStorage for later registration
-  localStorage.setItem("signupData", JSON.stringify(user));
-
-  try {
-    setIsLoading(true);
-    const response = await fetch(`${API}/api/v1/auth/send-otp`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: user.email }),
+    const newErrors = {};
+    Object.keys(user).forEach((key) => {
+      const error = validateField(key, user[key]);
+      if (error) newErrors[key] = error;
     });
-    const data = await response.json();
 
-    if (response.ok) {
-      setServerOtp(data.otp); 
-      setShowOtpModal(true);
-      toast.success("OTP sent to your email!");
-    } else {
-      toast.error(data.message || "Failed to send OTP");
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) {
+      toast.error("Please fix the errors before submitting.");
+      return;
     }
-  } catch (err) {
-    console.error(err);
-    toast.error("Something went wrong!");
-  } finally {
-    setIsLoading(false);
-  }
-};
-//verify otp
-const verifyOtp = async () => {
-  try {
-    setIsLoading(true);
-    const otpString = otp.join(""); //convert the otp to string which backend expects
-    const response = await fetch(`${API}/api/v1/auth/verify-otp`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: user.email, otp: otpString }),
-    });
-    const result = await response.json();
 
-    if (response.ok) {
-      toast.success("OTP verified successfully!");
+    // Save user data in localStorage for later registration
+    localStorage.setItem("signupData", JSON.stringify(user));
 
-      // Now register the user
-      const storedData = JSON.parse(localStorage.getItem("signupData"));
-      const registerResponse = await fetch(`${API}/api/v1/auth/register`, {
+    try {
+      setIsLoading(true);
+      const response = await fetch(`${API}/api/v1/auth/send-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(storedData),
+        body: JSON.stringify({ email: user.email }),
       });
+      const data = await response.json();
 
-      const registerResult = await registerResponse.json();
-      if (registerResponse.ok) {
-        storeTokenInLS(registerResult.token);
-        toast.success("Registration successful!");
-        localStorage.removeItem("signupData");
-        window.location.href = "/";
+      if (response.ok) {
+        setServerOtp(data.otp); 
+        setShowOtpModal(true);
+        toast.success("OTP sent to your email!");
       } else {
-        toast.error(registerResult.message || "Registration failed!");
+        toast.error(data.message || "Failed to send OTP");
       }
-    } else {
-      toast.error(result.message || "Invalid OTP");
+    } catch (err) {
+      console.error(err);
+      toast.error("Something went wrong!");
+    } finally {
+      setIsLoading(false);
     }
-  } catch (error) {
-    console.error(error);
-    toast.error("Error while verifying OTP");
-  } finally {
-    setIsLoading(false);
-    setShowOtpModal(false);
-  }
-};
-// //resend otp
-const handleResendOtp = async () => {
-  try {
-    setResending(true);
-    const res = await fetch(`${API}/api/v1/auth/send-otp`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: user.email }),
-    });
-    const data = await res.json();
-    if (res.ok) {
-      toast.success("OTP resent!");
-      setServerOtp(data.otp);
-    } else {
-      toast.error(data.message || "Failed to resend OTP");
-    }
-  } catch (error) {
-    toast.error("Error resending OTP");
-  } finally {
-    setResending(false);
-  }
-};
+  };
 
+  //verify otp
+  const verifyOtp = async () => {
+    try {
+      setIsLoading(true);
+      const otpString = otp.join(""); //convert the otp to string which backend expects
+      const response = await fetch(`${API}/api/v1/auth/verify-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: user.email, otp: otpString }),
+      });
+      const result = await response.json();
+
+      if (response.ok) {
+        toast.success("OTP verified successfully!");
+
+        // Now register the user
+        const storedData = JSON.parse(localStorage.getItem("signupData"));
+        const registerResponse = await fetch(`${API}/api/v1/auth/register`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(storedData),
+        });
+
+        const registerResult = await registerResponse.json();
+        if (registerResponse.ok) {
+          storeTokenInLS(registerResult.token);
+          toast.success("Registration successful!");
+          localStorage.removeItem("signupData");
+          window.location.href = "/";
+        } else {
+          toast.error(registerResult.message || "Registration failed!");
+        }
+      } else {
+        toast.error(result.message || "Invalid OTP");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Error while verifying OTP");
+    } finally {
+      setIsLoading(false);
+      setShowOtpModal(false);
+    }
+  };
+
+  // //resend otp
+  const handleResendOtp = async () => {
+    try {
+      setResending(true);
+      const res = await fetch(`${API}/api/v1/auth/send-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: user.email }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        toast.success("OTP resent!");
+        setServerOtp(data.otp);
+      } else {
+        toast.error(data.message || "Failed to resend OTP");
+      }
+    } catch (error) {
+      toast.error("Error resending OTP");
+    } finally {
+      setResending(false);
+    }
+  };
+
+  // Animation variants matching Roadmap component
+  const backgroundVariants = {
+    hidden: { opacity: 0, scale: 1.05 },
+    visible: { 
+      opacity: 1, 
+      scale: 1,
+      transition: {
+        duration: 1,
+        ease: "easeOut"
+      }
+    }
+  };
+
+  const headerVariants = {
+    hidden: { opacity: 0, y: -30 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: {
+        duration: 0.8,
+        ease: "easeOut"
+      }
+    }
+  };
+
+  const formVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: {
+        duration: 0.8,
+        delay: 0.3,
+        ease: "easeOut"
+      }
+    }
+  };
+
+  const inputVariants = {
+    focus: {
+      scale: 1.02,
+      transition: { duration: 0.2 }
+    }
+  };
+
+  const buttonVariants = {
+    initial: { scale: 1 },
+    hover: { 
+      scale: 1.05,
+      transition: { duration: 0.2 }
+    },
+    tap: { 
+      scale: 0.98,
+      transition: { duration: 0.1 }
+    }
+  };
+
+  const illustrationVariants = {
+    hidden: { opacity: 0, x: -50 },
+    visible: { 
+      opacity: 1, 
+      x: 0,
+      transition: {
+        duration: 0.8,
+        delay: 0.5,
+        ease: "easeOut"
+      }
+    },
+    float: {
+      y: [-10, 10, -10],
+      transition: {
+        duration: 6,
+        repeat: Infinity,
+        ease: "easeInOut"
+      }
+    }
+  };
 
   return (
-  <>
-    <div className={`relative min-h-screen-minus-nav flex items-center justify-center p-4 md:p-8 overflow-hidden z-10 ${
-      isDark ? 'bg-dark-bg-primary text-dark-text-primary' : 'bg-light-bg-primary text-light-text-primary'
-    }`}>
-      {/* Animated background pattern */}
-      <div className={`absolute top-0 left-0 w-full h-full -z-10 bg-[size:30px_30px] opacity-30 ${
-        isDark ? 'bg-grid-pattern-dark' : 'bg-grid-pattern-light'
-      }`}></div>
-      
-      {/* Decorative elements */}
-      <div className="absolute top-20 left-20 w-72 h-72 rounded-full bg-primary/10 blur-3xl -z-5"></div>
-      <div className="absolute bottom-20 right-20 w-72 h-72 rounded-full bg-primary/10 blur-3xl -z-5"></div>
+    <>
+      <div className={`relative min-h-screen-minus-nav overflow-hidden z-10 ${isDark ? 'bg-dark-bg-primary text-dark-text-primary' : 'bg-light-bg-primary text-light-text-primary'}`}>
+        {/* Enhanced Background with gradient overlay - matching Roadmap */}
+        <motion.div 
+          variants={backgroundVariants}
+          initial="hidden"
+          animate="visible"
+          className={`absolute top-0 left-0 w-full h-full -z-10 bg-[size:30px_30px] ${isDark ? 'bg-grid-pattern-dark' : 'bg-grid-pattern-light'}`}
+        >
+          <div className={`absolute inset-0 ${isDark ? 'bg-gradient-to-br from-dark-bg-primary/90 via-transparent to-dark-bg-primary/50' : 'bg-gradient-to-br from-light-bg-primary/90 via-transparent to-light-bg-primary/50'}`}></div>
+        </motion.div>
 
-      <div className="w-full max-w-6xl mx-auto">
-        <div className="w-full flex flex-col md:flex-row items-center justify-between gap-8 md:gap-16">
-          {/* Left side - Image and text */}
-          <div className="w-full md:w-1/2 flex flex-col items-center md:items-start">
-            <h1 className="text-4xl md:text-5xl font-righteous text-center md:text-left tracking-wider mb-6">
-              <span className="text-primary">Join</span> Our Community
-            </h1>
+        {/* Decorative floating elements */}
+        <div className="absolute top-20 left-20 w-72 h-72 rounded-full bg-primary/10 blur-3xl -z-5"></div>
+        <div className="absolute bottom-20 right-20 w-72 h-72 rounded-full bg-primary/10 blur-3xl -z-5"></div>
+
+        <div className="max-w-7xl mx-auto px-4 py-12 md:py-16 lg:py-20">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-20">
             
-            <p className={`text-center md:text-left mb-8 max-w-md ${
-              isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'
-            }`}>
-              Create your account today and start your learning journey with access to premium courses and resources.
-            </p>
-            
-            <div className="relative w-full max-w-md hidden md:block"> 
-              <img
-                src="signup.svg"
-                alt="Signup illustration"
-                className="w-full drop-shadow-xl animate-float"
-              />
-              <div className="absolute -bottom-4 left-0 w-full h-8 bg-gradient-to-t from-dark-bg-primary/30 to-transparent blur-sm"></div>
-            </div>
-          </div>
+            {/* Left side - Enhanced header and illustration */}
+            <motion.div 
+              variants={illustrationVariants}
+              initial="hidden"
+              animate="visible"
+              className="w-full lg:w-1/2 flex flex-col items-center lg:items-start"
+            >
+              {/* Enhanced Header matching Roadmap style */}
+              <motion.div 
+                variants={headerVariants}
+                initial="hidden"
+                animate="visible"
+                className="text-center lg:text-left mb-8"
+              >
+                <div className="inline-block">
+                  <h1 className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-righteous tracking-wider mb-4 ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
+                    <span className="text-primary">Join</span> Our Community
+                  </h1>
+                  <motion.div 
+                    initial={{ width: 0 }}
+                    animate={{ width: "100%" }}
+                    transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
+                    className={`h-1 rounded-full bg-gradient-to-r ${isDark ? 'from-primary via-primary-dark to-primary' : 'from-primary via-primary-dark to-primary'}`}
+                  ></motion.div>
+                </div>
+                <motion.p 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.6, delay: 0.8 }}
+                  className={`mt-6 text-lg md:text-xl max-w-2xl leading-relaxed ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}
+                >
+                  Create your account today and start your learning journey with access to premium courses and resources that will define your future in tech.
+                </motion.p>
+              </motion.div>
+              
+              {/* Enhanced illustration with animation */}
+              <motion.div 
+                variants={illustrationVariants}
+                animate="float"
+                className="relative w-full max-w-md hidden lg:block"
+              > 
+                <img
+                  src="signup.svg"
+                  alt="Signup illustration"
+                  className="w-full drop-shadow-2xl"
+                />
+                <div className="absolute -bottom-4 left-0 w-full h-8 bg-gradient-to-t from-dark-bg-primary/30 to-transparent blur-sm"></div>
+              </motion.div>
+            </motion.div>
 
           {/* Right side - Form */}
           <div className="w-full md:w-1/2 flex flex-col items-center">
@@ -381,23 +493,6 @@ const handleResendOtp = async () => {
                   <FaUserPlus className="mr-2" />
                   Create Account
                 </button>
-
-                  {/* Google Oauth  */}
-                  <div className="mt-4 flex flex-col items-center gap-3">
-                    <span className={`text-sm ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
-                      Or continue with
-                    </span>
-                    <a
-                      href={`${API}/api/v1/auth/google/signup`} // API pointing to your backend auth route
-                      className="w-full py-3 px-4 flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium transition-all duration-300"
-                    >
-                      <svg className="w-5 h-5" viewBox="0 0 488 512" fill="currentColor">
-                        {/* Google icon path */}
-                        <path d="M488 261.8c0-17.8-1.6-35-4.8-51.7H249v97.9h134.3c-5.8 31.4-23.5 58-50 75.8l80.8 62.8c47-43.5 74-107.2 74-184.8zM249 492c67 0 123.3-22.1 164.3-60l-80.8-62.8c-22.6 15-51.6 23.8-83.5 23.8-64 0-118.1-43.3-137.3-101.4l-82 63.4C57.6 423.8 146.3 492 249 492zM111.2 295.6c-4.9-14.8-7.7-30.6-7.7-46.6 0-16 2.8-31.8 7.7-46.6l-82-63.4C9.5 180 0 214.8 0 249.4c0 34.6 9.5 69.4 29.2 99.4l82-63.2zM249 97.2c35.6 0 67.7 12.3 92.9 36.5l69.7-69.7C372.3 28 316 0 249 0 146.3 0 57.6 68.2 29.2 164.6l82 63.4C130.9 140.5 185 97.2 249 97.2z" />
-                      </svg>
-                      Continue with Google
-                    </a>
-                  </div>
                 
                 <div className="mt-6 text-center">
                   <p className={isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
@@ -412,7 +507,7 @@ const handleResendOtp = async () => {
           </div>
         </div>
       </div>
-    </div>
+
       <OtpModal
         show={showOtpModal}
         isDark={isDark}
@@ -423,8 +518,7 @@ const handleResendOtp = async () => {
         handleResendOtp={handleResendOtp}
         resending={resending}
       />
-  </>
-
+    </>
   );
 }
 
