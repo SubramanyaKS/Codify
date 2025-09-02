@@ -13,8 +13,12 @@ import progressRouter from './routes/progressRoute.js';
 import activityRouter from './routes/activityRoute.js';
 import LearderBoardRouter from './routes/LeaderBoardRoute.js'
 import bookmarkRouter from './routes/bookmarkRoute.js';
-//@ts-ignore
+ 
 import todoRouter from "./routes/TodoRoute.js"
+
+import session from "express-session";
+import passport from "passport";
+import { configurePassport } from "./config/passport.js";
 dotenv.config();
 const app= express();
 // Allow all origins
@@ -35,6 +39,16 @@ app.use(cors(corsOption));
 // app.use(cors(corsOption));
 // https://bitwise-backend.onrender.com/api/v1/auth/login
 app.use(express.json());
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "keyboard cat",
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
+configurePassport();
 app.use("/api/v1/auth",authRouter);
 app.use("/contact",contactRouter);
 app.use("/user",userRouter);
