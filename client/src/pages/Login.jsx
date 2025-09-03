@@ -314,7 +314,7 @@ function Login() {
                       Or continue with
                     </span>
                     <a
-                      href={`${API}/api/v1/auth/google/login`} // Your backend Google Signup endpoint
+                      href={`${API}/api/v1/auth/google/login`} // Your backend Google Login endpoint
                       className="w-full py-3 px-4 flex items-center justify-center gap-3 border border-gray-300 rounded-lg bg-white hover:bg-gray-100 text-gray-700 font-medium transition-all duration-300 transform hover:scale-[1.02]"
                     >
                       {/* Google Icon */}
