@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../store/auth.jsx';
 import CardBodyd from './CardBodyd';
 import SearchBard from './Searchbard.jsx'; // Import the SearchBar component
@@ -24,27 +24,35 @@ const CoursesList = () => {
     );
 
   return (
-    <div className="courses-list">
-      <h2>All Courses</h2>
-      <SearchBard searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-      <div className="categories">
-        {categories.map((category, index) => (
-          <button
-            key={index}
-            className={`category-button ${selectedCategory === category ? 'active' : ''}`}
-            onClick={() => setSelectedCategory(category)}
-          >
-            {category}
-          </button>
-        ))}
+    <div className="max-w-[1400px] mx-auto px-6 py-8">
+      <div className="flex flex-col gap-8 mb-8">
+        <h2 className="text-3xl font-bold">All Courses</h2>
+        <SearchBard searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+        <div className="flex flex-wrap gap-3">
+          {categories.map((category, index) => (
+            <button
+              key={index}
+              className={`px-4 py-2 rounded-full transition-all duration-300 ${
+                selectedCategory === category 
+                  ? 'bg-primary text-white shadow-md' 
+                  : 'bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700'
+              }`}
+              onClick={() => setSelectedCategory(category)}
+            >
+              {category}
+            </button>
+          ))}
+        </div>
       </div>
-      <div className="courses">
+      <div className="flex flex-wrap justify-between">
         {filteredCourses.length > 0 ? (
           filteredCourses.map(course => (
             <CardBodyd key={course._id} course={course} />
           ))
         ) : (
-          <div className="no-courses">No courses found matching your search.</div>
+          <div className="col-span-full text-center text-lg text-gray-500">
+            No courses found matching your search.
+          </div>
         )}
       </div>
     </div>

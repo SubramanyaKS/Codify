@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "../store/auth";
 import { useTheme } from "../context/ThemeContext";
@@ -8,9 +8,9 @@ import { useLoading } from "../components/loadingContext";
 import { FaUser, FaEnvelope, FaPhone, FaLock, FaUserPlus, FaExclamationCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import OtpModal from "../components/OtpModal";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
-function Signup() {
+const Signup = () => {
   const [user, setUser] = useState({
     username: "",
     email: "",
@@ -24,12 +24,8 @@ function Signup() {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
-  const otpRefs = useRef([]);
-  const otpLength = 6;
-  const [serverOtp, setServerOtp] = useState(null);
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [resending, setResending] = useState(false);
-  const [params] = useSearchParams();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -130,7 +126,6 @@ function Signup() {
       const data = await response.json();
 
       if (response.ok) {
-        setServerOtp(data.otp);
         setShowOtpModal(true);
         toast.success("OTP sent to your email!");
       } else {
@@ -200,7 +195,6 @@ function Signup() {
       const data = await res.json();
       if (res.ok) {
         toast.success("OTP resent!");
-        setServerOtp(data.otp);
       } else {
         toast.error(data.message || "Failed to resend OTP");
       }
@@ -214,8 +208,8 @@ function Signup() {
   // Animation variants matching Roadmap component
   const backgroundVariants = {
     hidden: { opacity: 0, scale: 1.05 },
-    visible: {
-      opacity: 1,
+    visible: { 
+      opacity: 1, 
       scale: 1,
       transition: {
         duration: 1,
@@ -226,52 +220,20 @@ function Signup() {
 
   const headerVariants = {
     hidden: { opacity: 0, y: -30 },
-    visible: {
-      opacity: 1,
+    visible: { 
+      opacity: 1, 
       y: 0,
       transition: {
         duration: 0.8,
         ease: "easeOut"
       }
-    }
-  };
-
-  const formVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.8,
-        delay: 0.3,
-        ease: "easeOut"
-      }
-    }
-  };
-
-  const inputVariants = {
-    focus: {
-      scale: 1.02,
-      transition: { duration: 0.2 }
-    }
-  };
-
-  const buttonVariants = {
-    initial: { scale: 1 },
-    hover: {
-      scale: 1.05,
-      transition: { duration: 0.2 }
-    },
-    tap: {
-      scale: 0.98,
-      transition: { duration: 0.1 }
     }
   };
 
   const illustrationVariants = {
     hidden: { opacity: 0, x: -50 },
-    visible: {
-      opacity: 1,
+    visible: { 
+      opacity: 1, 
       x: 0,
       transition: {
         duration: 0.8,
@@ -290,10 +252,10 @@ function Signup() {
   };
 
   return (
-    <>
+    <React.Fragment>
       <div className={`relative min-h-screen-minus-nav overflow-hidden z-10 ${isDark ? 'bg-dark-bg-primary text-dark-text-primary' : 'bg-light-bg-primary text-light-text-primary'}`}>
         {/* Enhanced Background with gradient overlay - matching Roadmap */}
-        <motion.div
+        <motion.div 
           variants={backgroundVariants}
           initial="hidden"
           animate="visible"
@@ -308,16 +270,16 @@ function Signup() {
 
         <div className="max-w-7xl mx-auto px-4 py-12 md:py-16 lg:py-20">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-20">
-
+            
             {/* Left side - Enhanced header and illustration */}
-            <motion.div
+            <motion.div 
               variants={illustrationVariants}
               initial="hidden"
               animate="visible"
               className="w-full lg:w-1/2 flex flex-col items-center lg:items-start"
             >
               {/* Enhanced Header matching Roadmap style */}
-              <motion.div
+              <motion.div 
                 variants={headerVariants}
                 initial="hidden"
                 animate="visible"
@@ -327,14 +289,14 @@ function Signup() {
                   <h1 className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-righteous tracking-wider mb-4 ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
                     <span className="text-primary">Join</span> Our Community
                   </h1>
-                  <motion.div
+                  <motion.div 
                     initial={{ width: 0 }}
                     animate={{ width: "100%" }}
                     transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
                     className={`h-1 rounded-full bg-gradient-to-r ${isDark ? 'from-primary via-primary-dark to-primary' : 'from-primary via-primary-dark to-primary'}`}
                   ></motion.div>
                 </div>
-                <motion.p
+                <motion.p 
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.6, delay: 0.8 }}
@@ -343,13 +305,13 @@ function Signup() {
                   Create your account today and start your learning journey with access to premium courses and resources that will define your future in tech.
                 </motion.p>
               </motion.div>
-
+              
               {/* Enhanced illustration with animation */}
-              <motion.div
+              <motion.div 
                 variants={illustrationVariants}
                 animate="float"
                 className="relative w-full max-w-md hidden lg:block"
-              >
+              > 
                 <img
                   src="signup.svg"
                   alt="Signup illustration"
@@ -361,14 +323,15 @@ function Signup() {
 
             {/* Right side - Form */}
             <div className="w-full md:w-1/2 flex flex-col items-center">
-              <div className={`w-full max-w-md p-8 rounded-xl shadow-xl backdrop-blur-sm transition-all duration-300 hover:shadow-2xl ${isDark
-                  ? 'bg-dark-bg-secondary/90 border border-dark-border'
+              <div className={`w-full max-w-md p-8 rounded-xl shadow-xl backdrop-blur-sm transition-all duration-300 hover:shadow-2xl ${
+                isDark 
+                  ? 'bg-dark-bg-secondary/90 border border-dark-border' 
                   : 'bg-light-bg-secondary/90 border border-light-border'
-                }`}>
+              }`}>
                 <h2 className="text-3xl font-righteous text-center mb-8">
                   Create Account
                 </h2>
-
+                
                 <form onSubmit={handleSubmit} noValidate>
                   <div className="mb-5">
                     <label
@@ -388,10 +351,11 @@ function Signup() {
                       value={user.username}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      className={`w-full px-4 py-3 rounded-lg ${isDark
-                          ? 'bg-dark-bg-tertiary text-dark-text-primary border-dark-border'
+                      className={`w-full px-4 py-3 rounded-lg ${
+                        isDark 
+                          ? 'bg-dark-bg-tertiary text-dark-text-primary border-dark-border' 
                           : 'bg-light-bg-tertiary text-light-text-primary border-light-border'
-                        } border focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300 ${errors.username ? 'border-red-500' : ''}`}
+                      } border focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300 ${errors.username ? 'border-red-500' : ''}`}
                     />
                     {errors.username && <p className="text-red-500 text-xs mt-1 flex items-center"><FaExclamationCircle className="mr-1" />{errors.username}</p>}
                   </div>
@@ -414,10 +378,11 @@ function Signup() {
                       value={user.email}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      className={`w-full px-4 py-3 rounded-lg ${isDark
-                          ? 'bg-dark-bg-tertiary text-dark-text-primary border-dark-border'
+                      className={`w-full px-4 py-3 rounded-lg ${
+                        isDark 
+                          ? 'bg-dark-bg-tertiary text-dark-text-primary border-dark-border' 
                           : 'bg-light-bg-tertiary text-light-text-primary border-light-border'
-                        } border focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300 ${errors.email ? 'border-red-500' : ''}`}
+                      } border focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300 ${errors.email ? 'border-red-500' : ''}`}
                     />
                     {errors.email && <p className="text-red-500 text-xs mt-1 flex items-center"><FaExclamationCircle className="mr-1" />{errors.email}</p>}
                   </div>
@@ -440,10 +405,11 @@ function Signup() {
                       value={user.phone}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      className={`w-full px-4 py-3 rounded-lg ${isDark
-                          ? 'bg-dark-bg-tertiary text-dark-text-primary border-dark-border'
+                      className={`w-full px-4 py-3 rounded-lg ${
+                        isDark 
+                          ? 'bg-dark-bg-tertiary text-dark-text-primary border-dark-border' 
                           : 'bg-light-bg-tertiary text-light-text-primary border-light-border'
-                        } border focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300 ${errors.phone ? 'border-red-500' : ''}`}
+                      } border focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300 ${errors.phone ? 'border-red-500' : ''}`}
                     />
                     {errors.phone && <p className="text-red-500 text-xs mt-1 flex items-center"><FaExclamationCircle className="mr-1" />{errors.phone}</p>}
                   </div>
@@ -467,10 +433,11 @@ function Signup() {
                       value={user.password}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      className={`w-full px-4 py-3 rounded-lg ${isDark
-                          ? 'bg-dark-bg-tertiary text-dark-text-primary border-dark-border'
+                      className={`w-full px-4 py-3 rounded-lg ${
+                        isDark 
+                          ? 'bg-dark-bg-tertiary text-dark-text-primary border-dark-border' 
                           : 'bg-light-bg-tertiary text-light-text-primary border-light-border'
-                        } border focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300 ${errors.password ? 'border-red-500' : ''}`}
+                      } border focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300 ${errors.password ? 'border-red-500' : ''}`}
                     />
                     {errors.password && <p className="text-red-500 text-xs mt-1 flex items-center"><FaExclamationCircle className="mr-1" />{errors.password}</p>}
                     <div
@@ -508,7 +475,6 @@ function Signup() {
                       <span>Google</span>
                     </a>
                   </div>
-
                   <div className="mt-6 text-center">
                     <p className={isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
                       Already have an account?{' '}
@@ -522,20 +488,20 @@ function Signup() {
             </div>
           </div>
         </div>
-
-        <OtpModal
-          show={showOtpModal}
-          isDark={isDark}
-          otp={otp}
-          setOtp={setOtp}
-          otpLength={6}
-          verifyOtp={verifyOtp}
-          handleResendOtp={handleResendOtp}
-          resending={resending}
-        />
       </div>
-    </>
+
+      <OtpModal
+        show={showOtpModal}
+        isDark={isDark}
+        otp={otp}
+        setOtp={setOtp}
+        otpLength={6}
+        verifyOtp={verifyOtp}
+        handleResendOtp={handleResendOtp}
+        resending={resending}
+      />
+    </React.Fragment>
   );
-}
+};
 
 export default Signup;

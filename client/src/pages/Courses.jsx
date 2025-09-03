@@ -1,4 +1,4 @@
-import React, {
+import {
   useState,
   useEffect,
   lazy,
@@ -387,7 +387,7 @@ const Courses = () => {
                 animate={{ opacity: 1 }}
                 className={`text-sm ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}
               >
-                Found {filteredCourses.length} course(s) matching "{searchTerm}"
+                Found {filteredCourses.length} course(s) matching &quot;{searchTerm}&quot;
               </motion.p>
             )}
           </div>
@@ -402,7 +402,7 @@ const Courses = () => {
           className="mb-16"
         >
           {currentCourses.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            <div className="max-w-full flex flex-wrap justify-around gap-6">
               {currentCourses.map((course) => (
                 <motion.div 
                   key={course._id}
