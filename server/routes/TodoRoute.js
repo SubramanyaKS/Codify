@@ -4,8 +4,8 @@ import { getTodos, addTodo, toggleTodo, deleteTodo } from "../controllers/TodoCo
 
 const router = express.Router();
 
-router.get("/", authMiddleware, getTodos);
-router.post("/", authMiddleware, addTodo);
+router.get("/getTodo", authMiddleware, getTodos);
+router.post("/setTodo", authMiddleware, addTodo);
 router.patch("/:id", authMiddleware, toggleTodo);
 router.delete("/:id", authMiddleware, deleteTodo);
 

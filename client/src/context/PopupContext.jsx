@@ -15,7 +15,7 @@ const PopupProvider = ({ children }) => {
   const { API, isLoggedIn } = useAuth();
   const token = localStorage.getItem("token");
 
-   
+ 
 
   // Popup state
   const [showTodo, setShowTodo] = useState(true);
@@ -34,7 +34,7 @@ const PopupProvider = ({ children }) => {
       setTodos([]);
       return;
     }
-    fetch(`${API}/api/todos`, { headers })
+    fetch(`${API}/api/todos/getTodo`, { headers })
       .then((res) => res.json())
       .then((data) => setTodos(data))
       .catch((err) => console.error("Failed to fetch todos:", err));
@@ -43,7 +43,7 @@ const PopupProvider = ({ children }) => {
   const addTodo = async (text) => {
     if (!isLoggedIn) return;
     try {
-      const res = await fetch(`${API}/api/todos`, {
+      const res = await fetch(`${API}/api/todos/setTodo`, {
         method: "POST",
         headers,
         body: JSON.stringify({ text, completed: false }),
