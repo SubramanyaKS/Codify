@@ -13,10 +13,12 @@ import progressRouter from './routes/progressRoute.js';
 import activityRouter from './routes/activityRoute.js';
 import LearderBoardRouter from './routes/LeaderBoardRoute.js'
 import bookmarkRouter from './routes/bookmarkRoute.js';
+ 
+import todoRouter from "./routes/TodoRoute.js"
+
 import session from "express-session";
 import passport from "passport";
 import { configurePassport } from "./config/passport.js";
-
 dotenv.config();
 const app= express();
 // Allow all origins
@@ -57,6 +59,7 @@ app.use("/",router)
 app.use("/admin",adminRouter);
 app.use("/api/v1",LearderBoardRouter);
 app.use("/api/v1/bookmarks", bookmarkRouter);
+app.use('/api/todos', todoRouter);
 // app.get("/",)
 const PORT = process.env.PORT ||5050;
 
