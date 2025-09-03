@@ -1,4 +1,4 @@
-import React, { useState,useRef,useEffect  } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "../store/auth";
 import { useTheme } from "../context/ThemeContext";
@@ -8,9 +8,9 @@ import { useLoading } from "../components/loadingContext";
 import { FaUser, FaEnvelope, FaPhone, FaLock, FaUserPlus, FaExclamationCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import OtpModal from "../components/OtpModal";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
-function Signup() {
+const Signup = () => {
   const [user, setUser] = useState({
     username: "",
     email: "",
@@ -24,12 +24,8 @@ function Signup() {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
-  const otpRefs = useRef([]);
-  const otpLength = 6; 
-  const [serverOtp, setServerOtp] = useState(null);
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [resending, setResending] = useState(false);
-  const [params] = useSearchParams();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -130,7 +126,6 @@ function Signup() {
       const data = await response.json();
 
       if (response.ok) {
-        setServerOtp(data.otp); 
         setShowOtpModal(true);
         toast.success("OTP sent to your email!");
       } else {
@@ -200,7 +195,6 @@ function Signup() {
       const data = await res.json();
       if (res.ok) {
         toast.success("OTP resent!");
-        setServerOtp(data.otp);
       } else {
         toast.error(data.message || "Failed to resend OTP");
       }
@@ -236,38 +230,6 @@ function Signup() {
     }
   };
 
-  const formVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      transition: {
-        duration: 0.8,
-        delay: 0.3,
-        ease: "easeOut"
-      }
-    }
-  };
-
-  const inputVariants = {
-    focus: {
-      scale: 1.02,
-      transition: { duration: 0.2 }
-    }
-  };
-
-  const buttonVariants = {
-    initial: { scale: 1 },
-    hover: { 
-      scale: 1.05,
-      transition: { duration: 0.2 }
-    },
-    tap: { 
-      scale: 0.98,
-      transition: { duration: 0.1 }
-    }
-  };
-
   const illustrationVariants = {
     hidden: { opacity: 0, x: -50 },
     visible: { 
@@ -290,7 +252,7 @@ function Signup() {
   };
 
   return (
-    <>
+    <React.Fragment>
       <div className={`relative min-h-screen-minus-nav overflow-hidden z-10 ${isDark ? 'bg-dark-bg-primary text-dark-text-primary' : 'bg-light-bg-primary text-light-text-primary'}`}>
         {/* Enhanced Background with gradient overlay - matching Roadmap */}
         <motion.div 
@@ -359,150 +321,151 @@ function Signup() {
               </motion.div>
             </motion.div>
 
-          {/* Right side - Form */}
-          <div className="w-full md:w-1/2 flex flex-col items-center">
-            <div className={`w-full max-w-md p-8 rounded-xl shadow-xl backdrop-blur-sm transition-all duration-300 hover:shadow-2xl ${
-              isDark 
-                ? 'bg-dark-bg-secondary/90 border border-dark-border' 
-                : 'bg-light-bg-secondary/90 border border-light-border'
-            }`}>
-              <h2 className="text-3xl font-righteous text-center mb-8">
-                Create Account
-              </h2>
-              
-              <form onSubmit={handleSubmit} noValidate>
-                <div className="mb-5">
-                  <label
-                    htmlFor="username"
-                    className={`block mb-2 text-sm font-medium ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}
-                  >
-                    <div className="flex items-center">
-                      <FaUser className="mr-2 text-primary" />
-                      Username
-                    </div>
-                  </label>
-                  <input
-                    type="text"
-                    id="username"
-                    name="username"
-                    placeholder="Enter your name"
-                    value={user.username}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    className={`w-full px-4 py-3 rounded-lg ${
-                      isDark 
-                        ? 'bg-dark-bg-tertiary text-dark-text-primary border-dark-border' 
-                        : 'bg-light-bg-tertiary text-light-text-primary border-light-border'
-                    } border focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300 ${errors.username ? 'border-red-500' : ''}`}
-                  />
-                  {errors.username && <p className="text-red-500 text-xs mt-1 flex items-center"><FaExclamationCircle className="mr-1" />{errors.username}</p>}
-                </div>
-
-                <div className="mb-5">
-                  <label
-                    htmlFor="email"
-                    className={`block mb-2 text-sm font-medium ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}
-                  >
-                    <div className="flex items-center">
-                      <FaEnvelope className="mr-2 text-primary" />
-                      Email
-                    </div>
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    placeholder="Enter your email"
-                    value={user.email}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    className={`w-full px-4 py-3 rounded-lg ${
-                      isDark 
-                        ? 'bg-dark-bg-tertiary text-dark-text-primary border-dark-border' 
-                        : 'bg-light-bg-tertiary text-light-text-primary border-light-border'
-                    } border focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300 ${errors.email ? 'border-red-500' : ''}`}
-                  />
-                  {errors.email && <p className="text-red-500 text-xs mt-1 flex items-center"><FaExclamationCircle className="mr-1" />{errors.email}</p>}
-                </div>
-
-                <div className="mb-5">
-                  <label
-                    htmlFor="phone"
-                    className={`block mb-2 text-sm font-medium ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}
-                  >
-                    <div className="flex items-center">
-                      <FaPhone className="mr-2 text-primary" />
-                      Phone Number
-                    </div>
-                  </label>
-                  <input
-                    type="tel"
-                    id="phone"
-                    name="phone"
-                    placeholder="Enter your phone"
-                    value={user.phone}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    className={`w-full px-4 py-3 rounded-lg ${
-                      isDark 
-                        ? 'bg-dark-bg-tertiary text-dark-text-primary border-dark-border' 
-                        : 'bg-light-bg-tertiary text-light-text-primary border-light-border'
-                    } border focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300 ${errors.phone ? 'border-red-500' : ''}`}
-                  />
-                  {errors.phone && <p className="text-red-500 text-xs mt-1 flex items-center"><FaExclamationCircle className="mr-1" />{errors.phone}</p>}
-                </div>
-
-                <div className="mb-6 relative">
-                  <label
-                    htmlFor="password"
-                    className={`block mb-2 text-sm font-medium ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}
-                  >
-                    <div className="flex items-center">
-                      <FaLock className="mr-2 text-primary" />
-                      Password
-                    </div>
-                  </label>
-                  <input
-                    type={show ? "text" : "password"}
-                    id="password"
-                    name="password"
-                    autoComplete="new-password"
-                    placeholder="Enter your password"
-                    value={user.password}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    className={`w-full px-4 py-3 rounded-lg ${
-                      isDark 
-                        ? 'bg-dark-bg-tertiary text-dark-text-primary border-dark-border' 
-                        : 'bg-light-bg-tertiary text-light-text-primary border-light-border'
-                    } border focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300 ${errors.password ? 'border-red-500' : ''}`}
-                  />
-                  {errors.password && <p className="text-red-500 text-xs mt-1 flex items-center"><FaExclamationCircle className="mr-1" />{errors.password}</p>}
-                  <div
-                    className="absolute right-3 top-[42px] cursor-pointer text-xl p-1 rounded-full hover:bg-primary/10 transition-colors"
-                    onClick={() => setShow(!show)}
-                  >
-                    {show ? <AiOutlineEyeInvisible className="text-primary" /> : <AiOutlineEye className="text-primary" />}
-                  </div>
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full py-3 px-4 bg-primary hover:bg-primary-dark text-white font-medium rounded-lg transition-all duration-300 transform hover:scale-[1.02] flex items-center justify-center"
-                >
-                  <FaUserPlus className="mr-2" />
+            {/* Right side - Form */}
+            <div className="w-full md:w-1/2 flex flex-col items-center">
+              <div className={`w-full max-w-md p-8 rounded-xl shadow-xl backdrop-blur-sm transition-all duration-300 hover:shadow-2xl ${
+                isDark 
+                  ? 'bg-dark-bg-secondary/90 border border-dark-border' 
+                  : 'bg-light-bg-secondary/90 border border-light-border'
+              }`}>
+                <h2 className="text-3xl font-righteous text-center mb-8">
                   Create Account
-                </button>
+                </h2>
                 
-                <div className="mt-6 text-center">
-                  <p className={isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
-                    Already have an account?{' '}
-                    <Link to="/login" className="text-primary hover:underline font-medium">
-                      Login
-                    </Link>
-                  </p>
-                </div>
-              </form>
+                <form onSubmit={handleSubmit} noValidate>
+                  <div className="mb-5">
+                    <label
+                      htmlFor="username"
+                      className={`block mb-2 text-sm font-medium ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}
+                    >
+                      <div className="flex items-center">
+                        <FaUser className="mr-2 text-primary" />
+                        Username
+                      </div>
+                    </label>
+                    <input
+                      type="text"
+                      id="username"
+                      name="username"
+                      placeholder="Enter your name"
+                      value={user.username}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      className={`w-full px-4 py-3 rounded-lg ${
+                        isDark 
+                          ? 'bg-dark-bg-tertiary text-dark-text-primary border-dark-border' 
+                          : 'bg-light-bg-tertiary text-light-text-primary border-light-border'
+                      } border focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300 ${errors.username ? 'border-red-500' : ''}`}
+                    />
+                    {errors.username && <p className="text-red-500 text-xs mt-1 flex items-center"><FaExclamationCircle className="mr-1" />{errors.username}</p>}
+                  </div>
+
+                  <div className="mb-5">
+                    <label
+                      htmlFor="email"
+                      className={`block mb-2 text-sm font-medium ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}
+                    >
+                      <div className="flex items-center">
+                        <FaEnvelope className="mr-2 text-primary" />
+                        Email
+                      </div>
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      placeholder="Enter your email"
+                      value={user.email}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      className={`w-full px-4 py-3 rounded-lg ${
+                        isDark 
+                          ? 'bg-dark-bg-tertiary text-dark-text-primary border-dark-border' 
+                          : 'bg-light-bg-tertiary text-light-text-primary border-light-border'
+                      } border focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300 ${errors.email ? 'border-red-500' : ''}`}
+                    />
+                    {errors.email && <p className="text-red-500 text-xs mt-1 flex items-center"><FaExclamationCircle className="mr-1" />{errors.email}</p>}
+                  </div>
+
+                  <div className="mb-5">
+                    <label
+                      htmlFor="phone"
+                      className={`block mb-2 text-sm font-medium ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}
+                    >
+                      <div className="flex items-center">
+                        <FaPhone className="mr-2 text-primary" />
+                        Phone Number
+                      </div>
+                    </label>
+                    <input
+                      type="tel"
+                      id="phone"
+                      name="phone"
+                      placeholder="Enter your phone"
+                      value={user.phone}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      className={`w-full px-4 py-3 rounded-lg ${
+                        isDark 
+                          ? 'bg-dark-bg-tertiary text-dark-text-primary border-dark-border' 
+                          : 'bg-light-bg-tertiary text-light-text-primary border-light-border'
+                      } border focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300 ${errors.phone ? 'border-red-500' : ''}`}
+                    />
+                    {errors.phone && <p className="text-red-500 text-xs mt-1 flex items-center"><FaExclamationCircle className="mr-1" />{errors.phone}</p>}
+                  </div>
+
+                  <div className="mb-6 relative">
+                    <label
+                      htmlFor="password"
+                      className={`block mb-2 text-sm font-medium ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}
+                    >
+                      <div className="flex items-center">
+                        <FaLock className="mr-2 text-primary" />
+                        Password
+                      </div>
+                    </label>
+                    <input
+                      type={show ? "text" : "password"}
+                      id="password"
+                      name="password"
+                      autoComplete="new-password"
+                      placeholder="Enter your password"
+                      value={user.password}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      className={`w-full px-4 py-3 rounded-lg ${
+                        isDark 
+                          ? 'bg-dark-bg-tertiary text-dark-text-primary border-dark-border' 
+                          : 'bg-light-bg-tertiary text-light-text-primary border-light-border'
+                      } border focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300 ${errors.password ? 'border-red-500' : ''}`}
+                    />
+                    {errors.password && <p className="text-red-500 text-xs mt-1 flex items-center"><FaExclamationCircle className="mr-1" />{errors.password}</p>}
+                    <div
+                      className="absolute right-3 top-[42px] cursor-pointer text-xl p-1 rounded-full hover:bg-primary/10 transition-colors"
+                      onClick={() => setShow(!show)}
+                    >
+                      {show ? <AiOutlineEyeInvisible className="text-primary" /> : <AiOutlineEye className="text-primary" />}
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="w-full py-3 px-4 bg-primary hover:bg-primary-dark text-white font-medium rounded-lg transition-all duration-300 transform hover:scale-[1.02] flex items-center justify-center"
+                  >
+                    <FaUserPlus className="mr-2" />
+                    Create Account
+                  </button>
+                  
+                  <div className="mt-6 text-center">
+                    <p className={isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
+                      Already have an account?{' '}
+                      <Link to="/login" className="text-primary hover:underline font-medium">
+                        Login
+                      </Link>
+                    </p>
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
         </div>
@@ -518,8 +481,8 @@ function Signup() {
         handleResendOtp={handleResendOtp}
         resending={resending}
       />
-    </>
+    </React.Fragment>
   );
-}
+};
 
 export default Signup;
