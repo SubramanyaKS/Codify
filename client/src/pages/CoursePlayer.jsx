@@ -27,6 +27,7 @@ const CoursePlayer = () => {
   const [progress, setProgress] = useState(0);
   const [inWatchlist, setInWatchlist] = useState(false);
   const [isEnrolled, setIsEnrolled] = useState(false);
+  const [isDownloadingPDF, setIsDownloadingPDF] = useState(false);
   const apiKey=import.meta.env.VITE_YOUTUBE_API;
   // YouTube link analysis
   const [youtubeData, setYoutubeData] = useState({
@@ -439,25 +440,58 @@ const CoursePlayer = () => {
   }
   async function handleDownloadSummary(videoId) {
     try {
-      // Create a temporary anchor element to trigger download
-      const link = document.createElement('a');
-      link.href = `${API}/api/v1/courses/summary/${videoId}`;
-      link.download = `${videoId}_summary.pdf`;
-      link.target = '_blank';
+      setIsDownloadingPDF(true);
       
-      // Append to body, click, and remove
+      // Fetch the PDF from the server
+      const response = await fetch(`${API}/api/v1/courses/summary/${videoId}`);
+      
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+      
+      // Get the PDF as blob
+      const blob = await response.blob();
+      
+      // Create download link
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${videoId}_summary.pdf`;
+      
+      // Trigger download
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       
-      console.log('PDF download initiated for video:', videoId);
+      // Clean up
+      window.URL.revokeObjectURL(url);
+      
+      console.log('PDF download completed for video:', videoId);
     } catch (error) {
       console.error('Error downloading summary:', error);
+      alert('Failed to download PDF. Please try again.');
+    } finally {
+      setIsDownloadingPDF(false);
     }
   }
   
   return (
     <div className={`min-h-screen-minus-nav ${isDark ? 'bg-dark-bg-primary text-dark-text-primary' : 'bg-light-bg-primary text-light-text-primary'}`}>
+      {/* Loading Overlay */}
+      {isDownloadingPDF && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className={`p-8 rounded-lg ${isDark ? 'bg-dark-bg-secondary' : 'bg-light-bg-secondary'} flex flex-col items-center`}>
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mb-4"></div>
+            <p className={`text-lg font-medium ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
+              Generating PDF Summary...
+            </p>
+            <p className={`text-sm mt-2 ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
+              This may take a few moments
+            </p>
+          </div>
+        </div>
+      )}
+
       <div className="container mx-auto px-4 py-8">
         {/* Course Header */}
         <div className="mb-8">
@@ -623,14 +657,17 @@ const CoursePlayer = () => {
                   <div className="mt-4">
                     <button 
                       onClick={() => handleDownloadSummary(selectedVideo.id)}
+                      disabled={isDownloadingPDF}
                       className={`flex items-center px-4 py-2 rounded-md transition-colors font-medium ${
-                        isDark 
-                          ? 'bg-primary hover:bg-primary-dark text-white' 
-                          : 'bg-primary hover:bg-primary-dark text-white'
+                        isDownloadingPDF
+                          ? 'bg-gray-400 cursor-not-allowed text-white'
+                          : isDark 
+                            ? 'bg-primary hover:bg-primary-dark text-white' 
+                            : 'bg-primary hover:bg-primary-dark text-white'
                       }`}
                     >
                       <FaDownload className="mr-2" />
-                      Download Summary
+                      {isDownloadingPDF ? 'Generating PDF...' : 'Download Summary'}
                     </button>
                   </div>
                 </div>
