@@ -14,7 +14,7 @@ const getTodos = async (req, res) => {
 const addTodo = async (req, res) => {
   try {
     const newTodo = new Todo({
-      user: req.user?.id ,
+      user: req.user.id,
       text: req.body.text,
       completed: false,
     });
