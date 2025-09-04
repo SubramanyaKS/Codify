@@ -1,4 +1,5 @@
 import User from "../models/userSchema.js";
+import Activity from "../models/userActivitySchema.js";
 
 // Get all bookmarks for logged-in user
 export const getBookmarks = async (req, res) => {
@@ -23,6 +24,15 @@ export const addBookmark = async (req, res) => {
     await User.findByIdAndUpdate(userId, {
       $addToSet: { bookmarkedRoadmaps: { name, link, icon, type } }
     });
+
+    // Log activity
+    await Activity.create({
+      userId,
+      activityType: "bookmark_added",
+      details: { name, link, type },
+      timestamp: new Date()
+    });
+
     res.status(200).json({ message: "Roadmap bookmarked successfully" });
   } catch (error) {
     console.error(error);
@@ -39,6 +49,14 @@ export const removeBookmark = async (req, res) => {
 
     await User.findByIdAndUpdate(userId, {
       $pull: { bookmarkedRoadmaps: { name } }
+    });
+
+    // Log activity
+    await Activity.create({
+      userId,
+      activityType: "bookmark_removed",
+      details: { name },
+      timestamp: new Date()
     });
     res.status(200).json({ message: "Bookmark removed successfully" });
   } catch (error) {

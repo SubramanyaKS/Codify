@@ -1104,50 +1104,66 @@ return (
                   />
                 </div>
               }>
-                {activities && activities.length > 0 ? (
-                  <div className="space-y-4">
-                    {activities.map((activity, index) => (
+               {activities && activities.length > 0 ? (
+                <div className="space-y-4">
+                  {activities.map((activity, index) => {
+                    let message = "";
+                    let icon = <FaBookmark className="text-orange-500 text-sm" />;
+                    let bgColor = "bg-orange-500/10";
+                    let iconColor = "text-orange-500";
+
+                    if (activity.activityType === "bookmark_added") {
+                      message = `Added bookmark: ${activity.details?.name}`;
+                      icon = <FaBookmark className="text-green-500 text-sm" />;
+                      bgColor = "bg-green-500/10";
+                      iconColor = "text-green-500";
+                    } else if (activity.activityType === "bookmark_removed") {
+                      message = `Removed bookmark: ${activity.details?.name}`;
+                      icon = <FaBookmark className="text-red-500 text-sm" />;
+                      bgColor = "bg-red-500/10";
+                      iconColor = "text-red-500";
+                    }
+
+                    const formattedDate = new Date(activity.timestamp).toLocaleString();
+
+                    return (
                       <motion.div
-                        key={activity.id}
+                        key={activity._id || index}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.8 + index * 0.1 }}
-                        className={`p-4 rounded-xl ${
-                          isDark 
-                            ? 'bg-dark-bg-tertiary border border-dark-border' 
-                            : 'bg-white border border-light-border'
-                        }`}
+                        className={`p-4 rounded-xl ${isDark
+                            ? "bg-dark-bg-tertiary border border-dark-border"
+                            : "bg-white border border-light-border"
+                          }`}
                       >
                         <div className="flex items-start space-x-3">
-                          <motion.div 
-                            className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                              activity.type === 'completed' ? 'bg-green-500/10' :
-                              activity.type === 'started' ? 'bg-blue-500/10' :
-                              'bg-orange-500/10'
-                            }`}
+                          <motion.div
+                            className={`w-8 h-8 rounded-lg flex items-center justify-center ${bgColor}`}
                             whileHover={{ rotate: 360 }}
                             transition={{ duration: 0.5 }}
                           >
-                            {activity.type === 'completed' ? (
-                              <FaGraduationCap className="text-green-500 text-sm" />
-                            ) : activity.type === 'started' ? (
-                              <FaPlay className="text-blue-500 text-sm" />
-                            ) : (
-                              <FaBookmark className="text-orange-500 text-sm" />
-                            )}
+                            {icon}
                           </motion.div>
                           <div className="flex-1">
-                            <p className={`text-sm font-medium ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
-                              {activity.description}
+                            <p
+                              className={`text-sm font-medium ${isDark ? "text-dark-text-primary" : "text-light-text-primary"
+                                }`}
+                            >
+                              {message}
                             </p>
-                            <p className={`text-xs ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
-                              {activity.timestamp}
+                            <p
+                              className={`text-xs ${isDark ? "text-dark-text-secondary" : "text-light-text-secondary"
+                                }`}
+                            >
+                              {formattedDate}
                             </p>
                           </div>
                         </div>
                       </motion.div>
-                    ))}
-                  </div>
+                    );
+                  })}
+                </div>
                 ) : (
                   <div className="text-center py-8">
                     <motion.div 
