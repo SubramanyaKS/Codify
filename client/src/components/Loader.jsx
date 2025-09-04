@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { useTheme } from '../context/ThemeContext';
 
 function Loader() {
@@ -67,7 +67,7 @@ function Loader() {
         </div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         @keyframes float {
           0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.7; }
           33% { transform: translateY(-10px) rotate(5deg); opacity: 1; }

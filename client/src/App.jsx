@@ -4,7 +4,7 @@ import { useAuth } from "./store/auth";
 import { useTheme } from "./context/ThemeContext";
 import { LoadingProvider } from "./components/loadingContext.jsx";
 import 'react-toastify/ReactToastify.css';
-
+import { PopupProvider } from "./context/PopupContext.jsx";
 // Always loaded components
 import NavBar from "./components/NavBar";
 import Footer from "./components/Footer.jsx";
@@ -46,8 +46,8 @@ const AdminUpdate = lazy(() => import("./layouts/AdminUpdate"));
 const AddNewCourse = lazy(() => import("./layouts/CourseLayout/AddNewCourse.jsx"));
 const CourseUpdate = lazy(() => import("./layouts/CourseLayout/CourseUpdate"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
-const CodeEditor = lazy(() => import("./pages/CodeEditor"));
-
+const CodeEditor = lazy(()=>import("./components/CodeEditor..jsx"))
+  
 const ScrollToTop = ({ children }) => {
   const location = useLocation();
 
