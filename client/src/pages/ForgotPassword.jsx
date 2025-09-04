@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useTheme } from "../context/ThemeContext";
 import { useLoading } from "../components/loadingContext";
@@ -10,6 +11,7 @@ function ForgotPassword() {
   const { theme, themeColor, isDark } = useTheme();
   const { API } = useAuth();
   const { setIsLoading } = useLoading();
+  const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
@@ -22,10 +24,128 @@ function ForgotPassword() {
   const otpRefs = useRef([]);
 
   // --- API calls (same as your code) ---
-  const handleSendOtp = async (e) => { /* unchanged */ };
-  const verifyOtp = async () => { /* unchanged */ };
-  const handleResetPassword = async () => { /* unchanged */ };
-  const handleResendOtp = async () => { /* unchanged */ };
+  // const handleSendOtp = async (e) => { /* unchanged */ };
+  // const verifyOtp = async () => { /* unchanged */ };
+  // const handleResetPassword = async () => { /* unchanged */ };
+  // const handleResendOtp = async () => { /* unchanged */ };
+
+  const handleSendOtp = async (e) => {
+    e.preventDefault();
+    try {
+      setIsLoading(true);
+      const response = await fetch(`${API}/api/v1/auth/send-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem("forgotEmail", JSON.stringify({ email, exists: true }));
+        toast.success("OTP sent to your email!");
+        setShowOtpModal(true);
+      } else {
+        localStorage.setItem("forgotEmail", JSON.stringify({ email, exists: false }));
+        toast.error(data.message || "Email not found");
+      }
+    } catch (err) {
+      toast.error("Something went wrong!");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  const verifyOtp = async () => {
+    try {
+      setIsLoading(true);
+      const otpString = otp.join("");
+
+      // Step 1: Verify OTP
+      const response = await fetch(`${API}/api/v1/auth/verify-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, otp: otpString }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        // Step 2: Check if email exists
+        const emailCheckRes = await fetch(`${API}/api/v1/auth/forgot-password/check`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        });
+
+        const emailCheckData = await emailCheckRes.json();
+
+        if (emailCheckRes.ok) {
+          toast.success("OTP verified! You can reset your password.");
+          setShowReset(true); // Show password reset input
+        } else {
+          toast.error(emailCheckData.message || "Email is not registered in our system.");
+          setShowReset(false);
+          setEmail(""); // Clear email input
+        }
+
+        setShowOtpModal(false); // Close OTP modal
+      } else {
+        toast.error(result.message || "Invalid OTP, please try again.");
+      }
+    } catch (error) {
+      toast.error("Error verifying OTP");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+
+  const handleResetPassword = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(`${API}/api/v1/auth/reset-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, newPassword }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success("Password reset successful! Redirecting to login...");
+        localStorage.removeItem("forgotEmail");
+        setTimeout(() => (window.location.href = "/login"), 2000);
+      } else {
+        toast.error(data.message || "Failed to reset password");
+      }
+    } catch (error) {
+      toast.error("Error resetting password");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    try {
+      setResending(true);
+      const res = await fetch(`${API}/api/v1/auth/send-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        toast.success("OTP resent!");
+      } else {
+        toast.error(data.message || "Failed to resend OTP");
+      }
+    } catch (error) {
+      toast.error("Error resending OTP");
+    } finally {
+      setResending(false);
+    }
+  };
+
 
   return (
     <>
@@ -80,7 +200,7 @@ function ForgotPassword() {
 
               {/* Back to Login */}
               <div 
-                onClick={() => console.log("Navigate to login")}
+                onClick={() => navigate("/login")}
                 className={`inline-flex items-center mb-6 cursor-pointer group 
                   ${isDark ? "text-gray-400 hover:text-white" : "text-gray-600 hover:text-black"} 
                   transition-colors duration-300`}
@@ -199,8 +319,8 @@ function ForgotPassword() {
                     <p className={`${isDark ? "text-gray-500" : "text-gray-600"} text-sm text-center`}>
                       Remember your password?{" "}
                       <span 
-                        onClick={() => console.log("Navigate to login")}
-                        className="cursor-pointer font-medium transition-colors duration-200"
+                        onClick={() => navigate("/login")}
+                        className="cursor-pointer font-medium transition-colors duration-200 hover:underline underline-offset-2"
                         style={{ color: "var(--color-primary)" }}
                       >
                         Sign in here
