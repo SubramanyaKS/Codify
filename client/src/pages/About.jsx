@@ -6,7 +6,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import { Navigation, Pagination ,Autoplay } from "swiper/modules";
+import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import { useInView } from "react-intersection-observer"; // for view of title aninmation every time when we land on this section
 import {
   FaUsers,
@@ -209,7 +209,7 @@ function About() {
               <span className="inline-block mr-2">
                 {"Welcome ".split("").map((char, i) => (
                   <span
-                    key={`welcom-${i}`}
+                    key={`Welcome-${i}`}
                     className={`inline-block opacity-0 ${
                       inView ? "animate-fadeIn" : ""
                     }`}
@@ -218,13 +218,13 @@ function About() {
                       animationFillMode: "forwards",
                     }}
                   >
-                    {char}
+                    {char === " " ? "\u00A0" : char}
                   </span>
                 ))}
               </span>
-              {/* Animate to codify */}
+              {/* Animate "to codify" */}
               <span className="text-primary inline-block">
-                {text.split("").map((char, i) => (
+                {[...text].map((char, i) => (
                   <span
                     key={`name-${i}`}
                     className={`inline-block opacity-0 ${
@@ -235,7 +235,7 @@ function About() {
                       animationFillMode: "forwards",
                     }}
                   >
-                    {char}
+                    {char === " " ? "\u00A0" : char}
                   </span>
                 ))}
               </span>
@@ -546,41 +546,42 @@ function About() {
                 <h3 className="text-2xl text-center md:text-3xl font-bold text-primary mb-6">
                   Meet Our Team
                 </h3>
+                {/* added swiper class for slide animation on cards */}
                 <Swiper
-                  modules={[Navigation, Pagination ,Autoplay]}
+                  modules={[Navigation, Pagination,Autoplay]}
                   spaceBetween={30}
                   slidesPerView={1}
                   navigation
                   pagination={{ clickable: true }}
                   autoplay={{
-                    delay: 2000,  
-                    disableOnInteraction: false,  
+                    delay: 2000,
+                    disableOnInteraction: false,
                   }}
-                  loop={true}  
+                  loop={true}
                   className="pb-10 mt-6 flex justify-center w-[700px]"
                 >
                   {teamMembers.map((member, index) => (
-                    <SwiperSlide key={index} style={{display:"flex" ,justifyContent:"center"}}>
+                    <SwiperSlide
+                      key={index}
+                      
+                      style={{ display: "flex", justifyContent: "center" ,alignItems:"center" }}
+                    >
                       <div
-                        className={`p-6 rounded-xl w-[350px] shadow-lg ${
-                          isDark
-                            ? "bg-dark-bg-secondary border border-dark-border"
-                            : "bg-light-bg-secondary border border-light-border"
-                        } text-center transition-all duration-300`}
+                        className={`group p-6 rounded-xl mt-6 mb-8 hover:border-b-2 hover:border-r-2 w-[350px] shadow-lg bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-secondary-1000 backdrop-blur-xl ${isDark ? 'bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-secondary-1000 backdrop-blur-xl' : 'bg-light-bg-secondary border border-light-border hover:border-primary/50'}  transition duration-300 hover:-translate-y-2 hover:scale-105`}
                       >
                         <img
                           src={member.image}
                           alt={member.name}
-                          className="w-24 h-24 rounded-full mx-auto mb-4 border-2 border-primary"
+                          className={` flex items-center justify-center w-[7.5rem] h-[7.5rem] rounded-full p-4 mb-4  border-primary ${isDark ? 'bg-dark-bg-primary' : 'bg-light-bg-primary'}`}
                         />
-                        <h4 className="text-lg font-semibold mb-2">
+                        <h3 className={`text-lg sm:text-xl lg:text-2xl font-semibold mb-3 leading-tight ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'} transition-all duration-300 group-hover:text-primary`}>
                           {member.name}
-                        </h4>
-                        <p className="text-primary text-sm font-medium mb-3">
+                        </h3>
+                        <p className=" text-left text-sm font-medium mb-3">
                           {member.role}
                         </p>
                         <p
-                          className={`text-sm leading-relaxed ${
+                          className={`text-sm text-left leading-relaxed ${
                             isDark
                               ? "text-dark-text-secondary"
                               : "text-light-text-secondary"
