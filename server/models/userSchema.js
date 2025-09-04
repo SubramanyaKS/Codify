@@ -160,7 +160,8 @@ const userSchema = new mongoose.Schema({
 
 //Hash password only if user is not OAuth and password is modified
 userSchema.pre("save", async function (next) {
-  if (!this.isModified("password") || this.isOAuth) {
+  //if (!this.isModified("password") || this.isOAuth) { //now we want to hash password if it is modified and user is not OAuth
+    if (!this.isModified("password")){
     return next();
   }
   try {

@@ -30,7 +30,7 @@ export default function TodoList() {
         whileTap={{ scale: 0.9, rotate: 15 }}
         animate={{ y: [0, -4, 0] }}
         transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
-        className="fixed bottom-4 right-4 z-50 p-4 rounded-full shadow-lg bg-primary text-white hover:bg-primary-dark transition"
+        className="fixed bottom-8 left-4 z-50 p-4 rounded-full shadow-lg bg-primary text-white hover:bg-primary-dark transition"
       >
         <ListTodo size={24} />
       </motion.button>
@@ -44,7 +44,7 @@ export default function TodoList() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 40 }}
             transition={{ duration: 0.35, ease: "easeOut" }}
-            className="fixed bottom-20 right-4 z-50 w-80 max-w-full"
+            className="fixed bottom-28 left-4 z-50 w-80 max-w-full"
           >
             <motion.div
               layout

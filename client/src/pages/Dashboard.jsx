@@ -685,6 +685,7 @@ return (
                     </motion.div>
                   )}
                 </div>
+
               )}
 
               {activeTab === 'bookmarks' && (
@@ -745,6 +746,7 @@ return (
                       ))}
                     </div>
                   ) : (
+
                     <motion.div 
                       whileHover={{ y: -4 }}
                       transition={{ duration: 0.3 }}
