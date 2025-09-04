@@ -65,5 +65,39 @@ const enrollCourse = async (req, res) => {
         res.status(500).json({ error: "Server error" });
     }
 };
+const downloadCourseSummary = async (req, res) => {
+    try {
+        const { videoId } = req.params;
+        
+        console.log("Fetching transcript for video:", videoId);
+        
+        // Call Python transcript service
+        const response = await fetch(`http://localhost:5001/transcript/${videoId}`);
+        
+        if (!response.ok) {
+            throw new Error(`Python service error: ${response.status}`);
+        }
 
-export { courses as default, enrollCourse, ytCourses };
+        // Get the PDF as buffer
+        const pdfBuffer = await response.arrayBuffer();
+        const buffer = Buffer.from(pdfBuffer);
+        
+        // Set headers for PDF download
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename="${videoId}_summary.pdf"`);
+        res.setHeader('Content-Length', buffer.length);
+        
+        // Send the PDF buffer
+        res.send(buffer);
+        
+    } catch (error) {
+        console.error("Error downloading course summary:", error);
+        res.status(500).json({ 
+            error: "Server error", 
+            details: error.message,
+            videoId: req.params.videoId 
+        });
+    }
+};
+
+export { courses as default, enrollCourse, ytCourses, downloadCourseSummary };
