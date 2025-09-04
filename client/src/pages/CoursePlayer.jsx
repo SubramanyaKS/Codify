@@ -8,7 +8,7 @@ import YouTubePlaylist from '../components/YouTubePlaylist';
 import CourseModules from '../components/CourseModules';
 import UniversalCodePlayground from '../components/CodeEditor.';
 import { getYouTubeUrlType, extractPlaylistId, extractVideoId } from '../utils/youtubeUtils';
-import { FaArrowLeft, FaBookmark, FaPlay, FaShare, FaEye, FaThumbsUp } from 'react-icons/fa';
+import { FaArrowLeft, FaBookmark, FaPlay, FaShare, FaEye, FaThumbsUp, FaDownload } from 'react-icons/fa';
 // import UniversalCodePlayground from '../components/CodePlayground';
 
 const CoursePlayer = () => {
@@ -437,7 +437,25 @@ const CoursePlayer = () => {
       </div>
     );
   }
-
+  async function handleDownloadSummary(videoId) {
+    try {
+      // Create a temporary anchor element to trigger download
+      const link = document.createElement('a');
+      link.href = `${API}/api/v1/courses/summary/${videoId}`;
+      link.download = `${videoId}_summary.pdf`;
+      link.target = '_blank';
+      
+      // Append to body, click, and remove
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      console.log('PDF download initiated for video:', videoId);
+    } catch (error) {
+      console.error('Error downloading summary:', error);
+    }
+  }
+  
   return (
     <div className={`min-h-screen-minus-nav ${isDark ? 'bg-dark-bg-primary text-dark-text-primary' : 'bg-light-bg-primary text-light-text-primary'}`}>
       <div className="container mx-auto px-4 py-8">
@@ -601,6 +619,19 @@ const CoursePlayer = () => {
                         <FaThumbsUp className="mr-1" /> {parseInt(selectedVideo.likeCount).toLocaleString()}
                       </span>
                     )}
+                  </div>
+                  <div className="mt-4">
+                    <button 
+                      onClick={() => handleDownloadSummary(selectedVideo.id)}
+                      className={`flex items-center px-4 py-2 rounded-md transition-colors font-medium ${
+                        isDark 
+                          ? 'bg-primary hover:bg-primary-dark text-white' 
+                          : 'bg-primary hover:bg-primary-dark text-white'
+                      }`}
+                    >
+                      <FaDownload className="mr-2" />
+                      Download Summary
+                    </button>
                   </div>
                 </div>
               )}
