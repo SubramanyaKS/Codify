@@ -2,6 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "../store/auth";
 import { useTheme } from "../context/ThemeContext";
 import { Link } from "react-router-dom";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import { Navigation, Pagination ,Autoplay } from "swiper/modules";
 import { useInView } from "react-intersection-observer"; // for view of title aninmation every time when we land on this section
 import {
   FaUsers,
@@ -22,7 +27,7 @@ function About() {
   const isDark = theme === "dark";
   const [activeTab, setActiveTab] = useState("story");
 
-  const { ref, inView } = useInView({ triggerOnce: false }); // trigger every time visible 
+  const { ref, inView } = useInView({ triggerOnce: false }); // trigger every time visible
   const text = userdata.username
     ? userdata.username.toUpperCase()
     : "to Codify";
@@ -206,7 +211,7 @@ function About() {
                   <span
                     key={`welcom-${i}`}
                     className={`inline-block opacity-0 ${
-                    inView ? "animate-fadeIn" : ""
+                      inView ? "animate-fadeIn" : ""
                     }`}
                     style={{
                       animationDelay: `${i * 0.1}s`,
@@ -538,42 +543,55 @@ function About() {
 
             {activeTab === "team" && (
               <div className="fade-section">
-                <h3 className="text-2xl md:text-3xl font-bold text-primary mb-6">
+                <h3 className="text-2xl text-center md:text-3xl font-bold text-primary mb-6">
                   Meet Our Team
                 </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <Swiper
+                  modules={[Navigation, Pagination ,Autoplay]}
+                  spaceBetween={30}
+                  slidesPerView={1}
+                  navigation
+                  pagination={{ clickable: true }}
+                  autoplay={{
+                    delay: 2000,  
+                    disableOnInteraction: false,  
+                  }}
+                  loop={true}  
+                  className="pb-10 mt-6 flex justify-center w-[700px]"
+                >
                   {teamMembers.map((member, index) => (
-                    <div
-                      key={index}
-                      className={`p-6 rounded-xl shadow-lg ${
-                        isDark
-                          ? "bg-dark-bg-secondary border border-dark-border"
-                          : "bg-light-bg-secondary border border-light-border"
-                      } text-center transition-all duration-300`}
-                    >
-                      <img
-                        src={member.image}
-                        alt={member.name}
-                        className="w-24 h-24 rounded-full mx-auto mb-4 border-2 border-primary"
-                      />
-                      <h4 className="text-lg font-semibold mb-2">
-                        {member.name}
-                      </h4>
-                      <p className="text-primary text-sm font-medium mb-3">
-                        {member.role}
-                      </p>
-                      <p
-                        className={`text-sm leading-relaxed ${
+                    <SwiperSlide key={index} style={{display:"flex" ,justifyContent:"center"}}>
+                      <div
+                        className={`p-6 rounded-xl w-[350px] shadow-lg ${
                           isDark
-                            ? "text-dark-text-secondary"
-                            : "text-light-text-secondary"
-                        }`}
+                            ? "bg-dark-bg-secondary border border-dark-border"
+                            : "bg-light-bg-secondary border border-light-border"
+                        } text-center transition-all duration-300`}
                       >
-                        {member.bio}
-                      </p>
-                    </div>
+                        <img
+                          src={member.image}
+                          alt={member.name}
+                          className="w-24 h-24 rounded-full mx-auto mb-4 border-2 border-primary"
+                        />
+                        <h4 className="text-lg font-semibold mb-2">
+                          {member.name}
+                        </h4>
+                        <p className="text-primary text-sm font-medium mb-3">
+                          {member.role}
+                        </p>
+                        <p
+                          className={`text-sm leading-relaxed ${
+                            isDark
+                              ? "text-dark-text-secondary"
+                              : "text-light-text-secondary"
+                          }`}
+                        >
+                          {member.bio}
+                        </p>
+                      </div>
+                    </SwiperSlide>
                   ))}
-                </div>
+                </Swiper>
               </div>
             )}
           </div>
