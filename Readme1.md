@@ -168,6 +168,36 @@ Experience Codify in action: [https://codifylearn.netlify.app](https://codifylea
    yarn start
    ```
 
+### Python Setup (for PDF Generation Service)
+1. Navigate to the python directory
+   ```bash
+   cd codify/python
+   ```
+2. Create a virtual environment
+   ```bash
+   python -m venv venv
+   ```
+3. Activate the virtual environment
+   ```bash
+   # On Linux/Mac
+   source venv/bin/activate
+   
+   # On Windows
+   venv\Scripts\activate
+   ```
+4. Install dependencies
+   ```bash
+   pip install -r requirements.txt
+   ```
+5. Create a `.env` file with your Google API key
+   ```
+   GOOGLE_API_KEY=your_google_gemini_api_key
+   ```
+6. Start the Python service
+   ```bash
+   python app.py
+   ```
+
 ## Note:
  You might need to run both the client and server simultaneously for fetching data in your local machine.
 

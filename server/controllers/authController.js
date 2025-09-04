@@ -187,11 +187,31 @@ const googleLogin = async (req, res, next) => {
 //Google Signup
 const googleSignup = async (req, res, next) => {
   try {
-    passport.authenticate("google-signup", (err, data, info) => {
+    passport.authenticate("google-signup",async (err, data, info) => {
       if (err) return res.redirect(`${process.env.FRONTEND_URL}/signup?error=server_error`);
       if (!data) {
         const errorMsg = encodeURIComponent(info?.message || "Authentication failed");
         return res.redirect(`${process.env.FRONTEND_URL}/signup?error=${errorMsg}`); 
+      }
+      // Send email reminder to set password
+      try {
+        const userEmail = data.user.email; // Get user email from data
+        const forgotPasswordLink = `${process.env.FRONTEND_URL}/forgot-password`;
+
+        await sendEmail(
+          userEmail,
+          "Welcome to Codify - Set Your Password",
+          `Hi ${data.user.username || "there"},\n\n
+          Welcome to Codify! 🎉\n\n
+          Since you signed up using Google, you don’t have a password yet.  
+          You can set one anytime by clicking the link below:\n\n
+          ${forgotPasswordLink}\n\n
+          This will let you log in directly using your email & password as well as Google.\n\n
+          Cheers,  
+          Codify Team`
+        );
+      } catch (emailError) {
+        console.error("Failed to send welcome email:", emailError);
       }
       // Upon Successful Signup, Redirect URL with token to frontend
       const { token } = data;
