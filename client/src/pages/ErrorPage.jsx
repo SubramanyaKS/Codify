@@ -53,16 +53,6 @@ function ErrorPage() {
     setShowSearchTips(true);
   };
 
-  // // Motion variants
-  // const fadeInUp = {
-  //   hidden: { opacity: 0, y: 20 },
-  //   visible: (i = 1) => ({
-  //     opacity: 1,
-  //     y: 0,
-  //     transition: { delay: i * 0.2, duration: 0.6, ease: "easeOut" },
-  //   }),
-  // };
-
   return (
     <div
       className={`relative min-h-screen-minus-nav flex items-center justify-center overflow-hidden z-10 ${
