@@ -22,7 +22,8 @@ function Dashboard() {
     coursesCompleted: 0,
     totalHoursLearned: 0,
     lastActive: new Date().toISOString(),
-    savedCourses: 0
+    savedCourses: 0,
+    savedRoadmaps: 0
   });
   const [courseProgress, setCourseProgress] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState(null);
@@ -42,7 +43,9 @@ function Dashboard() {
 
       if (response.ok) {
         const data = await response.json();
-        setBookmarks(data.data || []);
+        const list = data.data || [];
+        setBookmarks(list);
+        setStats(prev => ({ ...prev, savedRoadmaps: list.length }));
       } else {
         console.error('Failed to fetch bookmarks:', response.status, response.statusText);
       }
@@ -365,6 +368,13 @@ return (
         >
           {[
             {
+              icon: FaStar,
+              label: "Saved Roadmaps",
+              value: stats.savedRoadmaps,
+              color: "text-yellow-500",
+              bgColor: "bg-yellow-500/10"
+            },
+            {
               icon: FaBookmark,
               label: "Saved Courses",
               value: stats.savedCourses,
@@ -384,13 +394,6 @@ return (
               value: stats.coursesInProgress,
               color: "text-orange-500",
               bgColor: "bg-orange-500/10"
-            },
-            {
-              icon: FaClock,
-              label: "Hours Learned",
-              value: stats.totalHoursLearned,
-              color: "text-purple-500",
-              bgColor: "bg-purple-500/10"
             }
           ].map((stat) => (
             <motion.div
@@ -631,9 +634,9 @@ return (
                   </div>
 
                   {watchlist.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {watchlist.map(course => (
-                        <div key={course._id}>
+                        <div key={course._id} className="flex justify-center">
                           <Suspense fallback={
                             <div className="flex items-center justify-center h-40">
                               <motion.div
@@ -648,6 +651,7 @@ return (
                               watchlist={watchlist}
                               updateWatchlist={updateWatchlist}
                               onClick={handleCourseSelect}
+                              size="wide"
                             />
                           </Suspense>
                         </div>
@@ -785,25 +789,70 @@ return (
 
 
 
-        {/* Call to Action Section - matching Roadmaps */}
+        {/* Call to Action Section - refreshed UI */}
         <motion.section 
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.8, duration: 0.6, ease: "easeOut" }}
-          className={`mt-24 text-center p-8 sm:p-12 rounded-3xl ${
-            isDark ? 'bg-gradient-to-r from-dark-bg-secondary to-dark-bg-secondary border border-dark-border' : 'bg-gradient-to-r from-light-bg-secondary to-light-bg-secondary border border-light-border'
+          transition={{ delay: 1.6, duration: 0.6, ease: "easeOut" }}
+          className={`mt-24 rounded-3xl overflow-hidden border ${
+            isDark
+              ? 'bg-gradient-to-br from-dark-bg-secondary via-dark-bg-tertiary to-dark-bg-secondary border-dark-border'
+              : 'bg-gradient-to-br from-light-bg-secondary via-light-bg-tertiary to-light-bg-secondary border-light-border'
           }`}
         >
-          <h3 className={`text-xl sm:text-2xl md:text-3xl font-righteous mb-4 ${
-            isDark ? 'text-dark-text-primary' : 'text-light-text-primary'
-          }`}>
-            Keep Learning, Keep Growing
-          </h3>
-          <p className={`text-base sm:text-lg ${
-            isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'
-          } max-w-2xl mx-auto`}>
-            Your learning journey is unique. Track your progress, set new goals, and unlock your potential with our comprehensive learning platform.
-          </p>
+          <div className="px-6 py-8 sm:px-10 sm:py-12 md:px-14 md:py-14">
+            <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+              {/* Left - Message */}
+              <div className="md:col-span-2 text-center md:text-left">
+                <h3 className={`text-2xl sm:text-3xl md:text-4xl font-righteous leading-tight ${
+                  isDark ? 'text-dark-text-primary' : 'text-light-text-primary'
+                }`}>
+                  Keep Learning,
+                  <span className="text-primary"> Keep Growing</span>
+                </h3>
+                <p className={`mt-3 sm:mt-4 text-base sm:text-lg md:text-xl ${
+                  isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'
+                }`}>
+                  Set goals, track your progress, and turn consistency into mastery.
+                </p>
+                <div className="mt-6 flex flex-wrap gap-3 justify-center md:justify-start">
+                  <Link to="/courses" className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-primary text-white hover:bg-primary-dark transition-colors text-sm sm:text-base">
+                    Browse Courses
+                  </Link>
+                  <Link to="/roadmap" className={`${
+                    isDark ? 'bg-dark-bg-primary text-dark-text-primary' : 'bg-light-bg-primary text-light-text-primary'
+                  } px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl border border-primary/30 hover:border-primary/60 transition-colors text-sm sm:text-base`}>
+                    Explore Roadmaps
+                  </Link>
+                </div>
+              </div>
+
+              {/* Right - Quick Stats */}
+              <div className={`rounded-2xl p-5 sm:p-6 border ${
+                isDark ? 'bg-dark-bg-primary/60 border-dark-border' : 'bg-light-bg-primary/60 border-light-border'
+              }`}
+              >
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="text-center">
+                    <div className="text-xs sm:text-sm opacity-70">Saved Courses</div>
+                    <div className="text-xl sm:text-2xl font-semibold text-primary">{stats.savedCourses}</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-xs sm:text-sm opacity-70">Saved Roadmaps</div>
+                    <div className="text-xl sm:text-2xl font-semibold text-primary">{stats.savedRoadmaps}</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-xs sm:text-sm opacity-70">In Progress</div>
+                    <div className="text-xl sm:text-2xl font-semibold">{stats.coursesInProgress}</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-xs sm:text-sm opacity-70">Hours</div>
+                    <div className="text-xl sm:text-2xl font-semibold">{stats.totalHoursLearned}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </motion.section>
       </div>
     </div>
