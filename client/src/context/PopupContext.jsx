@@ -34,7 +34,7 @@ const PopupProvider = ({ children }) => {
       setTodos([]);
       return;
     }
-    fetch(`${API}/api/todos/getTodo`, { headers })
+    fetch(`${API}/api/todos`, { headers })
       .then((res) => res.json())
       .then((data) => setTodos(data))
       .catch((err) => console.error("Failed to fetch todos:", err));
@@ -43,7 +43,7 @@ const PopupProvider = ({ children }) => {
   const addTodo = async (text) => {
     if (!isLoggedIn) return;
     try {
-      const res = await fetch(`${API}/api/todos/setTodo`, {
+      const res = await fetch(`${API}/api/todos`, {
         method: "POST",
         headers,
         body: JSON.stringify({ text, completed: false }),
