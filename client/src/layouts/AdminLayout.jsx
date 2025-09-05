@@ -65,14 +65,6 @@ function AdminLayout() {
         duration: 0.5,
         ease: "easeOut"
       }
-    },
-    hover: {
-      y: -8,
-      scale: 1.02,
-      transition: {
-        duration: 0.2,
-        ease: "easeInOut"
-      }
     }
   };
 
