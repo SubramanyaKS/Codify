@@ -114,4 +114,3 @@ Let’s work together to make it **welcoming, inclusive, and empowering for ever
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-![Contributors GIF](https://media.giphy.com/media/l0ExncehJzexFpRHq/giphy.gif)
