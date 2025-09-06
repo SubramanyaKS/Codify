@@ -16,16 +16,14 @@ const Footer = () => {
   const { theme } = useTheme();
   const isDark = theme === "dark";
 
-  
-  const reqdroadmaps=roadmap.filter((item)=>
+  const reqdroadmaps = roadmap.filter((item) =>
     ['Frontend','Backend','Full Stack','Android'].includes(item.roadmap_name));
   return (
     <footer
       className={`
-      ${
-        isDark
-          ? "bg-dark-bg-secondary text-dark-text-primary"
-          : "bg-light-bg-secondary text-light-text-primary"
+      ${isDark 
+        ? "bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 backdrop-blur-xl text-dark-text-primary" 
+        : "bg-gradient-to-br from-blue-50 to-indigo-50 backdrop-blur-xl text-light-text-primary"
       }
       pt-16 pb-8 border-t-2 ${
         isDark ? "border-dark-border" : "border-light-border"
@@ -33,6 +31,13 @@ const Footer = () => {
       relative overflow-hidden
     `}
     >
+      {/* Enhanced Background with grid pattern */}
+      <div 
+        className={`absolute top-0 left-0 w-full h-full -z-10 bg-[size:30px_30px] ${isDark ? 'bg-grid-pattern-dark' : 'bg-grid-pattern-light'}`}
+      >
+        <div className={`absolute inset-0 ${isDark ? 'bg-gradient-to-br from-dark-bg-primary/90 via-transparent to-dark-bg-primary/50' : 'bg-gradient-to-br from-light-bg-primary/90 via-transparent to-light-bg-primary/50'}`}></div>
+      </div>
+
       {/* Background decorative elements */}
       <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-primary/5 blur-3xl"></div>
       <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full bg-primary/5 blur-3xl"></div>
@@ -68,12 +73,12 @@ const Footer = () => {
                 text-xl p-3 rounded-full transition-all duration-300 transform hover:scale-110
                 ${
                   isDark
-                    ? "bg-dark-bg-tertiary hover:bg-primary/20"
-                    : "bg-light-bg-tertiary hover:bg-primary/20"
+                    ? "bg-gradient-to-br from-gray-700 to-gray-800 hover:bg-primary/20 backdrop-blur-sm"
+                    : "bg-white/50 hover:bg-primary/20 backdrop-blur-sm"
                 }
                 ${
                   isDark ? "text-dark-text-primary" : "text-light-text-primary"
-                } hover:text-primary
+                } hover:text-primary border ${isDark ? "border-gray-600" : "border-white/20"}
               `}
               aria-label="GitHub"
             >
@@ -87,12 +92,12 @@ const Footer = () => {
                 text-xl p-3 rounded-full transition-all duration-300 transform hover:scale-110
                 ${
                   isDark
-                    ? "bg-dark-bg-tertiary hover:bg-primary/20"
-                    : "bg-light-bg-tertiary hover:bg-primary/20"
+                    ? "bg-gradient-to-br from-gray-700 to-gray-800 hover:bg-primary/20 backdrop-blur-sm"
+                    : "bg-white/50 hover:bg-primary/20 backdrop-blur-sm"
                 }
                 ${
                   isDark ? "text-dark-text-primary" : "text-light-text-primary"
-                } hover:text-primary
+                } hover:text-primary border ${isDark ? "border-gray-600" : "border-white/20"}
               `}
               aria-label="LinkedIn"
             >
@@ -106,12 +111,12 @@ const Footer = () => {
                 text-xl p-3 rounded-full transition-all duration-300 transform hover:scale-110
                 ${
                   isDark
-                    ? "bg-dark-bg-tertiary hover:bg-primary/20"
-                    : "bg-light-bg-tertiary hover:bg-primary/20"
+                    ? "bg-gradient-to-br from-gray-700 to-gray-800 hover:bg-primary/20 backdrop-blur-sm"
+                    : "bg-white/50 hover:bg-primary/20 backdrop-blur-sm"
                 }
                 ${
                   isDark ? "text-dark-text-primary" : "text-light-text-primary"
-                } hover:text-primary
+                } hover:text-primary border ${isDark ? "border-gray-600" : "border-white/20"}
               `}
               aria-label="Twitter"
             >
@@ -125,12 +130,12 @@ const Footer = () => {
                 text-xl p-3 rounded-full transition-all duration-300 transform hover:scale-110
                 ${
                   isDark
-                    ? "bg-dark-bg-tertiary hover:bg-primary/20"
-                    : "bg-light-bg-tertiary hover:bg-primary/20"
+                    ? "bg-gradient-to-br from-gray-700 to-gray-800 hover:bg-primary/20 backdrop-blur-sm"
+                    : "bg-white/50 hover:bg-primary/20 backdrop-blur-sm"
                 }
                 ${
                   isDark ? "text-dark-text-primary" : "text-light-text-primary"
-                } hover:text-primary
+                } hover:text-primary border ${isDark ? "border-gray-600" : "border-white/20"}
               `}
               aria-label="YouTube"
             >
@@ -144,12 +149,12 @@ const Footer = () => {
                 text-xl p-3 rounded-full transition-all duration-300 transform hover:scale-110
                 ${
                   isDark
-                    ? "bg-dark-bg-tertiary hover:bg-primary/20"
-                    : "bg-light-bg-tertiary hover:bg-primary/20"
+                    ? "bg-gradient-to-br from-gray-700 to-gray-800 hover:bg-primary/20 backdrop-blur-sm"
+                    : "bg-white/50 hover:bg-primary/20 backdrop-blur-sm"
                 }
                 ${
                   isDark ? "text-dark-text-primary" : "text-light-text-primary"
-                } hover:text-primary
+                } hover:text-primary border ${isDark ? "border-gray-600" : "border-white/20"}
               `}
               aria-label="Instagram"
             >
@@ -161,7 +166,11 @@ const Footer = () => {
         {/* Main footer content */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           {/* About Section */}
-          <div className="flex flex-col gap-4">
+          <div className={`flex flex-col gap-4 p-6 rounded-2xl ${
+            isDark 
+              ? "bg-gradient-to-br from-gray-700/30 to-gray-800/30 backdrop-blur-sm border border-gray-600/20" 
+              : "bg-white/30 backdrop-blur-sm border border-white/20"
+            }`}>
             <h3 className="text-primary text-xl font-righteous pb-2 border-b border-primary/30">
               About Us
             </h3>
@@ -180,7 +189,11 @@ const Footer = () => {
           </div>
 
           {/* Quick Links */}
-          <div className="flex flex-col gap-4">
+          <div className={`flex flex-col gap-4 p-6 rounded-2xl ${
+            isDark 
+              ? "bg-gradient-to-br from-gray-700/30 to-gray-800/30 backdrop-blur-sm border border-gray-600/20" 
+              : "bg-white/30 backdrop-blur-sm border border-white/20"
+            }`}>
             <h3 className="text-primary text-xl font-righteous pb-2 border-b border-primary/30">
               Quick Links
             </h3>
@@ -269,8 +282,11 @@ const Footer = () => {
           </div>
 
           {/* Learning Paths */}
-          
-          <div className="flex flex-col gap-4">
+          <div className={`flex flex-col gap-4 p-6 rounded-2xl ${
+            isDark 
+              ? "bg-gradient-to-br from-gray-700/30 to-gray-800/30 backdrop-blur-sm border border-gray-600/20" 
+              : "bg-white/30 backdrop-blur-sm border border-white/20"
+            }`}>
             <h3 className="text-primary text-xl font-righteous pb-2 border-b border-primary/30">
             <Link to='/roadmap'>
             Learning Paths
@@ -296,10 +312,14 @@ const Footer = () => {
             }
             </ul>
           </div>
-          
+
 
           {/* Contact Info */}
-          <div className="flex flex-col gap-4">
+          <div className={`flex flex-col gap-4 p-6 rounded-2xl ${
+            isDark 
+              ? "bg-gradient-to-br from-gray-700/30 to-gray-800/30 backdrop-blur-sm border border-gray-600/20" 
+              : "bg-white/30 backdrop-blur-sm border border-white/20"
+            }`}>
             <h3 className="text-primary text-xl font-righteous pb-2 border-b border-primary/30">
               Contact Us
             </h3>
@@ -341,9 +361,8 @@ const Footer = () => {
         {/* Newsletter subscription */}
         <div
           className={`
-          p-6 rounded-xl mb-12
-          ${isDark ? "bg-dark-bg-tertiary" : "bg-light-bg-tertiary"}
-          ${isDark ? "border border-dark-border" : "border border-light-border"}
+          p-6 rounded-2xl mb-12 shadow-lg
+          ${isDark ? "bg-gradient-to-br from-gray-700/40 to-gray-800/40 backdrop-blur-sm border border-gray-600/30" : "bg-white/40 backdrop-blur-sm border border-white/30"}
         `}
         >
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
@@ -368,15 +387,15 @@ const Footer = () => {
                   type="email"
                   placeholder="Enter your email"
                   className={`
-                    flex-1 px-4 py-2 rounded-lg
+                    flex-1 px-4 py-2 rounded-lg backdrop-blur-sm
                     ${
                       isDark
-                        ? "bg-dark-bg-primary text-dark-text-primary border-dark-border"
-                        : "bg-light-bg-primary text-light-text-primary border-light-border"
+                        ? "bg-gray-800/50 text-dark-text-primary border-gray-600/30"
+                        : "bg-white/50 text-light-text-primary border-white/30"
                     } border focus:outline-none focus:ring-2 focus:ring-primary
                   `}
                 />
-                <button className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg transition-colors my-3 mx-1">
+                <button className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg transition-colors my-3 mx-1 shadow-md">
                   Subscribe
                 </button>
               </div>
@@ -387,7 +406,7 @@ const Footer = () => {
         {/* Copyright */}
         <div
           className={`text-center pt-6 border-t ${
-            isDark ? "border-dark-border/30" : "border-light-border/30"
+            isDark ? "border-gray-600/30" : "border-white/30"
           }`}
         >
           <p
