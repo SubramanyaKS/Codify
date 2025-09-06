@@ -312,7 +312,7 @@ const Footer = () => {
                 } flex items-start`}
               >
                 <FaMapMarkerAlt className="text-primary mt-1 mr-3 flex-shrink-0" />
-               <a href='https://maps.app.goo.gl/aRVCuJ6Xmrqj3X4f8' target="_blank"> <span>Sitapura,Jaipur</span></a>
+               <a href='https://maps.app.goo.gl/aRVCuJ6Xmrqj3X4f8' target="_blank"> <span>Sitapura, Jaipur</span></a>
               </li>
               <li
                 className={`${
