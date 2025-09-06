@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import PropTypes from 'prop-types';
 
 export const AuthContext = createContext();
 // this is provider
@@ -24,12 +24,16 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     userAuthentication();
     fetchCoursesData();
-  }, []);
+  }, [token]);
   const userAuthentication = async () => {
     try {
+      if (!token) return; // Don't make the request if there's no token
       const response = await fetch(`${API}/user`, {
         method: "GET",
-        headers: { Authorization: authorizationToken },
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
       });
       if (response.ok) {
         const data = await response.json();
@@ -71,6 +75,10 @@ export const AuthProvider = ({ children }) => {
       {children}
     </AuthContext.Provider>
   );
+};
+
+AuthProvider.propTypes = {
+  children: PropTypes.node.isRequired
 };
 
 // this is delevering these provided items to all
