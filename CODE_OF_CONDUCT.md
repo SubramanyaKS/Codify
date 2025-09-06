@@ -102,8 +102,16 @@ Let’s work together to make it **welcoming, inclusive, and empowering for ever
 ---
 
 ## 🌟 Contributor Wall
-A huge thanks to our amazing contributors who make Codify better every day 🚀  
 
+> **Auto-updating (no setup needed):** shows everyone who has contributed to the upstream project.
+
+[![All Contributors](https://contrib.rocks/image?repo=Roshansuthar1105/Codify)](https://github.com/Roshansuthar1105/Codify/graphs/contributors)
+
+<!-- Optional: count badge -->
+[![GitHub contributors](https://img.shields.io/github/contributors/Roshansuthar1105/Codify)](https://github.com/Roshansuthar1105/Codify/graphs/contributors)
+
+<!-- Bonus: If you later enable the All Contributors bot, it will fill the block below -->
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
+![Contributors GIF](https://media.giphy.com/media/l0ExncehJzexFpRHq/giphy.gif)
