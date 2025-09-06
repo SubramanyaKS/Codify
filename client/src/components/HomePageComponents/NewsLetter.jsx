@@ -15,7 +15,18 @@ const NewsLetter = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Here you would typically handle the newsletter subscription
+
+    if (!email.trim()) {
+      alert("Please enter your email address.");
+      return;
+    }
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+      alert("Please enter a valid email address.");
+      return;
+    }
+
     alert(`Thank you for subscribing with: ${email}`);
     setEmail("");
   };
