@@ -51,7 +51,7 @@ function MobileMenu({ isOpen, onClose, isLoggedIn, userdata }) {
 
         {/* Menu panel */}
         <div className={`
-          absolute right-0 top-0 h-full w-64 overflow-y-auto z-[9100]
+          absolute right-0 top-0 h-full w-[85vw] sm:w-80 md:w-96 max-w-sm overflow-y-auto z-[9100]
           ${isDark ? 'bg-dark-bg-primary' : 'bg-white'}
           ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}
           shadow-lg transform transition-transform duration-300 ease-in-out
@@ -276,16 +276,9 @@ function MobileMenu({ isOpen, onClose, isLoggedIn, userdata }) {
 
               {/* Theme Controls */}
               <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className={`text-sm font-medium ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
-                      Theme
-                    </span>
-                    <ThemeSwitcher />
-                  </div>
-                  <div>
-                    <ThemeColorSelector />
-                  </div>
+                <div className="flex items-center gap-3">
+                  <ThemeSwitcher />
+                  <ThemeColorSelector />
                 </div>
               </div>
 
