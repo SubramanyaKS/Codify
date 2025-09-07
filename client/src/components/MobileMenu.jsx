@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { NavLink } from 'react-router-dom';
 import { RiCloseLargeLine } from 'react-icons/ri';
-import { FaBook, FaBookReader,FaBookmark , FaEnvelope, FaGraduationCap, FaHome, FaRoad, FaSignInAlt, FaSignOutAlt, FaUser, FaUserPlus, FaUserTie } from 'react-icons/fa';
+import { FaBook, FaBookReader,FaBookmark , FaEnvelope, FaGraduationCap, FaHome, FaRoad, FaSignInAlt, FaSignOutAlt, FaUser, FaUserPlus, FaUserTie,FaQuestionCircle } from 'react-icons/fa';
 import { useTheme } from '../context/ThemeContext';
 import { FaCode } from "react-icons/fa";  
 
@@ -218,6 +218,24 @@ function MobileMenu({ isOpen, onClose, isLoggedIn, userdata }) {
                 </NavLink>
 
                 <NavLink
+                  to="/Questions"
+                  onClick={onClose}
+                  className={({ isActive }) => `
+                    px-3 py-2 rounded-md text-base font-medium transition-colors flex items-center gap-2
+                    ${isActive
+                      ? isDark
+                        ? 'bg-dark-bg-tertiary text-primary'
+                        : 'bg-light-bg-tertiary text-primary'
+                      : isDark
+                        ? 'text-dark-text-primary hover:bg-dark-bg-tertiary'
+                        : 'text-light-text-primary hover:bg-light-bg-tertiary'
+                    }
+                  `}
+                >
+                  <FaQuestionCircle className='text-xl' /> <span className='text-xl'>Questions</span>
+                </NavLink>
+
+                <NavLink
                   to="/contact"
                   onClick={onClose}
                   className={({ isActive }) => `
@@ -274,6 +292,8 @@ function MobileMenu({ isOpen, onClose, isLoggedIn, userdata }) {
                         <FaUserTie className='text-xl' /> <span className='text-xl'>Admin Panel</span>
                       </NavLink>
                     )}
+
+                    
 
                     <NavLink
                       to="/logout"

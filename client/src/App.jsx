@@ -33,7 +33,8 @@ const JavaScriptFundamentals = lazy(() =>
 );
 const GitNotes = lazy(() => import("./pages/GitNotes"));
 const ReactPattern = lazy(() => import("./pages/ReactPattern.jsx"));
-
+const QuestionsPage  = lazy(() => import("./pages/QuestionPage.jsx"));
+const QuestionDetail = lazy(()=>import("./components/QuestionDetail.jsx"))
 
 const PythonNotes = lazy(() => import("./pages/PythonNotes"));
 
@@ -105,6 +106,9 @@ function App() {
                 <Route path="/notes/javascript" element={<JavaScriptFundamentals />} />
                 <Route path="/notes/git" element={<GitNotes />} />
                <Route path="/notes/react" element={<ReactPattern />} />
+               <Route path="/Questions" element={<QuestionsPage />} />
+               <Route path="/questions/:id" element={<QuestionDetail />} />
+
               </Routes>
             </Suspense>
           </main>
