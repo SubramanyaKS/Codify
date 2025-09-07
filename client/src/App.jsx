@@ -31,7 +31,7 @@ const OAuthCallback = lazy(() => import("./pages/OAuthCallback"));
 
 // Notes components
 const JavaScriptFundamentals = lazy(() => import("./pages/Notes/JavaScriptFundamentals/JavaScriptFundamentals.jsx"));
-const GitNotes = lazy(() => import("./pages/GitNotes"));
+const GitNotes = lazy(() => import("./pages/Notes/GitVersionControl/GitNotes.jsx"));
 const ReactPattern = lazy(() => import("./pages/Notes/ReactPatterns/ReactPattern.jsx"));
 const PythonNotes = lazy(() => import("./pages/Notes/PythonBasics/PythonNotes.jsx"));
 

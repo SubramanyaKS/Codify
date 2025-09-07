@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTheme } from '../../../context/ThemeContext';
+import JS_FUNDAMENTALS from "./JSNotes.json";
 
-const JS_FUNDAMENTALS = require("../../../assets/json/JSNotes.json");
 
 
 const JavaScriptFundamentals = () => {
