@@ -11,21 +11,21 @@ import router from './routes/router.js';
 import adminRouter from './routes/adminRouter.js';
 import progressRouter from './routes/progressRoute.js';
 import activityRouter from './routes/activityRoute.js';
-import LearderBoardRouter from './routes/LeaderBoardRoute.js'
+import leaderBoardRoute from './routes/leaderBoardRoute.js'
 import bookmarkRouter from './routes/bookmarkRoute.js';
- 
-import todoRouter from "./routes/TodoRoute.js"
+
+import todoRouter from "./routes/todoRoute.js"
 
 import session from "express-session";
 import passport from "passport";
 import { configurePassport } from "./config/passport.js";
 dotenv.config();
-const app= express();
+const app = express();
 // Allow all origins
 const corsOption = {
-    origin: "*",   // any domain can access,
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    credentials: false
+  origin: "*",   // any domain can access,
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  credentials: false
 };
 app.use(cors(corsOption));
 
@@ -49,22 +49,22 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 configurePassport();
-app.use("/api/v1/auth",authRouter);
-app.use("/contact",contactRouter);
-app.use("/user",userRouter);
-app.use("/api/v1/courses",coursesRouter);
-app.use("/progress",progressRouter);
-app.use("/activity",activityRouter);
-app.use("/",router)
-app.use("/admin",adminRouter);
-app.use("/api/v1",LearderBoardRouter);
+app.use("/api/v1/auth", authRouter);
+app.use("/contact", contactRouter);
+app.use("/user", userRouter);
+app.use("/api/v1/courses", coursesRouter);
+app.use("/progress", progressRouter);
+app.use("/activity", activityRouter);
+app.use("/", router)
+app.use("/admin", adminRouter);
+app.use("/api/v1", leaderBoardRoute);
 app.use("/api/v1/bookmarks", bookmarkRouter);
 app.use('/api/todos', todoRouter);
 // app.get("/",)
-const PORT = process.env.PORT ||5050;
+const PORT = process.env.PORT || 5050;
 
 
 app.use(errorMiddleware);
 connectDB().then(
-    app.listen(PORT,()=>{console.log(`Server is running at localhost:${PORT}`)})
-).catch(()=>console.error("error during connection with mongodb"));
+  app.listen(PORT, () => { console.log(`Server is running at localhost:${PORT}`) })
+).catch(() => console.error("error during connection with mongodb"));
