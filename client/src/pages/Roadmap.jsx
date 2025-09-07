@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useState, useMemo,useEffect } from "react";
-import roadmap from "../assets/json/roadmap.json";
+import roadmap from "../assets/json/rolebasedRoadmaps.json";
 import skills from "../assets/json/skillbasedRoadmaps.json";
 import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../store/auth"; 
