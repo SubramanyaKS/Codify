@@ -8,15 +8,16 @@
 @tailwind utilities;
 
 :root {
-  --color-primary: #9381ff;
-  --color-primary-light: #a89bff;
-  --color-primary-dark: #7b6fe6;
-  --color-secondary: #ff6b6b;
-  --color-secondary-light: #ff8e8e;
-  --color-secondary-dark: #ff5252;
-  --color-accent: #4ecdc4;
-  --color-accent-light: #6ed7d0;
-  --color-accent-dark: #2ec4b6;
+
+  --color-primary: #c8bfff;
+  --color-primary-light: #d6cfff;
+  --color-primary-dark: #b8adff;
+  --color-secondary: #ffb3b3;
+  --color-secondary-light: #ffc4c4;
+  --color-secondary-dark: #ffa3a3;
+  --color-accent: #a8e6e1;
+  --color-accent-light: #baeae6;
+  --color-accent-dark: #96e0da;
 }
 
 body {
@@ -30,7 +31,6 @@ a, button {
 input, textarea {
   cursor: url("/cursor-input.svg") 2 12, text;
 }
-
 
 .dark a,
 .dark button {
@@ -56,12 +56,12 @@ html {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: rgba(147, 129, 255, 0.5);
+  background-color: rgba(200, 191, 255, 0.5);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #9381ff;
+  background-color: #c8bfff;
 }
 
 /* Custom scrollbar for playlist */
@@ -74,12 +74,12 @@ html {
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: rgba(147, 129, 255, 0.3);
+  background-color: rgba(200, 191, 255, 0.3);
   border-radius: 9999px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(147, 129, 255, 0.7);
+  background-color: rgba(200, 191, 255, 0.7);
 }
 
 /* Enhanced animations for home page */
