@@ -14,7 +14,7 @@ function NavBar() {
   const isDark = theme === 'dark';
   const displayName = (userdata?.firstName && userdata?.lastName)
     ? `${userdata.firstName} ${userdata.lastName}`
-    : (userdata?.firstName || userdata?.username || (userdata?.email ? userdata.email.split('@')[0] : 'User'));
+    : (userdata?.firstName || userdata?.username || (userdata?.email ? userdata.email.split('@')[0] : ' '));
   const profileImageUrl = userdata?.profileImage
     || userdata?.avatar
     || userdata?.picture
