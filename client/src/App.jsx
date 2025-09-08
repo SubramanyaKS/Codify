@@ -25,18 +25,20 @@ const Roadmap = lazy(() => import("./pages/Roadmap"));
 const NotesPage = lazy(() => import("./pages/NotesPage"));
 const Notes = lazy(() => import("./pages/NotesComponent.jsx"));
 const ContributorsGuide = lazy(() => import("./pages/ContributorGuide.jsx"))
-const ContributorsPage = lazy(()=>import("./components/Contributor.jsx"))
+const ContributorsPage = lazy(() => import("./components/Contributor.jsx"))
 const Bookmarks = lazy(() => import("./pages/Bookmarks"));
-const  OAuthCallback = lazy(() => import("./pages/OAuthCallback"));
-const JavaScriptFundamentals = lazy(() =>
-  import("./pages/JavaScriptFundamentals")
-);
-const GitNotes = lazy(() => import("./pages/GitNotes"));
-const ReactPattern = lazy(() => import("./pages/ReactPattern.jsx"));
-const QuestionsPage  = lazy(() => import("./pages/QuestionPage.jsx"));
-const QuestionDetail = lazy(()=>import("./components/QuestionDetail.jsx"))
+const QuestionsPage = lazy(() => import("./pages/QuestionPage.jsx"));
+const QuestionDetail = lazy(() => import("./components/QuestionDetail.jsx"))
+const OAuthCallback = lazy(() => import("./pages/OAuthCallback"));
 
-const PythonNotes = lazy(() => import("./pages/PythonNotes"));
+// Notes components
+const JavaScriptFundamentals = lazy(() => import("./pages/Notes/JavaScriptFundamentals/JavaScriptFundamentals.jsx"));
+const GitNotes = lazy(() => import("./pages/Notes/GitVersionControl/GitNotes.jsx"));
+const ReactPattern = lazy(() => import("./pages/Notes/ReactPatterns/ReactPattern.jsx"));
+const PythonNotes = lazy(() => import("./pages/Notes/PythonBasics/PythonNotes.jsx"));
+
+
+
 
 // Admin components
 const AdminLayout = lazy(() => import("./layouts/AdminLayout"));
@@ -47,8 +49,8 @@ const AdminUpdate = lazy(() => import("./layouts/AdminUpdate"));
 const AddNewCourse = lazy(() => import("./layouts/CourseLayout/AddNewCourse.jsx"));
 const CourseUpdate = lazy(() => import("./layouts/CourseLayout/CourseUpdate"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
-const CodeEditor = lazy(()=>import("./components/CodeEditor..jsx"))
-  
+const CodeEditor = lazy(() => import("./components/CodeEditor..jsx"))
+
 const ScrollToTop = ({ children }) => {
   const location = useLocation();
 
@@ -65,57 +67,68 @@ function App() {
   return (
     <Router>
       <ScrollToTop>
-      <LoadingProvider>
-        <div className={`flex flex-col min-h-screen ${isDark ? 'bg-dark-bg-primary text-dark-text-primary' : 'bg-light-bg-primary text-light-text-primary'}`}>
-          <header className="fixed top-0 z-50 w-full">
-            <NavBar />
-          </header>
-          <main className="flex-grow pt-16">
-            <Suspense fallback={
-              <Loader />
-            }>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/oauth/callback" element={<OAuthCallback />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/courses" element={<Courses />} />
-                <Route path="/courses/:courseId" element={<CoursePlayer />} />
-                <Route path="/editor" element={<CodeEditor />} />
-                <Route path="/roadmap" element={<Roadmap />} />
-                <Route path="/bookmarks" element={<Bookmarks />} />
-                <Route path="/contact" element={<ContactUs />} />
-                <Route path="/signup" element={<Signup />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/forgot-password" element={<ForgotPassword />} />
-                <Route path="/logout" element={<LogOut />} />
-                <Route path="/contributors" element = {<ContributorsPage/>}/>
-                <Route path="/notes" element = {<NotesPage/>}/>
-                <Route path="/notes/:subjectname" element = {<Notes/>}/>
-                <Route path="*" element={<ErrorPage />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/contributorGuide" element={<ContributorsGuide />} />
-                <Route path="/admin" element={<AdminLayout />}>
-                  <Route path="users" element={<AdminUsers />} />
-                  <Route path="users/:id/edit" element={<AdminUpdate />} />
-                  <Route path="contacts" element={<AdminContacts />} />
-                  <Route path="courses" element={<AdminCourses />} />
-                  <Route path="courses/add" element={<AddNewCourse />} />
-                  <Route path="courses/update/:id" element={<CourseUpdate />} />
-                </Route>
-                <Route path="/notes/python" element={<PythonNotes />} />
-                <Route path="/notes/javascript" element={<JavaScriptFundamentals />} />
-                <Route path="/notes/git" element={<GitNotes />} />
-               <Route path="/notes/react" element={<ReactPattern />} />
-               <Route path="/Questions" element={<QuestionsPage />} />
-               <Route path="/questions/:id" element={<QuestionDetail />} />
+        <LoadingProvider>
+          <div className={`flex flex-col min-h-screen ${isDark ? 'bg-dark-bg-primary text-dark-text-primary' : 'bg-light-bg-primary text-light-text-primary'}`}>
+            <header className="fixed top-0 z-50 w-full">
+              <NavBar />
+            </header>
+            <main className="flex-grow pt-16">
+              <Suspense fallback={
+                <Loader />
+              }>
+                <Routes>
 
-              </Routes>
-            </Suspense>
-          </main>
-          <ScrollToTopButton />
-          <Footer />
-        </div>
-      </LoadingProvider>
+                  {/* Pages Routes */}
+                  <Route path="/" element={<Home />} />
+                  <Route path="/oauth/callback" element={<OAuthCallback />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/courses" element={<Courses />} />
+                  <Route path="/courses/:courseId" element={<CoursePlayer />} />
+                  <Route path="/editor" element={<CodeEditor />} />
+                  <Route path="/roadmap" element={<Roadmap />} />
+                  <Route path="/bookmarks" element={<Bookmarks />} />
+                  <Route path="/contact" element={<ContactUs />} />
+                  <Route path="/questions" element={<QuestionsPage />} />
+                  <Route path="/questions/:id" element={<QuestionDetail />} />
+
+                  {/* Notes Routes */}
+                  <Route path="/notes" element={<NotesPage />} />
+                  <Route path="/notes/:subjectname" element={<Notes />} />
+                  <Route path="/notes/javascript/*" element={<JavaScriptFundamentals />} />
+                  <Route path="/notes/python" element={<PythonNotes />} />
+                  <Route path="/notes/git" element={<GitNotes />} />
+                  <Route path="/notes/react" element={<ReactPattern />} />
+
+                  {/* Auth Routes */}
+                  <Route path="/signup" element={<Signup />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/forgot-password" element={<ForgotPassword />} />
+                  <Route path="/logout" element={<LogOut />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+
+                  {/* Admin Routes */}
+                  <Route path="/admin" element={<AdminLayout />}>
+                    <Route path="users" element={<AdminUsers />} />
+                    <Route path="users/:id/edit" element={<AdminUpdate />} />
+                    <Route path="contacts" element={<AdminContacts />} />
+                    <Route path="courses" element={<AdminCourses />} />
+                    <Route path="courses/add" element={<AddNewCourse />} />
+                    <Route path="courses/update/:id" element={<CourseUpdate />} />
+                  </Route>
+
+
+                  {/* Other Routes */}
+                  <Route path="/contributors" element={<ContributorsPage />} />
+                  <Route path="/contributorGuide" element={<ContributorsGuide />} />
+                  <Route path="*" element={<ErrorPage />} />
+
+                </Routes>
+              </Suspense>
+            </main>
+            <ScrollToTopButton />
+            <Footer />
+          </div>
+        </LoadingProvider>
       </ScrollToTop>
     </Router>
   );
