@@ -41,7 +41,7 @@ const JsIntroduction = () => {
     ]
 
     return (
-        <div className="max-w-7xl mx-auto p-6">
+        <div className="max-w-7xl mx-auto">
             <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-6">Introduction to <span className='text-primary-600 dark:text-primary-400'>JavaScript</span></h1>
 
             <div className="prose max-w-none">

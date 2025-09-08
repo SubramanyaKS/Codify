@@ -22,7 +22,7 @@ const JsHeroPage = () => {
     ];
 
     return (
-        <div className="max-w-7xl mx-auto p-6">
+        <div className="max-w-7xl mx-auto">
             {/* Hero Section */}
             <div className="text-center mb-16">
                 <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
