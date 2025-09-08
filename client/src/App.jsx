@@ -72,7 +72,7 @@ function App() {
             <header className="fixed top-0 z-50 w-full">
               <NavBar />
             </header>
-            <main className="flex-grow pt-16">
+            <main className="flex-grow pt-14 sm:pt-16">
               <Suspense fallback={
                 <Loader />
               }>

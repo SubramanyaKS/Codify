@@ -1,12 +1,20 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { FiGithub, FiChevronRight } from 'react-icons/fi';
+import { FiGithub, FiChevronRight, FiX } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
-import categories from "./JsSideBarData.json"
+import categories from "./JsSideBarData.json";
+import useMobile from '../../../../hooks/useMobile';
 
-const JavaScriptNotesSidebar = () => {
+const JavaScriptNotesSidebar = ({ onNavigate }) => {
+    const isMobile = useMobile(768);
+
+    const handleNavClick = () => {
+        if (isMobile && onNavigate) {
+            onNavigate();
+        }
+    };
+
     const [expandedCategories, setExpandedCategories] = useState(new Set(Object.keys(categories).splice(0, 1)));
-
 
     const toggleCategory = (category) => {
         setExpandedCategories(prev => {
@@ -23,11 +31,11 @@ const JavaScriptNotesSidebar = () => {
     const isCategoryExpanded = (category) => expandedCategories.has(category);
 
     return (
-        <div className="w-64 min-h-screen bg-white dark:bg-black/50 border-r border-black/50 dark:border-white/50 flex flex-col">
+        <div className="w-full h-full bg-white dark:bg-black border-r border-black/50 dark:border-white/50 flex flex-col overflow-y-auto">
             <div className="p-4 border-b border-gray-200 dark:border-gray-700">
                 <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 flex items-center">
                     <span className="text-primary-600 dark:text-primary-400 mr-2">•</span>
-                    <NavLink to="/notes/javascript">JS NOTES</NavLink>
+                    <NavLink to="/notes/javascript" onClick={handleNavClick}>JavaScript NOTES</NavLink>
                 </h2>
             </div>
 
@@ -80,6 +88,7 @@ const JavaScriptNotesSidebar = () => {
                                             <NavLink
                                                 key={index}
                                                 to={`/notes/javascript/${item.toLowerCase().replace(/\s+/g, '-')}`}
+                                                onClick={handleNavClick}
                                                 className={({ isActive }) => `
                                                     block px-3 py-2 text-sm rounded-md transition-colors duration-200 ${isActive
                                                         ? 'text-white bg-primary-600 dark:bg-primary-900 font-medium'
