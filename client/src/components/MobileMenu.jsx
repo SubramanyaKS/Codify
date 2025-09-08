@@ -132,7 +132,58 @@ function MobileMenu({ isOpen, onClose, isLoggedIn, userdata }) {
                 >
                   <FaCode className='text-xl' /> <span className='text-xl'>Code Editor</span>
                 </NavLink>
+                 <NavLink
+                  to="/courses"
+                  onClick={onClose}
+                  className={({ isActive }) => `
+                    px-3 py-2 rounded-md text-base font-medium transition-colors flex items-center gap-2
+                    ${isActive
+                      ? isDark
+                        ? 'bg-dark-bg-tertiary text-primary'
+                        : 'bg-light-bg-tertiary text-primary'
+                      : isDark
+                        ? 'text-dark-text-primary hover:bg-dark-bg-tertiary'
+                        : 'text-light-text-primary hover:bg-light-bg-tertiary'
+                    }
+                  `}
+                >
+                  <FaBook className='text-xl' /> <span className='text-xl'>Courses</span>
+                </NavLink>
+                <NavLink
+                  to="/notes"
+                  onClick={onClose}
+                  className={({ isActive }) => `
+                    px-3 py-2 rounded-md text-base font-medium transition-colors flex items-center gap-2
+                    ${isActive
+                      ? isDark
+                        ? 'bg-dark-bg-tertiary text-primary'
+                        : 'bg-light-bg-tertiary text-primary'
+                      : isDark
+                        ? 'text-dark-text-primary hover:bg-dark-bg-tertiary'
+                        : 'text-light-text-primary hover:bg-light-bg-tertiary'
+                    }
+                  `}
+                >
+                  <FaBookReader className='text-xl' /> <span className='text-xl'>Notes</span>
+                </NavLink>
 
+                <NavLink
+                  to="/roadmap"
+                  onClick={onClose}
+                  className={({ isActive }) => `
+                    px-3 py-2 rounded-md text-base font-medium transition-colors flex items-center gap-2
+                    ${isActive
+                      ? isDark
+                        ? 'bg-dark-bg-tertiary text-primary'
+                        : 'bg-light-bg-tertiary text-primary'
+                      : isDark
+                        ? 'text-dark-text-primary hover:bg-dark-bg-tertiary'
+                        : 'text-light-text-primary hover:bg-light-bg-tertiary'
+                    }
+                  `}
+                >
+                  <FaRoad className='text-xl' /> <span className='text-xl'>Roadmaps</span>
+                </NavLink>
 
 
                 <NavLink
