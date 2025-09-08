@@ -29,8 +29,6 @@ const Contribution = lazy(() =>
   import("../components/HomePageComponents/Contributor")
 )
 
-const Todo = lazy(()=> import("../components/TodoList"))
-
 function Home() {
   const { theme } = useTheme();
   const isDark = theme === "dark";
@@ -1025,7 +1023,6 @@ function Home() {
           </div>
         }
       >
-         <Todo/>
       </Suspense>
     </div>
   );

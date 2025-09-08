@@ -27,6 +27,8 @@ const Notes = lazy(() => import("./pages/NotesComponent.jsx"));
 const ContributorsGuide = lazy(() => import("./pages/ContributorGuide.jsx"))
 const ContributorsPage = lazy(() => import("./components/Contributor.jsx"))
 const Bookmarks = lazy(() => import("./pages/Bookmarks"));
+const QuestionsPage = lazy(() => import("./pages/QuestionPage.jsx"));
+const QuestionDetail = lazy(() => import("./components/QuestionDetail.jsx"))
 const OAuthCallback = lazy(() => import("./pages/OAuthCallback"));
 
 // Notes components
@@ -34,6 +36,7 @@ const JavaScriptFundamentals = lazy(() => import("./pages/Notes/JavaScriptFundam
 const GitNotes = lazy(() => import("./pages/Notes/GitVersionControl/GitNotes.jsx"));
 const ReactPattern = lazy(() => import("./pages/Notes/ReactPatterns/ReactPattern.jsx"));
 const PythonNotes = lazy(() => import("./pages/Notes/PythonBasics/PythonNotes.jsx"));
+
 
 
 
@@ -101,7 +104,9 @@ function App() {
                     <Route path="courses/add" element={<AddNewCourse />} />
                     <Route path="courses/update/:id" element={<CourseUpdate />} />
                   </Route>
-                  
+                  <Route path="/Questions" element={<QuestionsPage />} />
+                  <Route path="/questions/:id" element={<QuestionDetail />} />
+
                   {/* Note: JavaScript routes are now handled within JavaScriptFundamentals component */}
                   <Route path="/notes/javascript/*" element={<JavaScriptFundamentals />} />
                   <Route path="/notes/python" element={<PythonNotes />} />
