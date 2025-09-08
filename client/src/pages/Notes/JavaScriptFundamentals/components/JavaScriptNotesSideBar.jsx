@@ -23,11 +23,11 @@ const JavaScriptNotesSidebar = () => {
     const isCategoryExpanded = (category) => expandedCategories.has(category);
 
     return (
-        <div className="w-64 min-h-screen bg-white dark:bg-gray-800 border-r border-black/50 dark:border-white/50 flex flex-col">
+        <div className="w-64 min-h-screen bg-white dark:bg-black/50 border-r border-black/50 dark:border-white/50 flex flex-col">
             <div className="p-4 border-b border-gray-200 dark:border-gray-700">
                 <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 flex items-center">
                     <span className="text-primary-600 dark:text-primary-400 mr-2">•</span>
-                    JS NOTES
+                    <NavLink to="/notes/javascript">JS NOTES</NavLink>
                 </h2>
             </div>
 
