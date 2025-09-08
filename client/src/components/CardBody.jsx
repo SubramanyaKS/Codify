@@ -5,12 +5,10 @@ import { useTheme } from '../context/ThemeContext';
 import { toast } from 'react-toastify';
 import { MdBookmarkBorder, MdBookmarkAdded, MdEdit, MdPlayCircleOutline } from "react-icons/md";
 import { Link, useNavigate } from 'react-router-dom';
-import { useLoading } from './loadingContext';
 import PropTypes from 'prop-types';
 
 
 const CardBody = ({ course, watchlist = [], updateWatchlist, onClick, size = 'default' }) => {
-  const { setIsLoading } = useLoading();
   const { course_title, creator_youtube_link, creator_name, creator_image, course_image } = course;
   const { API, userdata } = useAuth();
   const { theme } = useTheme();
@@ -42,12 +40,10 @@ const CardBody = ({ course, watchlist = [], updateWatchlist, onClick, size = 'de
   const handleWatchlist = async () => {
     if (!userdata?._id) {
       toast.info("Please log in to save courses!");
-      setIsLoading(false);
       return;
     }
 
     try {
-      setIsLoading(true);
       //console.log(`${isInWatchlist ? 'Removing from' : 'Adding to'} watchlist:`, course._id);
 
       const response = await fetch(`${API}/user/addToWatchlist`, {
@@ -80,8 +76,6 @@ const CardBody = ({ course, watchlist = [], updateWatchlist, onClick, size = 'de
     } catch (error) {
       console.error("Error updating watchlist:", error);
       toast.error("Failed to update saved courses");
-    } finally {
-      setIsLoading(false);
     }
   };
 
