@@ -15,11 +15,8 @@ const PopupProvider = ({ children }) => {
   const { API, isLoggedIn } = useAuth();
   const token = localStorage.getItem("token");
 
-   
-
   // Popup state
   const [showTodo, setShowTodo] = useState(true);
-   
 
   // Todo state
   const [todos, setTodos] = useState([]);
@@ -74,11 +71,21 @@ const PopupProvider = ({ children }) => {
 
   const deleteTodo = async (id) => {
     if (!isLoggedIn) return;
+
+    const previousTodos = todos;
+    setTodos((prev) => prev.filter((t) => t._id !== id));
+
     try {
-      await fetch(`${API}/api/todos/${id}`, { method: "DELETE", headers });
-      setTodos((prev) => prev.filter((t) => t._id !== id));
+      const res = await fetch(`${API}/api/todos/${id}`, {
+        method: "DELETE",
+        headers,
+      });
+      if (!res.ok) {
+        throw new Error("Failed to delete todo");
+      }
     } catch (err) {
       console.error("Failed to delete todo:", err);
+      setTodos(previousTodos);
     }
   };
 
@@ -87,8 +94,7 @@ const PopupProvider = ({ children }) => {
     setShowTodo((prev) => !prev);
     if (!showTodo) setShowCalendar(false);
   };
-  
-  
+
   const closeAll = () => {
     setShowTodo(false);
     setShowCalendar(false);

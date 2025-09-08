@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { CheckCircle, Circle, Plus, Trash2, ListTodo } from "lucide-react";
 import { usePopup } from "../context/PopupContext";
 import { useAuth } from "../store/auth";
@@ -9,6 +9,8 @@ export default function TodoList() {
   const { isLoggedIn } = useAuth();
   const [newTodo, setNewTodo] = useState("");
   const [open, setOpen] = useState(false); // widget toggle state
+
+  const widgetRef = useRef(null);
 
   const handleAdd = () => {
     if (!isLoggedIn) return;
@@ -21,6 +23,23 @@ export default function TodoList() {
   // Ensure todos is always an array
   const todoList = Array.isArray(todos) ? todos : [];
 
+  // 🔹 Close widget if clicked outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (widgetRef.current && !widgetRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+
+    if (open) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [open]);
+
   return (
     <>
       {/* Floating Toggle Button */}
@@ -30,7 +49,7 @@ export default function TodoList() {
         whileTap={{ scale: 0.9, rotate: 15 }}
         animate={{ y: [0, -4, 0] }}
         transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
-        className="fixed bottom-4 right-4 z-50 p-4 rounded-full shadow-lg bg-primary text-white hover:bg-primary-dark transition"
+        className="fixed bottom-8 left-4 z-50 p-4 rounded-full shadow-lg bg-primary text-white hover:bg-primary-dark transition"
       >
         <ListTodo size={24} />
       </motion.button>
@@ -44,7 +63,8 @@ export default function TodoList() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 40 }}
             transition={{ duration: 0.35, ease: "easeOut" }}
-            className="fixed bottom-20 right-4 z-50 w-80 max-w-full"
+            className="fixed bottom-28 left-4 z-50 w-80 max-w-full"
+            ref={widgetRef} // 🔹 reference for outside click detection
           >
             <motion.div
               layout
@@ -60,8 +80,7 @@ export default function TodoList() {
                 Todo List
                 <span className="text-sm text-gray-600 dark:text-dark-text-secondary flex items-center gap-2">
                   <CheckCircle className="text-success" />{" "}
-                  {todoList.filter((t) => t.completed).length} /{" "}
-                  {todoList.length}
+                  {todoList.filter((t) => t.completed).length} / {todoList.length}
                 </span>
               </motion.h2>
 
@@ -101,9 +120,7 @@ export default function TodoList() {
                       >
                         <button
                           disabled={!isLoggedIn}
-                          onClick={() =>
-                            toggleTodoItem(todo._id || todo.id)
-                          }
+                          onClick={() => toggleTodoItem(todo._id || todo.id)}
                         >
                           {todo.completed ? (
                             <CheckCircle className="text-success" />

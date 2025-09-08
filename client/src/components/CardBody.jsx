@@ -9,7 +9,7 @@ import { useLoading } from './loadingContext';
 import PropTypes from 'prop-types';
 
 
-const CardBody = ({ course, watchlist = [], updateWatchlist, onClick }) => {
+const CardBody = ({ course, watchlist = [], updateWatchlist, onClick, size = 'default' }) => {
   const { setIsLoading } = useLoading();
   const { course_title, creator_youtube_link, creator_name, creator_image, course_image } = course;
   const { API, userdata } = useAuth();
@@ -85,10 +85,12 @@ const CardBody = ({ course, watchlist = [], updateWatchlist, onClick }) => {
     }
   };
 
+  const cardWidthClass = size === 'wide' ? 'w-full max-w-[560px]' : 'w-[330px]';
+
   return (
     <div
       className={`
-        group relative w-[330px] rounded-xl shadow-lg flex flex-col
+        group relative ${cardWidthClass} rounded-xl shadow-lg flex flex-col
         hover:border-b-2 hover:border-r-2 transition-all duration-300 overflow-hidden
         ${isDark
           ? 'bg-gradient-to-br from-gray-800 to-secondary-1000 backdrop-blur-xl'
@@ -221,7 +223,8 @@ CardBody.propTypes = {
     _id: PropTypes.string.isRequired
   })),
   updateWatchlist: PropTypes.func,
-  onClick: PropTypes.func
+  onClick: PropTypes.func,
+  size: PropTypes.oneOf(['default', 'wide'])
 };
 
 export default CardBody;
