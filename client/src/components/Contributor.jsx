@@ -13,6 +13,7 @@ import {
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import { useTheme } from "../context/ThemeContext"; // Theme context
 import { useNavigate } from "react-router-dom";
+import { useInView } from "react-intersection-observer";
 
 const GITHUB_REPO = "Roshansuthar1105/Codify";
 const token = import.meta.env.VITE_GITHUB_TOKEN;
@@ -117,6 +118,7 @@ export default function LeaderBoard() {
   const { theme } = useTheme();
   const isDark = theme === "dark";
   const navigate = useNavigate();
+  const { ref, inView } = useInView({ triggerOnce: false }); // trigger every time visible
 
   useEffect(() => {
     const fetchContributorsWithPoints = async () => {
@@ -243,7 +245,7 @@ export default function LeaderBoard() {
         isDark ? "bg-dark-bg-primary" : "bg-gray-50"
       } min-h-screen py-6 sm:py-12 px-2 sm:px-4 relative overflow-hidden z-10`}
     >
-      {/* enhance background with grid pattern */} 
+      {/* enhance background with grid pattern */}
       <div
         className={`absolute top-0 left-0 w-full h-full -z-10 bg-[size:30px_30px] ${
           isDark ? "bg-grid-pattern-dark" : "bg-grid-pattern-light"
@@ -267,9 +269,27 @@ export default function LeaderBoard() {
           transition={{ duration: 0.5 }}
         >
           <h1
+          ref ={ref}
             className={`text-2xl sm:text-4xl font-bold mb-2 sm:mb-4 text-primary-600`}
           >
-            GSSoC'25 Leaderboard
+            {/* GSSoC'25 Leaderboard */}
+            <span className="inline-block mr-2">
+              {"GSSoC'25 LeaderBoard ".split("").map((char, i) => (
+                <span
+                  key={`Welcome-${i}`}
+                  className={`inline-block opacity-0 ${
+                    inView ? "animate-fadeIn" : ""
+                  }
+                `}
+                  style={{
+                    animationDelay: `${i * 0.1}s`,
+                    animationFillMode: "forwards",
+                  }}
+                >
+                  {char === " " ? "\u00A0" : char}
+                </span>
+              ))}
+            </span>
           </h1>
           <p
             className={`text-sm sm:text-lg max-w-3xl mx-auto leading-relaxed ${
