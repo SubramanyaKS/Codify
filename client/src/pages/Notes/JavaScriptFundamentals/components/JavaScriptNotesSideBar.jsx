@@ -6,7 +6,7 @@ import categories from "./JsSideBarData.json"
 
 const JavaScriptNotesSidebar = () => {
     // to activate the top 3 drop downs by default
-    const [expandedCategories, setExpandedCategories] = useState(new Set(Object.keys(categories).splice(0, 3)));
+    const [expandedCategories, setExpandedCategories] = useState(new Set(Object.keys(categories).splice(0, 1)));
 
 
     const toggleCategory = (category) => {

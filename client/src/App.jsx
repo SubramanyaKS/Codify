@@ -101,8 +101,10 @@ function App() {
                     <Route path="courses/add" element={<AddNewCourse />} />
                     <Route path="courses/update/:id" element={<CourseUpdate />} />
                   </Route>
+                  
+                  {/* Note: JavaScript routes are now handled within JavaScriptFundamentals component */}
+                  <Route path="/notes/javascript/*" element={<JavaScriptFundamentals />} />
                   <Route path="/notes/python" element={<PythonNotes />} />
-                  <Route path="/notes/javascript" element={<JavaScriptFundamentals />} />
                   <Route path="/notes/git" element={<GitNotes />} />
                   <Route path="/notes/react" element={<ReactPattern />} />
                 </Routes>
