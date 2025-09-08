@@ -4,6 +4,7 @@ import Course from "../models/courseSchema.js";
 import bcryptjs from "bcryptjs";
 import { generateOTP } from "../utils/generateOTP.js";
 import { sendEmail } from "../utils/sendEmail.js";
+import { otpEmailTemplate } from "../utils/OTPemailTemplates.js";
 const otpStore = {}; // temporary in-memory store
 import passport from "passport";
 
@@ -103,9 +104,11 @@ const sendOTP = async (req, res) => {
 
     const otp = generateOTP();
     otpStore[email] = { otp, expiresAt: Date.now() + 5 * 60 * 1000 };
+    const { subject, html } = otpEmailTemplate(otp);
 
-    await sendEmail(email, "Your OTP Code", `Your OTP is ${otp}`);
+    await sendEmail(email, subject, html);
     return res.status(200).json({ message: "OTP sent successfully" });
+    
   } catch (error) {
     console.error("Error in sendOTP:", error);
     return res.status(500).json({ message: "Failed to send OTP" });
