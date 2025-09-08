@@ -77,6 +77,8 @@ function App() {
                 <Loader />
               }>
                 <Routes>
+
+                  {/* Pages Routes */}
                   <Route path="/" element={<Home />} />
                   <Route path="/oauth/callback" element={<OAuthCallback />} />
                   <Route path="/about" element={<About />} />
@@ -86,16 +88,25 @@ function App() {
                   <Route path="/roadmap" element={<Roadmap />} />
                   <Route path="/bookmarks" element={<Bookmarks />} />
                   <Route path="/contact" element={<ContactUs />} />
+                  <Route path="/questions" element={<QuestionsPage />} />
+                  <Route path="/questions/:id" element={<QuestionDetail />} />
+
+                  {/* Notes Routes */}
+                  <Route path="/notes" element={<NotesPage />} />
+                  <Route path="/notes/:subjectname" element={<Notes />} />
+                  <Route path="/notes/javascript/*" element={<JavaScriptFundamentals />} />
+                  <Route path="/notes/python" element={<PythonNotes />} />
+                  <Route path="/notes/git" element={<GitNotes />} />
+                  <Route path="/notes/react" element={<ReactPattern />} />
+
+                  {/* Auth Routes */}
                   <Route path="/signup" element={<Signup />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/forgot-password" element={<ForgotPassword />} />
                   <Route path="/logout" element={<LogOut />} />
-                  <Route path="/contributors" element={<ContributorsPage />} />
-                  <Route path="/notes" element={<NotesPage />} />
-                  <Route path="/notes/:subjectname" element={<Notes />} />
-                  <Route path="*" element={<ErrorPage />} />
                   <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/contributorGuide" element={<ContributorsGuide />} />
+
+                  {/* Admin Routes */}
                   <Route path="/admin" element={<AdminLayout />}>
                     <Route path="users" element={<AdminUsers />} />
                     <Route path="users/:id/edit" element={<AdminUpdate />} />
@@ -104,14 +115,13 @@ function App() {
                     <Route path="courses/add" element={<AddNewCourse />} />
                     <Route path="courses/update/:id" element={<CourseUpdate />} />
                   </Route>
-                  <Route path="/Questions" element={<QuestionsPage />} />
-                  <Route path="/questions/:id" element={<QuestionDetail />} />
 
-                  {/* Note: JavaScript routes are now handled within JavaScriptFundamentals component */}
-                  <Route path="/notes/javascript/*" element={<JavaScriptFundamentals />} />
-                  <Route path="/notes/python" element={<PythonNotes />} />
-                  <Route path="/notes/git" element={<GitNotes />} />
-                  <Route path="/notes/react" element={<ReactPattern />} />
+
+                  {/* Other Routes */}
+                  <Route path="/contributors" element={<ContributorsPage />} />
+                  <Route path="/contributorGuide" element={<ContributorsGuide />} />
+                  <Route path="*" element={<ErrorPage />} />
+
                 </Routes>
               </Suspense>
             </main>
