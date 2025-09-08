@@ -15,10 +15,8 @@ import roadmap from "../assets/json/rolebasedRoadmaps.json";
 const Footer = () => {
   const { theme } = useTheme();
   const isDark = theme === "dark";
-  console.log(roadmap)
   const reqdroadmaps = roadmap.filter((item) =>
     ['Frontend Developer', 'Backend Developer', 'Full Stack Developer', 'QA Engineer'].includes(item.roadmap_name));
-  console.log(reqdroadmaps)
   return (
     <footer
       className={`
