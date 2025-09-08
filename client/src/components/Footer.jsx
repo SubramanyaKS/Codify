@@ -11,7 +11,7 @@ import {
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
-import roadmap from "../assets/json/roadmap.json";
+import roadmap from "../assets/json/rolebasedRoadmaps.json";
 const Footer = () => {
   const { theme } = useTheme();
   const isDark = theme === "dark";
