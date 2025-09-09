@@ -1,4 +1,6 @@
 import React from 'react';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
 const NodeJsInstallation = () => {
     const installationSteps = [
@@ -67,7 +69,7 @@ const NodeJsInstallation = () => {
                 <section className="mb-8">
                     <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4">What is Node.js?</h2>
                     <p className="text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
-                        Node.js is an open-source, cross-platform JavaScript runtime environment that executes JavaScript code outside of a web browser. 
+                        Node.js is an open-source, cross-platform JavaScript runtime environment that executes JavaScript code outside of a web browser.
                         It's built on Chrome's V8 JavaScript engine and uses an event-driven, non-blocking I/O model that makes it lightweight and efficient.
                     </p>
                     <div className={`mb-6 bg-white dark:bg-black p-4 rounded-md shadow-sm border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-gray-600 transition-colors`}>
@@ -79,7 +81,7 @@ const NodeJsInstallation = () => {
 
                 <section className="mb-10">
                     <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-6">Installation Guide</h2>
-                    
+
                     <div className="space-y-8">
                         {installationSteps.map((step, index) => (
                             <div key={index} className="flex flex-col md:flex-row gap-6">
@@ -92,19 +94,68 @@ const NodeJsInstallation = () => {
                                     {step.details && (
                                         <div className="mt-2">
                                             {step.step === 3 ? (
-                                                <div className="bg-gray-900 dark:bg-gray-900 rounded-md p-4 overflow-x-auto">
-                                                    <pre className="text-green-400 dark:text-primary-400 text-sm">
-                                                        <code>node -v    <span className="text-gray-500"># Check Node.js version</span></code>
-                                                    </pre>
-                                                    <pre className="text-green-400 dark:text-primary-400 text-sm mt-2">
-                                                        <code>npm -v     <span className="text-gray-500"># Check npm version</span></code>
-                                                    </pre>
+                                                <div className="overflow-x-auto text-sm">
+                                                    <SyntaxHighlighter
+                                                        language="bash"
+                                                        style={vscDarkPlus}
+                                                        customStyle={{
+                                                            margin: 0,
+                                                            padding: '1rem',
+                                                            borderRadius: '0.5rem',
+                                                            background: '#1e1e1e',
+                                                            fontSize: '0.875rem',
+                                                            lineHeight: '1.5',
+                                                        }}
+                                                        wrapLines={true}
+                                                        wrapLongLines={true}
+                                                        codeTagProps={{
+                                                            style: {
+                                                                fontFamily: 'Fira Code, monospace',
+                                                                wordBreak: 'break-word',
+                                                                whiteSpace: 'pre-wrap',
+                                                            },
+                                                        }}
+                                                        lineProps={{
+                                                            style: {
+                                                                wordBreak: 'break-word',
+                                                                whiteSpace: 'pre-wrap',
+                                                            },
+                                                        }}
+                                                    >
+                                                        {`node -v    # Check Node.js version
+npm -v     # Check npm version`}
+                                                    </SyntaxHighlighter>
                                                 </div>
                                             ) : step.step === 4 ? (
-                                                <div className="bg-gray-900 dark:bg-gray-900 rounded-md p-4 mb-4 overflow-x-auto">
-                                                    <pre className="text-green-400 dark:text-primary-400 text-sm">
-                                                        <code>
-                                                            {`// Print a welcome message
+                                                <div className="overflow-x-auto text-sm">
+                                                    <SyntaxHighlighter
+                                                        language="javascript"
+                                                        style={vscDarkPlus}
+                                                        customStyle={{
+                                                            margin: 0,
+                                                            padding: '1rem',
+                                                            borderRadius: '0.5rem',
+                                                            background: '#1e1e1e',
+                                                            fontSize: '0.875rem',
+                                                            lineHeight: '1.5',
+                                                        }}
+                                                        wrapLines={true}
+                                                        wrapLongLines={true}
+                                                        codeTagProps={{
+                                                            style: {
+                                                                fontFamily: 'Fira Code, monospace',
+                                                                wordBreak: 'break-word',
+                                                                whiteSpace: 'pre-wrap',
+                                                            },
+                                                        }}
+                                                        lineProps={{
+                                                            style: {
+                                                                wordBreak: 'break-word',
+                                                                whiteSpace: 'pre-wrap',
+                                                            },
+                                                        }}
+                                                    >
+                                                        {`// Print a welcome message
 console.log('Hello from Node.js!');
 
 // Calculate and print the sum of two numbers
@@ -113,14 +164,39 @@ const num2 = 7;
 const sum = num1 + num2;
 
 console.log('The sum of ' + num1 + ' and ' + num2 + ' is: ' + sum);`}
-                                                        </code>
-                                                    </pre>
+                                                    </SyntaxHighlighter>
                                                 </div>
                                             ) : step.step === 5 ? (
-                                                <div className="bg-gray-900 dark:bg-gray-900 rounded-md p-4 overflow-x-auto">
-                                                    <pre className="text-green-400 dark:text-primary-400 text-sm">
-                                                        <code>node app.js</code>
-                                                    </pre>
+                                                <div className="overflow-x-auto text-sm">
+                                                    <SyntaxHighlighter
+                                                        language="bash"
+                                                        style={vscDarkPlus}
+                                                        customStyle={{
+                                                            margin: 0,
+                                                            padding: '1rem',
+                                                            borderRadius: '0.5rem',
+                                                            background: '#1e1e1e',
+                                                            fontSize: '0.875rem',
+                                                            lineHeight: '1.5',
+                                                        }}
+                                                        wrapLines={true}
+                                                        wrapLongLines={true}
+                                                        codeTagProps={{
+                                                            style: {
+                                                                fontFamily: 'Fira Code, monospace',
+                                                                wordBreak: 'break-word',
+                                                                whiteSpace: 'pre-wrap',
+                                                            },
+                                                        }}
+                                                        lineProps={{
+                                                            style: {
+                                                                wordBreak: 'break-word',
+                                                                whiteSpace: 'pre-wrap',
+                                                            },
+                                                        }}
+                                                    >
+                                                        {`node app.js`}
+                                                    </SyntaxHighlighter>
                                                 </div>
                                             ) : (
                                                 <p className="text-sm text-gray-600 dark:text-gray-400">{step.details}</p>
@@ -138,17 +214,17 @@ console.log('The sum of ' + num1 + ' and ' + num2 + ' is: ' + sum);`}
                     <p className="text-gray-700 dark:text-gray-300 mb-6">
                         Visual Studio Code is a lightweight but powerful source code editor that's perfect for Node.js development.
                     </p>
-                    
+
                     <div className="grid md:grid-cols-3 gap-6">
                         {vsCodeSteps.map((step, index) => (
                             <div key={index} className="bg-white dark:bg-black p-6 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-gray-600 transition-all duration-200 hover:shadow-md">
                                 <h3 className="text-xl font-semibold text-primary-600 dark:text-primary-400 mb-3">{step.title}</h3>
                                 <p className="text-gray-700 dark:text-gray-300 mb-3">{step.description}</p>
-                                
+
                                 {step.link && (
-                                    <a 
-                                        href={step.link} 
-                                        target="_blank" 
+                                    <a
+                                        href={step.link}
+                                        target="_blank"
                                         rel="noopener noreferrer"
                                         className="inline-flex items-center text-sm text-blue-600 dark:text-blue-400 hover:underline"
                                     >
@@ -158,7 +234,7 @@ console.log('The sum of ' + num1 + ' and ' + num2 + ' is: ' + sum);`}
                                         </svg>
                                     </a>
                                 )}
-                                
+
                                 {step.extensions && (
                                     <ul className="mt-3 space-y-2">
                                         {step.extensions.map((ext, i) => (
@@ -169,10 +245,38 @@ console.log('The sum of ' + num1 + ' and ' + num2 + ' is: ' + sum);`}
                                         ))}
                                     </ul>
                                 )}
-                                
+
                                 {step.details && (
-                                    <div className="mt-3 p-3 bg-gray-50 dark:bg-gray-900 rounded text-sm text-gray-700 dark:text-gray-400">
-                                        {step.details}
+                                    <div className="mt-3">
+                                        <SyntaxHighlighter
+                                            language="bash"
+                                            style={vscDarkPlus}
+                                            customStyle={{
+                                                margin: 0,
+                                                padding: '1rem',
+                                                borderRadius: '0.5rem',
+                                                background: '#1e1e1e',
+                                                fontSize: '0.875rem',
+                                                lineHeight: '1.5',
+                                            }}
+                                            wrapLines={true}
+                                            wrapLongLines={true}
+                                            codeTagProps={{
+                                                style: {
+                                                    fontFamily: 'Fira Code, monospace',
+                                                    wordBreak: 'break-word',
+                                                    whiteSpace: 'pre-wrap',
+                                                },
+                                            }}
+                                            lineProps={{
+                                                style: {
+                                                    wordBreak: 'break-word',
+                                                    whiteSpace: 'pre-wrap',
+                                                },
+                                            }}
+                                        >
+                                            {step.details}
+                                        </SyntaxHighlighter>
                                     </div>
                                 )}
                             </div>
@@ -189,7 +293,7 @@ console.log('The sum of ' + num1 + ' and ' + num2 + ' is: ' + sum);`}
                     </ul>
                 </div>
 
-                <section className="mt-10">
+                <section className="mt-10 rounded-md shadow-sm border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-gray-600 p-4">
                     <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4">Next Steps</h2>
                     <p className="text-gray-700 dark:text-gray-300 mb-4">
                         Now that you have Node.js installed, you're ready to start building applications! Here are some things to explore next:
