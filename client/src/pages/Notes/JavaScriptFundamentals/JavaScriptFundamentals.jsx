@@ -64,10 +64,27 @@ const JavaScriptFundamentals = () => {
             <React.Suspense fallback={<Loader />}>
               <Routes>
                 <Route index element={<JsHeroPage />} />
+
+                {/* Introduction */}
                 <Route path="js-introduction" element={<JsIntroduction />} />
                 <Route path="js-execution" element={<JsExecution />} />
                 <Route path="node.js-installation" element={<NodeJsInstallation />} />
+
+                {/* Javascript variables */}
                 <Route path="what-are-variables" element={<WhatAreVariables />} />
+
+
+                {/* Javascript basics */}
+
+
+                {/* Javascript objects */}
+
+
+                {/* DOM and BOM */}
+
+
+                {/* OOPS */}
+
               </Routes>
             </React.Suspense>
           </div>
