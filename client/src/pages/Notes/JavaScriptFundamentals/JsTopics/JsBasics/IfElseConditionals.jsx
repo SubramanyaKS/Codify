@@ -1,4 +1,4 @@
-import React from 'react';
+import CodeBlock from "../../components/CodeBlock";
 
 const IfElseConditionals = () => {
     const examples = [
@@ -36,12 +36,14 @@ const IfElseConditionals = () => {
                     <p className="text-gray-700 dark:text-gray-300 mb-4">
                         The <code className="text-primary-600 dark:text-primary-400">if</code> statement executes a block of code if a specified condition is true.
                     </p>
-                    
-                    <div className="bg-gray-900 dark:bg-gray-900 rounded-md p-4 mb-4 overflow-x-auto">
-                        <pre className="text-green-400 dark:text-primary-400 text-sm">
-                            <code>{"if (condition) {\n  // code to be executed if condition is true\n}"}</code>
-                        </pre>
-                    </div>
+
+                    <CodeBlock
+                        code={`
+if (condition) {
+  // code to be executed if condition is true
+}`}
+                    />
+
                 </section>
 
                 <section className="mb-8">
@@ -49,12 +51,16 @@ const IfElseConditionals = () => {
                     <p className="text-gray-700 dark:text-gray-300 mb-4">
                         The <code className="text-primary-600 dark:text-primary-400">else</code> statement specifies a block of code to be executed if the condition is false.
                     </p>
-                    
-                    <div className="bg-gray-900 dark:bg-gray-900 rounded-md p-4 mb-4 overflow-x-auto">
-                        <pre className="text-green-400 dark:text-primary-400 text-sm">
-                            <code>{"if (condition) {\n  // code to be executed if condition is true\n} else {\n  // code to be executed if condition is false\n}"}</code>
-                        </pre>
-                    </div>
+
+                    <CodeBlock
+                        code={`
+if (condition) {
+  // code to be executed if condition is true
+} else {
+  // code to be executed if condition is false
+}`}
+                    />
+
                 </section>
 
                 <section className="mb-8">
@@ -62,12 +68,17 @@ const IfElseConditionals = () => {
                     <p className="text-gray-700 dark:text-gray-300 mb-4">
                         The <code className="text-primary-600 dark:text-primary-400">else if</code> statement specifies a new condition if the first condition is false.
                     </p>
-                    
-                    <div className="bg-gray-900 dark:bg-gray-900 rounded-md p-4 mb-4 overflow-x-auto">
-                        <pre className="text-green-400 dark:text-primary-400 text-sm">
-                            <code>{"if (condition1) {\n  // code to be executed if condition1 is true\n} else if (condition2) {\n  // code to be executed if condition1 is false and condition2 is true\n} else {\n  // code to be executed if both condition1 and condition2 are false\n}"}</code>
-                        </pre>
-                    </div>
+
+                    <CodeBlock
+                        code={`
+if (condition1) {
+  // code to be executed if condition1 is true
+} else if (condition2) {
+  // code to be executed if condition1 is false and condition2 is true
+} else {
+  // code to be executed if both condition1 and condition2 are false
+}`}
+                    />
                 </section>
 
                 <section className="mb-8">
@@ -76,11 +87,7 @@ const IfElseConditionals = () => {
                         {examples.map((example, index) => (
                             <div key={index} className="bg-white dark:bg-black p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
                                 <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-3">{example.title}</h3>
-                                <div className="bg-gray-900 dark:bg-gray-900 rounded-md p-4 mb-3 overflow-x-auto">
-                                    <pre className="text-green-400 dark:text-primary-400 text-sm">
-                                        <code>{example.code}</code>
-                                    </pre>
-                                </div>
+                                <CodeBlock code={example.code} />
                                 <p className="text-gray-700 dark:text-gray-300 text-sm">{example.explanation}</p>
                             </div>
                         ))}

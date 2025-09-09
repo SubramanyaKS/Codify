@@ -1,4 +1,4 @@
-import React from 'react';
+import CodeBlock from "../../components/CodeBlock";
 
 const IfElseLadder = () => {
     const examples = [
@@ -49,12 +49,17 @@ const IfElseLadder = () => {
                     <p className="text-gray-700 dark:text-gray-300 mb-4">
                         The general structure of an if-else ladder is as follows:
                     </p>
-                    
-                    <div className="bg-gray-900 dark:bg-gray-900 rounded-md p-4 mb-4 overflow-x-auto">
-                        <pre className="text-green-400 dark:text-primary-400 text-sm">
-                            <code>{"if (condition1) {\n  // code to execute if condition1 is true\n} else if (condition2) {\n  // code to execute if condition2 is true\n} else if (condition3) {\n  // code to execute if condition3 is true\n} else {\n  // code to execute if all conditions are false\n}"}</code>
-                        </pre>
-                    </div>
+
+                    <CodeBlock
+                        code={`if (condition1) {
+  // code to execute if condition1 is true
+} else if (condition2) {
+  // code to execute if condition2 is true
+} else if (condition3) {
+  // code to execute if condition3 is true
+} else {
+  // code to execute if all conditions are false
+}`} />
                 </section>
 
                 <section className="mb-8">
@@ -63,11 +68,7 @@ const IfElseLadder = () => {
                         {examples.map((example, index) => (
                             <div key={index} className="bg-white dark:bg-black p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
                                 <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-3">{example.title}</h3>
-                                <div className="bg-gray-900 dark:bg-gray-900 rounded-md p-4 mb-3 overflow-x-auto">
-                                    <pre className="text-green-400 dark:text-primary-400 text-sm">
-                                        <code>{example.code}</code>
-                                    </pre>
-                                </div>
+                                <CodeBlock code={example.code} />
                                 <p className="text-gray-700 dark:text-gray-300 text-sm">{example.explanation}</p>
                             </div>
                         ))}
