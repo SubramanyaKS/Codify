@@ -23,6 +23,10 @@ const OperatorsAndExpressions = React.lazy(() => import('./JsTopics/JsVariables/
 const IfElseConditionals = React.lazy(() => import('./JsTopics/JsBasics/IfElseConditionals'));
 const IfElseLadder = React.lazy(() => import('./JsTopics/JsBasics/IfElseLadder'));
 const SwitchCase = React.lazy(() => import('./JsTopics/JsBasics/SwitchCase'));
+const TernaryOperator = React.lazy(() => import('./JsTopics/JsBasics/TernaryOperator'));
+const ForLoops = React.lazy(() => import('./JsTopics/JsBasics/ForLoops'));
+const WhileLoops = React.lazy(() => import('./JsTopics/JsBasics/WhileLoops'));
+const Functions = React.lazy(() => import('./JsTopics/JsBasics/Functions'));
 
 // Lazy load the note components --------------------------------------
 
@@ -76,7 +80,7 @@ const JavaScriptFundamentals = () => {
 
           {/* ROUTES OF THE SUB NOTES */}
           <div className="p-4 md:p-8">
-            <React.Suspense fallback={<Loader asOverlay={false} />}>
+            <React.Suspense fallback={<Loader />}>
               <Routes>
                 <Route index element={<JsHeroPage />} />
 
@@ -96,6 +100,10 @@ const JavaScriptFundamentals = () => {
                 <Route path="if-else-conditionals" element={<IfElseConditionals />} />
                 <Route path="if-else-ladder" element={<IfElseLadder />} />
                 <Route path="switch-case" element={<SwitchCase />} />
+                <Route path="ternary-operator" element={<TernaryOperator />} />
+                <Route path="for-loops" element={<ForLoops />} />
+                <Route path="while-loops" element={<WhileLoops />} />
+                <Route path="functions" element={<Functions />} />
 
                 {/* Javascript objects */}
 
