@@ -33,7 +33,7 @@ const JsExecution = () => {
 
     return (
         <div className="max-w-7xl mx-auto">
-            <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-6">JavaScript <span className='text-primary-600 dark:text-primary-400'>Execution</span></h1>
+            <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-6"><span className='text-primary-600 dark:text-primary-400'>JavaScript</span> Execution</h1>
 
             <div className="prose max-w-none">
                 <section className="mb-8">
@@ -53,7 +53,7 @@ const JsExecution = () => {
                     <p className="text-gray-700 dark:text-gray-300 mb-6">
                         There are several ways to execute JavaScript code, depending on your needs and environment. Here are the most common methods:
                     </p>
-                    
+
                     <div className="grid md:grid-cols-2 gap-6 mb-8">
                         {executionMethods.map((method, index) => (
                             <div key={index} className='bg-white dark:bg-black p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-gray-600 transition-all duration-200 hover:shadow-md'>
@@ -79,7 +79,7 @@ const JsExecution = () => {
                         <li><strong className="font-semibold">Mac:</strong> Press <kbd className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded text-sm">Cmd+Option+I</kbd></li>
                         <li><strong className="font-semibold">Or:</strong> Right-click anywhere on a webpage and select "Inspect" or "Inspect Element"</li>
                     </ul>
-                    
+
                     <div className="bg-white dark:bg-black p-6 rounded-lg border border-gray-200 dark:border-gray-700">
                         <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-3">What can you do with Developer Tools?</h3>
                         <ul className="grid md:grid-cols-2 gap-3">
