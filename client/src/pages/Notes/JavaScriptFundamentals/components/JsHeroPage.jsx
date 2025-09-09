@@ -1,21 +1,21 @@
-import React from 'react';
+import CodeBlock from './CodeBlock';
 import { Link } from 'react-router-dom';
 import { FiCode, FiBookOpen, FiLayers, FiChevronRight } from 'react-icons/fi';
 
 const JsHeroPage = () => {
     const features = [
         {
-            icon: <FiCode />,
+            icon: <FiCode className='w-6 h-6 text-primary-600 dark:text-primary-400' />,
             title: 'Comprehensive Guide',
             description: 'From basics to advanced concepts, master JavaScript with our structured learning path.'
         },
         {
-            icon: <FiBookOpen />,
+            icon: <FiBookOpen className='w-6 h-6 text-primary-600 dark:text-primary-400' />,
             title: 'Interactive Examples',
             description: 'Learn by doing with hands-on examples and live code editors.'
         },
         {
-            icon: <FiLayers />,
+            icon: <FiLayers className='w-6 h-6 text-primary-600 dark:text-primary-400' />,
             title: 'Modern JavaScript',
             description: 'Stay up-to-date with the latest ES6+ features and best practices.'
         }
@@ -57,7 +57,7 @@ const JsHeroPage = () => {
                     {features.map((feature, index) => (
                         <div key={index} className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow duration-200">
                             <div className="w-12 h-12 flex items-center justify-center bg-primary-50 dark:bg-primary-900/30 rounded-full mb-4">
-                                {React.cloneElement(feature.icon, { className: 'w-6 h-6 text-primary-600 dark:text-primary-400' })}
+                                {feature.icon}
                             </div>
                             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                                 {feature.title}
@@ -71,14 +71,12 @@ const JsHeroPage = () => {
             </div>
 
             {/* Quick Start Section */}
-            <div className="mt-20 bg-primary-50 dark:bg-gray-800/50 rounded-xl p-8 border border-gray-100 dark:border-gray-700">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Quick Start</h2>
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Try JavaScript in your browser</h3>
-                    <div className="bg-gray-900 dark:bg-gray-900 rounded-md p-4 mb-4 overflow-x-auto">
-                        <pre className="text-green-400 dark:text-primary-400 text-sm">
-                            <code>
-                                {`// Welcome to JavaScript!
+            <section className="mb-8">
+                <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4">Quick Start</h2>
+                <div className="bg-white dark:bg-black p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+                    <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-3">Try JavaScript in your browser</h3>
+                    <CodeBlock
+                        code={`// Welcome to JavaScript!
 console.log('Hello, World!');
 
 // Variables and Constants
@@ -92,14 +90,12 @@ function increment() {
 }
 
 console.log(greeting); // Output: Welcome to JavaScript`}
-                            </code>
-                        </pre>
-                    </div>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
+                    />
+                    <p className="text-gray-700 dark:text-gray-300 text-sm">
                         Copy and paste this code into your browser's console to see it in action!
                     </p>
                 </div>
-            </div>
+            </section>
         </div>
     );
 };
