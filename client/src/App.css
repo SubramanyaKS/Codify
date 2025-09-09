@@ -421,9 +421,6 @@ span.doated{
 .admin-cont > .right::-webkit-scrollbar {
   display: none;
 }
-::-webkit-scrollbar{
-  display: none;
-}
 .admin-cont .right {
   flex-grow: 4;
   margin: 10px;
