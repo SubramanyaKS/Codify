@@ -9,6 +9,8 @@ import useMobile from '../../../hooks/useMobile';
 // Lazy load the note components
 const JsIntroduction = React.lazy(() => import('./JsTopics/JsIntroduction'));
 const WhatAreVariables = React.lazy(() => import('./JsTopics/WhatAreVariables'));
+const JsExecution = React.lazy(() => import('./JsTopics/JsExecution'));
+const NodeJsInstallation = React.lazy(() => import('./JsTopics/NodeJsInstallation'));
 
 const JavaScriptFundamentals = () => {
   const location = useLocation();
@@ -62,8 +64,27 @@ const JavaScriptFundamentals = () => {
             <React.Suspense fallback={<Loader />}>
               <Routes>
                 <Route index element={<JsHeroPage />} />
+
+                {/* Introduction */}
                 <Route path="js-introduction" element={<JsIntroduction />} />
+                <Route path="js-execution" element={<JsExecution />} />
+                <Route path="node.js-installation" element={<NodeJsInstallation />} />
+
+                {/* Javascript variables */}
                 <Route path="what-are-variables" element={<WhatAreVariables />} />
+
+
+                {/* Javascript basics */}
+
+
+                {/* Javascript objects */}
+
+
+                {/* DOM and BOM */}
+
+
+                {/* OOPS */}
+
               </Routes>
             </React.Suspense>
           </div>
