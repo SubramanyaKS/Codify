@@ -1,6 +1,4 @@
-import React from 'react';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import CodeBlock from "../../components/CodeBlock";
 
 const VariableNamingRules = () => {
     const examples = [
@@ -54,7 +52,7 @@ const VariableNamingRules = () => {
             <div className="prose max-w-none">
                 <section className="mb-8">
                     <p className="text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
-                        JavaScript is a dynamically-typed language, which means that you don't have to specify the data type of a variable when you declare it. 
+                        JavaScript is a dynamically-typed language, which means that you don't have to specify the data type of a variable when you declare it.
                         The data type of a variable is determined by the value that is assigned to it.
                     </p>
                 </section>
@@ -84,44 +82,13 @@ const VariableNamingRules = () => {
                             {examples.map((example, index) => (
                                 <div key={index} className="bg-white dark:bg-transparent rounded-lg p-4 shadow-sm border border-gray-200 dark:border-gray-800">
                                     <div className="flex items-start">
-                                        <div className={`w-6 h-6 rounded-full flex items-center justify-center mr-3 mt-1 ${
-                                            example.valid ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'
-                                        }`}>
+                                        <div className={`w-6 h-6 rounded-full flex items-center justify-center mr-3 mt-1 ${example.valid ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'
+                                            }`}>
                                             {example.valid ? '✓' : '✗'}
                                         </div>
                                         <div className="flex-1">
                                             <p className="text-gray-700 dark:text-gray-300 mb-3">{example.description}</p>
-                                            <div className="overflow-hidden rounded-lg">
-                                                <SyntaxHighlighter
-                                                    language="javascript"
-                                                    style={vscDarkPlus}
-                                                    customStyle={{
-                                                        margin: 0,
-                                                        padding: '1.25rem',
-                                                        borderRadius: '0.5rem',
-                                                        background: '#1e1e1e',
-                                                        fontSize: '0.875rem',
-                                                        lineHeight: '1.5',
-                                                    }}
-                                                    wrapLines={true}
-                                                    wrapLongLines={true}
-                                                    codeTagProps={{
-                                                        style: {
-                                                            fontFamily: 'Fira Code, monospace',
-                                                            wordBreak: 'break-word',
-                                                            whiteSpace: 'pre-wrap',
-                                                        },
-                                                    }}
-                                                    lineProps={{
-                                                        style: {
-                                                            wordBreak: 'break-word',
-                                                            whiteSpace: 'pre-wrap',
-                                                        },
-                                                    }}
-                                                >
-                                                    {example.code}
-                                                </SyntaxHighlighter>
-                                            </div>
+                                            <CodeBlock code={example.code} />
                                         </div>
                                     </div>
                                 </div>
@@ -161,8 +128,8 @@ const VariableNamingRules = () => {
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                                ${example.valid 
-                                                    ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
+                                                ${example.valid
+                                                    ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                                                     : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200'}`}>
                                                 {example.valid ? 'Valid' : 'Invalid'}
                                             </span>
@@ -193,7 +160,7 @@ const VariableNamingRules = () => {
 
                     <div className={`mt-6 bg-white dark:bg-black p-4 rounded-md shadow-sm border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-gray-600 transition-colors`}>
                         <p className="text-primary-500 dark:text-primary-400">
-                            <strong className="font-semibold">Pro Tip:</strong> Choose variable names that are descriptive enough to make the code self-documenting. 
+                            <strong className="font-semibold">Pro Tip:</strong> Choose variable names that are descriptive enough to make the code self-documenting.
                             A well-named variable can eliminate the need for additional comments.
                         </p>
                     </div>
@@ -203,35 +170,7 @@ const VariableNamingRules = () => {
                     <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4">Variable Usage Examples</h2>
                     <div className="space-y-6">
                         <div className="bg-gray-900 dark:bg-gray-900 rounded-md p-4 overflow-x-auto">
-                            <div className="overflow-hidden rounded-lg">
-                                <SyntaxHighlighter
-                                    language="javascript"
-                                    style={vscDarkPlus}
-                                    customStyle={{
-                                        margin: 0,
-                                        padding: '1.25rem',
-                                        borderRadius: '0.5rem',
-                                        background: '#1e1e1e',
-                                        fontSize: '0.875rem',
-                                        lineHeight: '1.5',
-                                    }}
-                                    wrapLines={true}
-                                    wrapLongLines={true}
-                                    codeTagProps={{
-                                        style: {
-                                            fontFamily: 'Fira Code, monospace',
-                                            wordBreak: 'break-word',
-                                            whiteSpace: 'pre-wrap',
-                                        },
-                                    }}
-                                    lineProps={{
-                                        style: {
-                                            wordBreak: 'break-word',
-                                            whiteSpace: 'pre-wrap',
-                                        },
-                                    }}
-                                >
-                                    {`// Declaring and initializing variables
+                            <CodeBlock code={`// Declaring and initializing variables
 let counter = 0;
 const MAX_ATTEMPTS = 3;
 let isUserLoggedIn = false;
@@ -252,9 +191,7 @@ if (isUserLoggedIn) {
 // Variables in loops
 for (let i = 0; i < 5; i++) {
     console.log('Iteration:', i);
-}`}
-                                </SyntaxHighlighter>
-                            </div>
+}`} />
                         </div>
                     </div>
                 </section>

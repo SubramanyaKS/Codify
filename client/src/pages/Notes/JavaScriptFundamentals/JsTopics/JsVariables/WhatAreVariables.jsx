@@ -1,5 +1,4 @@
-import React from 'react';
-
+import CodeBlock from "../../components/CodeBlock";
 const WhatAreVariables = () => {
     const dataTypes = [
         {
@@ -63,11 +62,7 @@ const WhatAreVariables = () => {
                     <div className="grid md:grid-cols-3 gap-6 mb-8">
                         <div className="bg-white dark:bg-black p-6 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-gray-600 transition-all duration-200 hover:shadow-md">
                             <h3 className="text-xl font-semibold text-primary-600 dark:text-primary-400 mb-3">var</h3>
-                            <div className="bg-gray-900 dark:bg-gray-900 rounded-md p-4 mb-4 overflow-x-auto">
-                                <pre className="text-green-400 dark:text-primary-400 text-sm">
-                                    <code>var name = "John";</code>
-                                </pre>
-                            </div>
+                            <CodeBlock code="var name = 'John';" />
                             <ul className="list-disc pl-5 space-y-1 text-sm text-gray-700 dark:text-gray-300">
                                 <li>Function-scoped or globally scoped</li>
                                 <li>Can be re-declared and updated</li>
@@ -77,11 +72,7 @@ const WhatAreVariables = () => {
 
                         <div className="bg-white dark:bg-black p-6 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-gray-600 transition-all duration-200 hover:shadow-md">
                             <h3 className="text-xl font-semibold text-primary-600 dark:text-primary-400 mb-3">let</h3>
-                            <div className="bg-gray-900 dark:bg-gray-900 rounded-md p-4 mb-4 overflow-x-auto">
-                                <pre className="text-green-400 dark:text-primary-400 text-sm">
-                                    <code>let age = 25;</code>
-                                </pre>
-                            </div>
+                            <CodeBlock code="let age = 25;" />
                             <ul className="list-disc pl-5 space-y-1 text-sm text-gray-700 dark:text-gray-300">
                                 <li>Block-scoped</li>
                                 <li>Can be updated but not re-declared</li>
@@ -91,11 +82,7 @@ const WhatAreVariables = () => {
 
                         <div className="bg-white dark:bg-black p-6 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-gray-600 transition-all duration-200 hover:shadow-md">
                             <h3 className="text-xl font-semibold text-primary-600 dark:text-primary-400 mb-3">const</h3>
-                            <div className="bg-gray-900 dark:bg-gray-900 rounded-md p-4 mb-4 overflow-x-auto">
-                                <pre className="text-green-400 dark:text-primary-400 text-sm">
-                                    <code>const PI = 3.14159;</code>
-                                </pre>
-                            </div>
+                            <CodeBlock code="const PI = 3.14159;" />
                             <ul className="list-disc pl-5 space-y-1 text-sm text-gray-700 dark:text-gray-300">
                                 <li>Block-scoped</li>
                                 <li>Cannot be updated or re-declared</li>

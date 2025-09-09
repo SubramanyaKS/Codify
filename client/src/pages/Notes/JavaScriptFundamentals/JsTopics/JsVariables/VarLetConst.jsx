@@ -1,5 +1,5 @@
-import React from 'react';
 import { Check, X } from 'lucide-react';
+import CodeBlock from '../../components/CodeBlock';
 
 const VarLetConst = () => {
     const comparisonTable = [
@@ -28,12 +28,12 @@ const VarLetConst = () => {
 
     const examples = [
         {
-            title: 'var Hoisting',
+            title: 'Var Hoisting',
             code: 'console.log(x); // undefined\nvar x = 5;\nconsole.log(x); // 5',
             explanation: 'Variables declared with var are hoisted to the top of their scope and initialized with undefined.'
         },
         {
-            title: 'let/const Temporal Dead Zone',
+            title: 'Let/Const Temporal Dead Zone',
             code: 'console.log(y); // ReferenceError\nlet y = 10;',
             explanation: 'let and const declarations are hoisted but not initialized, causing a ReferenceError if accessed before declaration.'
         },
@@ -137,11 +137,7 @@ const VarLetConst = () => {
                         {examples.map((example, index) => (
                             <div key={index} className="bg-white dark:bg-black p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
                                 <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-3">{example.title}</h3>
-                                <div className="bg-gray-900 dark:bg-gray-900 rounded-md p-4 mb-3 overflow-x-auto">
-                                    <pre className="text-green-400 dark:text-primary-400 text-sm">
-                                        <code>{example.code}</code>
-                                    </pre>
-                                </div>
+                                <CodeBlock code={example.code} />
                                 <p className="text-gray-700 dark:text-gray-300 text-sm">{example.explanation}</p>
                             </div>
                         ))}
