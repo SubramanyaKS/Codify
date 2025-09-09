@@ -28,6 +28,9 @@ const ForLoops = React.lazy(() => import('./JsTopics/JsBasics/ForLoops'));
 const WhileLoops = React.lazy(() => import('./JsTopics/JsBasics/WhileLoops'));
 const Functions = React.lazy(() => import('./JsTopics/JsBasics/Functions'));
 
+// JavaScript Objects
+const Strings = React.lazy(() => import('./JsTopics/JsObjects/StringsInJS'));
+
 // Lazy load the note components --------------------------------------
 
 
@@ -106,7 +109,7 @@ const JavaScriptFundamentals = () => {
                 <Route path="functions" element={<Functions />} />
 
                 {/* Javascript objects */}
-
+                <Route path="strings" element={<Strings />} />
 
                 {/* DOM and BOM */}
 
