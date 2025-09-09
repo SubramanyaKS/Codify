@@ -1,6 +1,7 @@
 import React from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import CodeBlock from '../../components/CodeBlock';
 
 const SwitchCase = () => {
     const examples = [
@@ -107,35 +108,8 @@ switch (value) {
                     </div>
 
                     <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mt-8 mb-4">Basic Syntax</h2>
-                    <div className="my-4 overflow-x-auto text-sm sm:text-base">
-                        <SyntaxHighlighter
-                            language="javascript"
-                            style={vscDarkPlus}
-                            customStyle={{
-                                margin: 0,
-                                padding: '1.25rem',
-                                borderRadius: '0.5rem',
-                                background: '#1e1e1e',
-                                fontSize: '0.875rem',
-                                lineHeight: '1.5',
-                            }}
-                            wrapLines={true}
-                            wrapLongLines={true}
-                            codeTagProps={{
-                                style: {
-                                    fontFamily: 'Fira Code, monospace',
-                                    wordBreak: 'break-word',
-                                    whiteSpace: 'pre-wrap',
-                                },
-                            }}
-                            lineProps={{
-                                style: {
-                                    wordBreak: 'break-word',
-                                    whiteSpace: 'pre-wrap',
-                                },
-                            }}
-                        >
-                            {`switch (expression) {
+
+                    <CodeBlock code={`switch (expression) {
   case value1:
     // code to execute if expression === value1
     break;
@@ -145,9 +119,7 @@ switch (value) {
   // ... more cases ...
   default:
     // code to execute if no cases match
-}`}
-                        </SyntaxHighlighter>
-                    </div>
+}`} />
                 </section>
 
                 <section className="mt-8">
@@ -156,37 +128,7 @@ switch (value) {
                         {examples.map((example, index) => (
                             <div key={index} className="bg-white dark:bg-transparent p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-gray-600 transition-colors">
                                 <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-3">{example.title}</h3>
-                                <div className="my-2 overflow-x-auto text-sm sm:text-base">
-                                    <SyntaxHighlighter
-                                        language="javascript"
-                                        style={vscDarkPlus}
-                                        customStyle={{
-                                            margin: 0,
-                                            padding: '1.25rem',
-                                            borderRadius: '0.5rem',
-                                            background: '#1e1e1e',
-                                            fontSize: '0.875rem',
-                                            lineHeight: '1.5',
-                                        }}
-                                        wrapLines={true}
-                                        wrapLongLines={true}
-                                        codeTagProps={{
-                                            style: {
-                                                fontFamily: 'Fira Code, monospace',
-                                                wordBreak: 'break-word',
-                                                whiteSpace: 'pre-wrap',
-                                            },
-                                        }}
-                                        lineProps={{
-                                            style: {
-                                                wordBreak: 'break-word',
-                                                whiteSpace: 'pre-wrap',
-                                            },
-                                        }}
-                                    >
-                                        {example.code}
-                                    </SyntaxHighlighter>
-                                </div>
+                                <CodeBlock code={example.code} />
                                 <p className="text-gray-700 dark:text-gray-300 text-sm mt-2">{example.explanation}</p>
                             </div>
                         ))}

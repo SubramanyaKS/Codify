@@ -1,4 +1,4 @@
-import React from 'react';
+import CodeBlock from '../../components/CodeBlock';
 
 const PrimitivesAndObjects = () => {
     const primitiveExamples = [
@@ -76,7 +76,7 @@ const PrimitivesAndObjects = () => {
             <div className="prose max-w-none">
                 <section className="mb-8">
                     <p className="text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
-                        In JavaScript, data types are divided into two main categories: primitives and objects. 
+                        In JavaScript, data types are divided into two main categories: primitives and objects.
                         Understanding the difference between them is crucial for writing effective JavaScript code.
                     </p>
                 </section>
@@ -86,7 +86,7 @@ const PrimitivesAndObjects = () => {
                     <p className="text-gray-700 dark:text-gray-300 mb-4">
                         Primitives are the most basic data types in JavaScript. They are immutable (cannot be changed) and are passed by value.
                     </p>
-                    
+
                     <div className="overflow-x-auto mb-6">
                         <table className="min-w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
                             <thead className="bg-gray-50 dark:bg-gray-900">
@@ -110,16 +110,13 @@ const PrimitivesAndObjects = () => {
 
                     <div className="bg-white dark:bg-black p-4 rounded-md shadow-sm border border-gray-200 dark:border-gray-700 mb-6">
                         <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">Immutability Example</h3>
-                        <div className="bg-gray-900 rounded-md p-4 overflow-x-auto">
-                            <pre className="text-green-400 dark:text-primary-400 text-sm">
-{`let a = 5;
+
+                        <CodeBlock code={`let a = 5;
 let b = a;  // b gets the value of a (5)
 b = 10;     // Changing b does not affect a
 
 console.log(a); // 5
-console.log(b); // 10`}
-                            </pre>
-                        </div>
+console.log(b); // 10`} />
                         <p className="text-gray-700 dark:text-gray-300 text-sm mt-2">
                             Primitives are passed by value. When you assign a primitive to a variable, a copy of the value is created.
                         </p>
@@ -131,7 +128,7 @@ console.log(b); // 10`}
                     <p className="text-gray-700 dark:text-gray-300 mb-4">
                         Objects are more complex data structures that can contain multiple values as properties. They are mutable and passed by reference.
                     </p>
-                    
+
                     <div className="overflow-x-auto mb-6">
                         <table className="min-w-full bg-white dark:bg-black border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
                             <thead className="bg-gray-50 dark:bg-gray-900">
@@ -156,16 +153,14 @@ console.log(b); // 10`}
                     <div className="grid md:grid-cols-2 gap-6">
                         <div className="bg-white dark:bg-black p-4 rounded-md shadow-sm border border-gray-200 dark:border-gray-700">
                             <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">Reference Example</h3>
-                            <div className="bg-gray-900 rounded-md p-4 overflow-x-auto">
-                                <pre className="text-green-400 dark:text-primary-400 text-sm">
-{`const obj1 = { name: 'John' };
+                            <CodeBlock
+                                code={`const obj1 = { name: 'John' };
 const obj2 = obj1;  // obj2 references the same object as obj1
 obj2.name = 'Jane';  // Modifying obj2 affects obj1
 
 console.log(obj1.name); // 'Jane'
-console.log(obj2.name); // 'Jane'`}
-                                </pre>
-                            </div>
+console.log(obj2.name); // 'Jane'`} />
+
                             <p className="text-gray-700 dark:text-gray-300 text-sm mt-2">
                                 Objects are passed by reference. When you assign an object to a variable, you're creating a reference to the same object in memory.
                             </p>
@@ -173,9 +168,8 @@ console.log(obj2.name); // 'Jane'`}
 
                         <div className="bg-white dark:bg-black p-4 rounded-md shadow-sm border border-gray-200 dark:border-gray-700">
                             <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">Creating Copies</h3>
-                            <div className="bg-gray-900 rounded-md p-4 overflow-x-auto">
-                                <pre className="text-green-400 dark:text-primary-400 text-sm">
-{`// Shallow copy
+                            <CodeBlock
+                                code={`// Shallow copy
 const original = { a: 1, b: { c: 2 } };
 const copy = { ...original };  // Spread operator
 
@@ -184,8 +178,7 @@ const deepCopy = JSON.parse(JSON.stringify(original));
 
 // Using Object.assign()
 const anotherCopy = Object.assign({}, original);`}
-                                </pre>
-                            </div>
+                            />
                             <p className="text-gray-700 dark:text-gray-300 text-sm mt-2">
                                 To create true copies of objects, you need to use techniques like spread operator, Object.assign(), or deep cloning.
                             </p>
@@ -198,33 +191,27 @@ const anotherCopy = Object.assign({}, original);`}
                     <p className="text-gray-700 dark:text-gray-300 mb-4">
                         JavaScript is loosely typed, which means variables can change types implicitly. Understanding type coercion is essential.
                     </p>
-                    
+
                     <div className="bg-white dark:bg-black p-4 rounded-md shadow-sm border border-gray-200 dark:border-gray-700">
                         <div className="grid md:grid-cols-2 gap-6">
                             <div>
                                 <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">Implicit Coercion</h3>
-                                <div className="bg-gray-900 rounded-md p-4 overflow-x-auto">
-                                    <pre className="text-green-400 dark:text-primary-400 text-sm">
-{`'5' + 3      // '53' (number to string)
+                                <CodeBlock
+                                    code={`'5' + 3      // '53' (number to string)
 '5' - 3      // 2   (string to number)
 true + 1     // 2   (boolean to number)
 '5' == 5     // true (loose equality)
-'5' === 5    // false (strict equality)`}
-                                    </pre>
-                                </div>
+'5' === 5    // false (strict equality)`} />
                             </div>
                             <div>
                                 <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">Explicit Conversion</h3>
-                                <div className="bg-gray-900 rounded-md p-4 overflow-x-auto">
-                                    <pre className="text-green-400 dark:text-primary-400 text-sm">
-{`String(123)        // '123'
+                                <CodeBlock
+                                    code={`String(123)        // '123'
 Number('123')      // 123
 Boolean('hello')   // true
 parseInt('10px')   // 10
 + '42'             // 42 (unary plus)
-!!'hello'          // true (double negation)`}
-                                    </pre>
-                                </div>
+!!'hello'          // true (double negation)`} />
                             </div>
                         </div>
                     </div>

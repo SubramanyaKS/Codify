@@ -1,6 +1,5 @@
-import React from 'react';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+
+import CodeBlock from '../../components/CodeBlock';
 
 const NodeJsInstallation = () => {
     const installationSteps = [
@@ -94,68 +93,10 @@ const NodeJsInstallation = () => {
                                     {step.details && (
                                         <div className="mt-2">
                                             {step.step === 3 ? (
-                                                <div className="overflow-x-auto text-sm">
-                                                    <SyntaxHighlighter
-                                                        language="bash"
-                                                        style={vscDarkPlus}
-                                                        customStyle={{
-                                                            margin: 0,
-                                                            padding: '1rem',
-                                                            borderRadius: '0.5rem',
-                                                            background: '#1e1e1e',
-                                                            fontSize: '0.875rem',
-                                                            lineHeight: '1.5',
-                                                        }}
-                                                        wrapLines={true}
-                                                        wrapLongLines={true}
-                                                        codeTagProps={{
-                                                            style: {
-                                                                fontFamily: 'Fira Code, monospace',
-                                                                wordBreak: 'break-word',
-                                                                whiteSpace: 'pre-wrap',
-                                                            },
-                                                        }}
-                                                        lineProps={{
-                                                            style: {
-                                                                wordBreak: 'break-word',
-                                                                whiteSpace: 'pre-wrap',
-                                                            },
-                                                        }}
-                                                    >
-                                                        {`node -v    # Check Node.js version
-npm -v     # Check npm version`}
-                                                    </SyntaxHighlighter>
-                                                </div>
+                                                <CodeBlock code={`node -v    # Check Node.js version
+npm -v     # Check npm version`} />
                                             ) : step.step === 4 ? (
-                                                <div className="overflow-x-auto text-sm">
-                                                    <SyntaxHighlighter
-                                                        language="javascript"
-                                                        style={vscDarkPlus}
-                                                        customStyle={{
-                                                            margin: 0,
-                                                            padding: '1rem',
-                                                            borderRadius: '0.5rem',
-                                                            background: '#1e1e1e',
-                                                            fontSize: '0.875rem',
-                                                            lineHeight: '1.5',
-                                                        }}
-                                                        wrapLines={true}
-                                                        wrapLongLines={true}
-                                                        codeTagProps={{
-                                                            style: {
-                                                                fontFamily: 'Fira Code, monospace',
-                                                                wordBreak: 'break-word',
-                                                                whiteSpace: 'pre-wrap',
-                                                            },
-                                                        }}
-                                                        lineProps={{
-                                                            style: {
-                                                                wordBreak: 'break-word',
-                                                                whiteSpace: 'pre-wrap',
-                                                            },
-                                                        }}
-                                                    >
-                                                        {`// Print a welcome message
+                                                <CodeBlock code={`// Print a welcome message
 console.log('Hello from Node.js!');
 
 // Calculate and print the sum of two numbers
@@ -163,41 +104,9 @@ const num1 = 5;
 const num2 = 7;
 const sum = num1 + num2;
 
-console.log('The sum of ' + num1 + ' and ' + num2 + ' is: ' + sum);`}
-                                                    </SyntaxHighlighter>
-                                                </div>
+console.log('The sum of ' + num1 + ' and ' + num2 + ' is: ' + sum);`} />
                                             ) : step.step === 5 ? (
-                                                <div className="overflow-x-auto text-sm">
-                                                    <SyntaxHighlighter
-                                                        language="bash"
-                                                        style={vscDarkPlus}
-                                                        customStyle={{
-                                                            margin: 0,
-                                                            padding: '1rem',
-                                                            borderRadius: '0.5rem',
-                                                            background: '#1e1e1e',
-                                                            fontSize: '0.875rem',
-                                                            lineHeight: '1.5',
-                                                        }}
-                                                        wrapLines={true}
-                                                        wrapLongLines={true}
-                                                        codeTagProps={{
-                                                            style: {
-                                                                fontFamily: 'Fira Code, monospace',
-                                                                wordBreak: 'break-word',
-                                                                whiteSpace: 'pre-wrap',
-                                                            },
-                                                        }}
-                                                        lineProps={{
-                                                            style: {
-                                                                wordBreak: 'break-word',
-                                                                whiteSpace: 'pre-wrap',
-                                                            },
-                                                        }}
-                                                    >
-                                                        {`node app.js`}
-                                                    </SyntaxHighlighter>
-                                                </div>
+                                                <CodeBlock code={`node app.js`} />
                                             ) : (
                                                 <p className="text-sm text-gray-600 dark:text-gray-400">{step.details}</p>
                                             )}
@@ -247,37 +156,7 @@ console.log('The sum of ' + num1 + ' and ' + num2 + ' is: ' + sum);`}
                                 )}
 
                                 {step.details && (
-                                    <div className="mt-3">
-                                        <SyntaxHighlighter
-                                            language="bash"
-                                            style={vscDarkPlus}
-                                            customStyle={{
-                                                margin: 0,
-                                                padding: '1rem',
-                                                borderRadius: '0.5rem',
-                                                background: '#1e1e1e',
-                                                fontSize: '0.875rem',
-                                                lineHeight: '1.5',
-                                            }}
-                                            wrapLines={true}
-                                            wrapLongLines={true}
-                                            codeTagProps={{
-                                                style: {
-                                                    fontFamily: 'Fira Code, monospace',
-                                                    wordBreak: 'break-word',
-                                                    whiteSpace: 'pre-wrap',
-                                                },
-                                            }}
-                                            lineProps={{
-                                                style: {
-                                                    wordBreak: 'break-word',
-                                                    whiteSpace: 'pre-wrap',
-                                                },
-                                            }}
-                                        >
-                                            {step.details}
-                                        </SyntaxHighlighter>
-                                    </div>
+                                    <CodeBlock code={step.details} />
                                 )}
                             </div>
                         ))}
