@@ -6,11 +6,26 @@ import Loader from '../../../components/Loader';
 import Breadcrumb from '../../../components/Breadcrumb';
 import useMobile from '../../../hooks/useMobile';
 
-// Lazy load the note components
-const JsIntroduction = React.lazy(() => import('./JsTopics/JsIntroduction'));
-const WhatAreVariables = React.lazy(() => import('./JsTopics/WhatAreVariables'));
-const JsExecution = React.lazy(() => import('./JsTopics/JsExecution'));
-const NodeJsInstallation = React.lazy(() => import('./JsTopics/NodeJsInstallation'));
+// Lazy load the note components --------------------------------------
+// Introduction
+const JsIntroduction = React.lazy(() => import('./JsTopics/Introduction/JsIntroduction'));
+const JsExecution = React.lazy(() => import('./JsTopics/Introduction/JsExecution'));
+const NodeJsInstallation = React.lazy(() => import('./JsTopics/Introduction/NodeJsInstallation'));
+
+// JavaScript Variables
+const WhatAreVariables = React.lazy(() => import('./JsTopics/JsVariables/WhatAreVariables'));
+const VarLetConst = React.lazy(() => import('./JsTopics/JsVariables/VarLetConst'));
+const PrimitivesAndObjects = React.lazy(() => import('./JsTopics/JsVariables/PrimitivesAndObjects'));
+const VariableNamingRules = React.lazy(() => import('./JsTopics/JsVariables/VariableNamingRules'));
+const OperatorsAndExpressions = React.lazy(() => import('./JsTopics/JsVariables/OperatorsAndExpressions'));
+
+// JavaScript Basics
+const IfElseConditionals = React.lazy(() => import('./JsTopics/JsBasics/IfElseConditionals'));
+const IfElseLadder = React.lazy(() => import('./JsTopics/JsBasics/IfElseLadder'));
+const SwitchCase = React.lazy(() => import('./JsTopics/JsBasics/SwitchCase'));
+
+// Lazy load the note components --------------------------------------
+
 
 const JavaScriptFundamentals = () => {
   const location = useLocation();
@@ -72,10 +87,15 @@ const JavaScriptFundamentals = () => {
 
                 {/* Javascript variables */}
                 <Route path="what-are-variables" element={<WhatAreVariables />} />
-
+                <Route path="variable-naming-rules" element={<VariableNamingRules />} />
+                <Route path="primitives-and-objects" element={<PrimitivesAndObjects />} />
+                <Route path="operators-and-expressions" element={<OperatorsAndExpressions />} />
+                <Route path="var-vs-let-vs-const" element={<VarLetConst />} />
 
                 {/* Javascript basics */}
-
+                <Route path="if-else-conditionals" element={<IfElseConditionals />} />
+                <Route path="if-else-ladder" element={<IfElseLadder />} />
+                <Route path="switch-case" element={<SwitchCase />} />
 
                 {/* Javascript objects */}
 

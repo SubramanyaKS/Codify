@@ -1,4 +1,4 @@
-import React from 'react';
+import CodeBlock from "../../components/CodeBlock";
 
 const VariableNamingRules = () => {
     const examples = [
@@ -52,7 +52,7 @@ const VariableNamingRules = () => {
             <div className="prose max-w-none">
                 <section className="mb-8">
                     <p className="text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
-                        JavaScript is a dynamically-typed language, which means that you don't have to specify the data type of a variable when you declare it. 
+                        JavaScript is a dynamically-typed language, which means that you don't have to specify the data type of a variable when you declare it.
                         The data type of a variable is determined by the value that is assigned to it.
                     </p>
                 </section>
@@ -70,10 +70,42 @@ const VariableNamingRules = () => {
                         <li>Cannot be a reserved keyword (e.g., let, const, if, for, function, etc.)</li>
                     </ul>
 
-                    <div className={`mb-6 bg-white dark:bg-black p-4 rounded-md shadow-sm border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-gray-600 transition-colors`}>
+                    <div className="mb-6 bg-white dark:bg-black p-4 rounded-md shadow-sm border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-gray-600 transition-colors">
                         <p className="text-primary-500 dark:text-primary-400">
                             <strong className="font-semibold">Note:</strong> While JavaScript allows non-ASCII characters in variable names, it's best to stick to English letters for better compatibility.
                         </p>
+                    </div>
+
+                    <div className="mt-8">
+                        <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">Examples</h3>
+                        <div className="space-y-6">
+                            {examples.map((example, index) => (
+                                <div key={index} className="bg-white dark:bg-transparent rounded-lg p-4 shadow-sm border border-gray-200 dark:border-gray-800">
+                                    <div className="flex items-start">
+                                        <div className={`w-6 h-6 rounded-full flex items-center justify-center mr-3 mt-1 ${example.valid ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'
+                                            }`}>
+                                            {example.valid ? '✓' : '✗'}
+                                        </div>
+                                        <div className="flex-1">
+                                            <p className="text-gray-700 dark:text-gray-300 mb-3">{example.description}</p>
+                                            <CodeBlock code={example.code} />
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="mt-10">
+                        <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">Best Practices</h3>
+                        <ul className="space-y-3">
+                            {bestPractices.map((practice, index) => (
+                                <li key={index} className="flex items-start">
+                                    <span className="text-green-500 mr-2 mt-1">•</span>
+                                    <span className="text-gray-700 dark:text-gray-300">{practice}</span>
+                                </li>
+                            ))}
+                        </ul>
                     </div>
                 </section>
 
@@ -96,8 +128,8 @@ const VariableNamingRules = () => {
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                                ${example.valid 
-                                                    ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
+                                                ${example.valid
+                                                    ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                                                     : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200'}`}>
                                                 {example.valid ? 'Valid' : 'Invalid'}
                                             </span>
@@ -128,7 +160,7 @@ const VariableNamingRules = () => {
 
                     <div className={`mt-6 bg-white dark:bg-black p-4 rounded-md shadow-sm border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-gray-600 transition-colors`}>
                         <p className="text-primary-500 dark:text-primary-400">
-                            <strong className="font-semibold">Pro Tip:</strong> Choose variable names that are descriptive enough to make the code self-documenting. 
+                            <strong className="font-semibold">Pro Tip:</strong> Choose variable names that are descriptive enough to make the code self-documenting.
                             A well-named variable can eliminate the need for additional comments.
                         </p>
                     </div>
@@ -138,8 +170,7 @@ const VariableNamingRules = () => {
                     <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4">Variable Usage Examples</h2>
                     <div className="space-y-6">
                         <div className="bg-gray-900 dark:bg-gray-900 rounded-md p-4 overflow-x-auto">
-                            <pre className="text-green-400 dark:text-primary-400 text-sm">
-                                <code>{`// Declaring and initializing variables
+                            <CodeBlock code={`// Declaring and initializing variables
 let counter = 0;
 const MAX_ATTEMPTS = 3;
 let isUserLoggedIn = false;
@@ -160,9 +191,7 @@ if (isUserLoggedIn) {
 // Variables in loops
 for (let i = 0; i < 5; i++) {
     console.log('Iteration:', i);
-}`}
-                                </code>
-                            </pre>
+}`} />
                         </div>
                     </div>
                 </section>

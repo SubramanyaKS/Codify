@@ -1,4 +1,4 @@
-import React from 'react';
+import CodeBlock from "../../components/CodeBlock";
 
 const OperatorsAndExpressions = () => {
     const arithmeticOperators = [
@@ -123,9 +123,7 @@ const OperatorsAndExpressions = () => {
 
                     <div className="bg-white dark:bg-black p-4 rounded-md shadow-sm border border-gray-200 dark:border-gray-700 mb-6">
                         <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">Example: Using Arithmetic Operators</h3>
-                        <div className="bg-gray-900 rounded-md p-4 overflow-x-auto">
-                            <pre className="text-green-400 dark:text-primary-400 text-sm">
-                                {`let a = 10;
+                        <CodeBlock code={`let a = 10;
 let b = 3;
 
 console.log(a + b);  // 13
@@ -137,9 +135,7 @@ console.log(a ** 2); // 100 (10 to the power of 2)
 
 let count = 5;
 count++;  // Increment: count is now 6
-count--;  // Decrement: count is now 5 again`}
-                            </pre>
-                        </div>
+count--;  // Decrement: count is now 5 again`} />
                     </div>
                 </section>
 
@@ -174,9 +170,7 @@ count--;  // Decrement: count is now 5 again`}
 
                     <div className="bg-white dark:bg-black p-4 rounded-md shadow-sm border border-gray-200 dark:border-gray-700 mb-6">
                         <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">Example: Using Comparison Operators</h3>
-                        <div className="bg-gray-900 rounded-md p-4 overflow-x-auto">
-                            <pre className="text-green-400 dark:text-primary-400 text-sm">
-                                {`// Loose equality (==) vs Strict equality (===)
+                        <CodeBlock code={`// Loose equality (==) vs Strict equality (===)
 console.log(5 == "5");   // true (type coercion)
 console.log(5 === "5");  // false (different types)
 
@@ -190,9 +184,7 @@ console.log(null === undefined);  // false
 
 // String comparison (lexicographical order)
 console.log("apple" < "banana");  // true
-console.log("Zoo" < "apple");     // true (uppercase comes before lowercase)`}
-                            </pre>
-                        </div>
+console.log("Zoo" < "apple");     // true (uppercase comes before lowercase)`} />
                     </div>
                 </section>
 
@@ -207,18 +199,14 @@ console.log("Zoo" < "apple");     // true (uppercase comes before lowercase)`}
                             <div key={`logic-${index}`} className="bg-white dark:bg-black p-3 sm:p-4 rounded-md shadow-sm border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-md dark:hover:shadow-gray-800/50">
                                 <h3 className="text-base sm:text-lg font-semibold text-gray-800 dark:text-white mb-2 sm:mb-3">
                                     <span className="whitespace-nowrap">
-                                        {op.name} 
+                                        {op.name}
                                         <span className="font-mono text-primary-600 dark:text-primary-400 ml-1">
                                             ({op.operator})
                                         </span>
                                     </span>
                                 </h3>
-                                <div className="bg-gray-900 rounded-md p-3 sm:p-4 mb-2 sm:mb-3 overflow-x-auto">
-                                    <pre className="text-xs sm:text-sm text-green-400 dark:text-primary-400 leading-relaxed">
-                                        {`// Example:
-console.log(${op.example});  // ${op.result}`}
-                                    </pre>
-                                </div>
+                                <CodeBlock code={`// Example:
+console.log(${op.example});  // ${op.result}`} />
                                 <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
                                     {op.description}
                                 </p>
@@ -228,9 +216,8 @@ console.log(${op.example});  // ${op.result}`}
 
                     <div className="mt-6 bg-white dark:bg-black p-4 rounded-md shadow-sm border border-gray-200 dark:border-gray-700">
                         <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">Short-Circuit Evaluation</h3>
-                        <div className="bg-gray-900 rounded-md p-4 overflow-x-auto">
-                            <pre className="text-green-400 dark:text-primary-400 text-sm">
-                                {`// Logical AND (&&) - returns first falsy value or last truthy value
+                        <CodeBlock
+                            code={`// Logical AND (&&) - returns first falsy value or last truthy value
 console.log(0 && 2);      // 0
 console.log('' && 'Hello'); // ''
 console.log(1 && 2 && 3);  // 3
@@ -243,9 +230,7 @@ console.log(0 || '' || null); // null
 // Nullish Coalescing (??) - returns right side only if left is null/undefined
 console.log(0 ?? 'default');  // 0
 console.log('' ?? 'default'); // ''
-console.log(null ?? 'default'); // 'default'`}
-                            </pre>
-                        </div>
+console.log(null ?? 'default'); // 'default'`} />
                     </div>
                 </section>
 
@@ -307,27 +292,21 @@ console.log(null ?? 'default'); // 'default'`}
                     <div className="bg-white dark:bg-black p-3 sm:p-4 rounded-md shadow-sm border border-gray-200 dark:border-gray-700">
                         <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-3 sm:mb-4">Examples of Operator Precedence</h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                            <div className="bg-gray-900 rounded-md p-3 sm:p-4 overflow-x-auto">
-                                <pre className="text-xs sm:text-sm text-green-400 dark:text-primary-400 leading-relaxed">{
-`// Multiplication has higher precedence
-let result1 = 10 + 5 * 2;  // 20, not 30
+                            <CodeBlock
+                                code={`// Multiplication has higher precedence
+let result1= 10 + 5 * 2;  // 20, not 30
 // Same as: 10 + (5 * 2)
 
 // String concatenation
 let name = 'John';
-let greeting = 'Hello, ' + name + '!';`
-                                }</pre>
-                            </div>
-                            <div className="bg-gray-900 rounded-md p-3 sm:p-4 overflow-x-auto">
-                                <pre className="text-xs sm:text-sm text-green-400 dark:text-primary-400 leading-relaxed">{
-`// && has higher precedence than ||
+let greeting = 'Hello, ' + name + '!';`} />
+                            <CodeBlock
+                                code={`// && has higher precedence than ||
 let a = true || false && false;  // true
 // Same as: true || (false && false)
 
 // Parentheses change evaluation
-let b = (true || false) && false;  // false`
-                                }</pre>
-                            </div>
+let b = (true || false) && false;  // false`} />
                         </div>
                     </div>
                 </section>
