@@ -1,20 +1,21 @@
-import dotenv from 'dotenv'
-import express from 'express'
-import authRouter from './routes/authRouter.js';
-import contactRouter from './routes/contactRoute.js';
-import coursesRouter from './routes/coursesRoute.js'
-import connectDB from './utils/db.js';
-import cors from 'cors';
-import errorMiddleware from './middlewares/errorMiddlewares.js';
-import userRouter from './routes/userRoute.js';
-import router from './routes/router.js';
-import adminRouter from './routes/adminRouter.js';
-import progressRouter from './routes/progressRoute.js';
-import activityRouter from './routes/activityRoute.js';
-import leaderBoardRoute from './routes/leaderBoardRoute.js'
-import bookmarkRouter from './routes/bookmarkRoute.js';
+import dotenv from "dotenv";
+import express from "express";
+import authRouter from "./routes/authRouter.js";
+import contactRouter from "./routes/contactRoute.js";
+import coursesRouter from "./routes/coursesRoute.js";
+import connectDB from "./utils/db.js";
+import cors from "cors";
+import errorMiddleware from "./middlewares/errorMiddlewares.js";
+import userRouter from "./routes/userRoute.js";
+import router from "./routes/router.js";
+import adminRouter from "./routes/adminRouter.js";
+import progressRouter from "./routes/progressRoute.js";
+import activityRouter from "./routes/activityRoute.js";
+import leaderBoardRoute from "./routes/leaderBoardRoute.js";
+import bookmarkRouter from "./routes/bookmarkRoute.js";
 
-import todoRouter from "./routes/todoRoute.js"
+import todoRouter from "./routes/todoRoute.js";
+import newsletterRouter from "./routes/newsletterRoute.js";
 
 import session from "express-session";
 import passport from "passport";
@@ -23,9 +24,9 @@ dotenv.config();
 const app = express();
 // Allow all origins
 const corsOption = {
-  origin: "*",   // any domain can access,
+  origin: "*", // any domain can access,
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  credentials: false
+  credentials: false,
 };
 app.use(cors(corsOption));
 
@@ -55,16 +56,20 @@ app.use("/user", userRouter);
 app.use("/api/v1/courses", coursesRouter);
 app.use("/progress", progressRouter);
 app.use("/activity", activityRouter);
-app.use("/", router)
+app.use("/", router);
 app.use("/admin", adminRouter);
 app.use("/api/v1", leaderBoardRoute);
 app.use("/api/v1/bookmarks", bookmarkRouter);
-app.use('/api/todos', todoRouter);
+app.use("/api/todos", todoRouter);
+app.use("/api/newsletter", newsletterRouter);
 // app.get("/",)
 const PORT = process.env.PORT || 5050;
 
-
 app.use(errorMiddleware);
-connectDB().then(
-  app.listen(PORT, () => { console.log(`Server is running at localhost:${PORT}`) })
-).catch(() => console.error("error during connection with mongodb"));
+connectDB()
+  .then(
+    app.listen(PORT, () => {
+      console.log(`Server is running at localhost:${PORT}`);
+    })
+  )
+  .catch(() => console.error("error during connection with mongodb"));
