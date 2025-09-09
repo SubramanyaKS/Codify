@@ -80,7 +80,7 @@
         "icon": "🍃"
     },
     {
-        "skill_name": "Go Roadmap",
+        "skill_name": "Go",
         "skill_link": "https://roadmap.sh/golang",
         "icon": "🐹"
     },
@@ -139,6 +139,13 @@
         "skill_link": "https://roadmap.sh/mongodb",
         "icon": "🍃"
     },
+
+    {
+        "roadmap_name": "UX Design",
+        "roadmap_link": "https://roadmap.sh/ux-design",
+        "icon": "✨"
+    },
+
     {
         "skill_name": "Prompt Engineering",
         "skill_link": "https://roadmap.sh/prompt-engineering",

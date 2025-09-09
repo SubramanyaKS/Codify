@@ -2,37 +2,35 @@ import {
   FaGithub,
   FaInstagram,
   FaLinkedin,
-  FaTwitter,
   FaYoutube,
   FaHeart,
   FaMapMarkerAlt,
   FaPhone,
   FaEnvelope,
+  FaDiscord,
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
-import roadmap from "../assets/json/roadmap.json";
+import roadmap from "../assets/json/rolebasedRoadmaps.json";
 const Footer = () => {
   const { theme } = useTheme();
   const isDark = theme === "dark";
-
   const reqdroadmaps = roadmap.filter((item) =>
-    ['Frontend','Backend','Full Stack','Android'].includes(item.roadmap_name));
+    ['Frontend Developer', 'Backend Developer', 'Full Stack Developer', 'QA Engineer'].includes(item.roadmap_name));
   return (
     <footer
       className={`
-      ${isDark 
-        ? "bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 backdrop-blur-xl text-dark-text-primary" 
-        : "bg-gradient-to-br from-blue-50 to-indigo-50 backdrop-blur-xl text-light-text-primary"
-      }
-      pt-16 pb-8 border-t-2 ${
-        isDark ? "border-dark-border" : "border-light-border"
-      }
+      ${isDark
+          ? "bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 backdrop-blur-xl text-dark-text-primary"
+          : "bg-gradient-to-br from-blue-50 to-indigo-50 backdrop-blur-xl text-light-text-primary"
+        }
+      pt-16 pb-8 border-t-2 ${isDark ? "border-dark-border" : "border-light-border"
+        }
       relative overflow-hidden
     `}
     >
       {/* Enhanced Background with grid pattern */}
-      <div 
+      <div
         className={`absolute top-0 left-0 w-full h-full -z-10 bg-[size:30px_30px] ${isDark ? 'bg-grid-pattern-dark' : 'bg-grid-pattern-light'}`}
       >
         <div className={`absolute inset-0 ${isDark ? 'bg-gradient-to-br from-dark-bg-primary/90 via-transparent to-dark-bg-primary/50' : 'bg-gradient-to-br from-light-bg-primary/90 via-transparent to-light-bg-primary/50'}`}></div>
@@ -53,11 +51,10 @@ const Footer = () => {
               </span>
             </h2>
             <p
-              className={`${
-                isDark
+              className={`${isDark
                   ? "text-dark-text-secondary"
                   : "text-light-text-secondary"
-              } leading-relaxed`}
+                } leading-relaxed`}
             >
               Empowering the next generation of developers with expert-led
               tutorials and hands-on projects.
@@ -71,13 +68,11 @@ const Footer = () => {
               rel="noopener noreferrer"
               className={`
                 text-xl p-3 rounded-full transition-all duration-300 transform hover:scale-110
-                ${
-                  isDark
-                    ? "bg-gradient-to-br from-gray-700 to-gray-800 hover:bg-primary/20 backdrop-blur-sm"
-                    : "bg-white/50 hover:bg-primary/20 backdrop-blur-sm"
+                ${isDark
+                  ? "bg-gradient-to-br from-gray-700 to-gray-800 hover:bg-primary/20 backdrop-blur-sm"
+                  : "bg-white/50 hover:bg-primary/20 backdrop-blur-sm"
                 }
-                ${
-                  isDark ? "text-dark-text-primary" : "text-light-text-primary"
+                ${isDark ? "text-dark-text-primary" : "text-light-text-primary"
                 } hover:text-primary border ${isDark ? "border-gray-600" : "border-white/20"}
               `}
               aria-label="GitHub"
@@ -90,13 +85,11 @@ const Footer = () => {
               rel="noopener noreferrer"
               className={`
                 text-xl p-3 rounded-full transition-all duration-300 transform hover:scale-110
-                ${
-                  isDark
-                    ? "bg-gradient-to-br from-gray-700 to-gray-800 hover:bg-primary/20 backdrop-blur-sm"
-                    : "bg-white/50 hover:bg-primary/20 backdrop-blur-sm"
+                ${isDark
+                  ? "bg-gradient-to-br from-gray-700 to-gray-800 hover:bg-primary/20 backdrop-blur-sm"
+                  : "bg-white/50 hover:bg-primary/20 backdrop-blur-sm"
                 }
-                ${
-                  isDark ? "text-dark-text-primary" : "text-light-text-primary"
+                ${isDark ? "text-dark-text-primary" : "text-light-text-primary"
                 } hover:text-primary border ${isDark ? "border-gray-600" : "border-white/20"}
               `}
               aria-label="LinkedIn"
@@ -104,23 +97,21 @@ const Footer = () => {
               <FaLinkedin />
             </a>
             <a
-              href="https://twitter.com/roshansuthar1105"
+              href="https://discord.com/users/1317732270047498343"
               target="_blank"
               rel="noopener noreferrer"
               className={`
                 text-xl p-3 rounded-full transition-all duration-300 transform hover:scale-110
-                ${
-                  isDark
-                    ? "bg-gradient-to-br from-gray-700 to-gray-800 hover:bg-primary/20 backdrop-blur-sm"
-                    : "bg-white/50 hover:bg-primary/20 backdrop-blur-sm"
+                ${isDark
+                  ? "bg-gradient-to-br from-gray-700 to-gray-800 hover:bg-primary/20 backdrop-blur-sm"
+                  : "bg-white/50 hover:bg-primary/20 backdrop-blur-sm"
                 }
-                ${
-                  isDark ? "text-dark-text-primary" : "text-light-text-primary"
+                ${isDark ? "text-dark-text-primary" : "text-light-text-primary"
                 } hover:text-primary border ${isDark ? "border-gray-600" : "border-white/20"}
               `}
-              aria-label="Twitter"
+              aria-label="Discord"
             >
-              <FaTwitter />
+              <FaDiscord />
             </a>
             <a
               href="https://www.youtube.com"
@@ -128,13 +119,11 @@ const Footer = () => {
               rel="noopener noreferrer"
               className={`
                 text-xl p-3 rounded-full transition-all duration-300 transform hover:scale-110
-                ${
-                  isDark
-                    ? "bg-gradient-to-br from-gray-700 to-gray-800 hover:bg-primary/20 backdrop-blur-sm"
-                    : "bg-white/50 hover:bg-primary/20 backdrop-blur-sm"
+                ${isDark
+                  ? "bg-gradient-to-br from-gray-700 to-gray-800 hover:bg-primary/20 backdrop-blur-sm"
+                  : "bg-white/50 hover:bg-primary/20 backdrop-blur-sm"
                 }
-                ${
-                  isDark ? "text-dark-text-primary" : "text-light-text-primary"
+                ${isDark ? "text-dark-text-primary" : "text-light-text-primary"
                 } hover:text-primary border ${isDark ? "border-gray-600" : "border-white/20"}
               `}
               aria-label="YouTube"
@@ -147,13 +136,11 @@ const Footer = () => {
               rel="noopener noreferrer"
               className={`
                 text-xl p-3 rounded-full transition-all duration-300 transform hover:scale-110
-                ${
-                  isDark
-                    ? "bg-gradient-to-br from-gray-700 to-gray-800 hover:bg-primary/20 backdrop-blur-sm"
-                    : "bg-white/50 hover:bg-primary/20 backdrop-blur-sm"
+                ${isDark
+                  ? "bg-gradient-to-br from-gray-700 to-gray-800 hover:bg-primary/20 backdrop-blur-sm"
+                  : "bg-white/50 hover:bg-primary/20 backdrop-blur-sm"
                 }
-                ${
-                  isDark ? "text-dark-text-primary" : "text-light-text-primary"
+                ${isDark ? "text-dark-text-primary" : "text-light-text-primary"
                 } hover:text-primary border ${isDark ? "border-gray-600" : "border-white/20"}
               `}
               aria-label="Instagram"
@@ -166,20 +153,18 @@ const Footer = () => {
         {/* Main footer content */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           {/* About Section */}
-          <div className={`flex flex-col gap-4 p-6 rounded-2xl ${
-            isDark 
-              ? "bg-gradient-to-br from-gray-700/30 to-gray-800/30 backdrop-blur-sm border border-gray-600/20" 
+          <div className={`flex flex-col gap-4 p-6 rounded-2xl ${isDark
+              ? "bg-gradient-to-br from-gray-700/30 to-gray-800/30 backdrop-blur-sm border border-gray-600/20"
               : "bg-white/30 backdrop-blur-sm border border-white/20"
             }`}>
             <h3 className="text-primary text-xl font-righteous pb-2 border-b border-primary/30">
               About Us
             </h3>
             <p
-              className={`${
-                isDark
+              className={`${isDark
                   ? "text-dark-text-secondary"
                   : "text-light-text-secondary"
-              } leading-relaxed`}
+                } leading-relaxed`}
             >
               Codify is a premier coding education platform dedicated to making
               programming accessible to everyone. Our mission is to empower
@@ -189,9 +174,8 @@ const Footer = () => {
           </div>
 
           {/* Quick Links */}
-          <div className={`flex flex-col gap-4 p-6 rounded-2xl ${
-            isDark 
-              ? "bg-gradient-to-br from-gray-700/30 to-gray-800/30 backdrop-blur-sm border border-gray-600/20" 
+          <div className={`flex flex-col gap-4 p-6 rounded-2xl ${isDark
+              ? "bg-gradient-to-br from-gray-700/30 to-gray-800/30 backdrop-blur-sm border border-gray-600/20"
               : "bg-white/30 backdrop-blur-sm border border-white/20"
             }`}>
             <h3 className="text-primary text-xl font-righteous pb-2 border-b border-primary/30">
@@ -202,10 +186,9 @@ const Footer = () => {
                 <Link
                   to="/"
                   className={`
-                    ${
-                      isDark
-                        ? "text-dark-text-secondary"
-                        : "text-light-text-secondary"
+                    ${isDark
+                      ? "text-dark-text-secondary"
+                      : "text-light-text-secondary"
                     } 
                     hover:text-primary transition-colors flex items-center
                   `}
@@ -218,10 +201,9 @@ const Footer = () => {
                 <Link
                   to="/courses"
                   className={`
-                    ${
-                      isDark
-                        ? "text-dark-text-secondary"
-                        : "text-light-text-secondary"
+                    ${isDark
+                      ? "text-dark-text-secondary"
+                      : "text-light-text-secondary"
                     } 
                     hover:text-primary transition-colors flex items-center
                   `}
@@ -234,10 +216,9 @@ const Footer = () => {
                 <Link
                   to="/roadmap"
                   className={`
-                    ${
-                      isDark
-                        ? "text-dark-text-secondary"
-                        : "text-light-text-secondary"
+                    ${isDark
+                      ? "text-dark-text-secondary"
+                      : "text-light-text-secondary"
                     } 
                     hover:text-primary transition-colors flex items-center
                   `}
@@ -250,10 +231,9 @@ const Footer = () => {
                 <Link
                   to="/about"
                   className={`
-                    ${
-                      isDark
-                        ? "text-dark-text-secondary"
-                        : "text-light-text-secondary"
+                    ${isDark
+                      ? "text-dark-text-secondary"
+                      : "text-light-text-secondary"
                     } 
                     hover:text-primary transition-colors flex items-center
                   `}
@@ -266,10 +246,9 @@ const Footer = () => {
                 <Link
                   to="/contact"
                   className={`
-                    ${
-                      isDark
-                        ? "text-dark-text-secondary"
-                        : "text-light-text-secondary"
+                    ${isDark
+                      ? "text-dark-text-secondary"
+                      : "text-light-text-secondary"
                     } 
                     hover:text-primary transition-colors flex items-center
                   `}
@@ -282,42 +261,39 @@ const Footer = () => {
           </div>
 
           {/* Learning Paths */}
-          <div className={`flex flex-col gap-4 p-6 rounded-2xl ${
-            isDark 
-              ? "bg-gradient-to-br from-gray-700/30 to-gray-800/30 backdrop-blur-sm border border-gray-600/20" 
+          <div className={`flex flex-col gap-4 p-6 rounded-2xl ${isDark
+              ? "bg-gradient-to-br from-gray-700/30 to-gray-800/30 backdrop-blur-sm border border-gray-600/20"
               : "bg-white/30 backdrop-blur-sm border border-white/20"
             }`}>
             <h3 className="text-primary text-xl font-righteous pb-2 border-b border-primary/30">
-            <Link to='/roadmap'>
-            Learning Paths
-            </Link>
+              <Link to='/roadmap'>
+                Learning Paths
+              </Link>
             </h3>
             <ul className="flex flex-col gap-3">
-            {reqdroadmaps.map((item)=>(
-              <li key={item.roadmap_name}
-                className={`
-                ${
-                  isDark
-                    ? "text-dark-text-secondary"
-                    : "text-light-text-secondary"
-                }
+              {reqdroadmaps.map((item) => (
+                <li key={item.roadmap_name}
+                  className={`
+                ${isDark
+                      ? "text-dark-text-secondary"
+                      : "text-light-text-secondary"
+                    }
                 hover:text-primary transition-colors flex items-center cursor-pointer
               `}
-              >
-                <span className="mr-2 text-primary text-xs">▸</span>
-                <a href={item.roadmap_link} target="_blank" rel="noopener noreferrer">
-                {item.roadmap_name+' development'}
-                </a>
+                >
+                  <span className="mr-2 text-primary text-xs">▸</span>
+                  <a href={item.roadmap_link} target="_blank" rel="noopener noreferrer">
+                    {item.roadmap_name + ' development'}
+                  </a>
                 </li>))
-            }
+              }
             </ul>
           </div>
 
 
           {/* Contact Info */}
-          <div className={`flex flex-col gap-4 p-6 rounded-2xl ${
-            isDark 
-              ? "bg-gradient-to-br from-gray-700/30 to-gray-800/30 backdrop-blur-sm border border-gray-600/20" 
+          <div className={`flex flex-col gap-4 p-6 rounded-2xl ${isDark
+              ? "bg-gradient-to-br from-gray-700/30 to-gray-800/30 backdrop-blur-sm border border-gray-600/20"
               : "bg-white/30 backdrop-blur-sm border border-white/20"
             }`}>
             <h3 className="text-primary text-xl font-righteous pb-2 border-b border-primary/30">
@@ -325,34 +301,31 @@ const Footer = () => {
             </h3>
             <ul className="flex flex-col gap-3">
               <li
-                className={`${
-                  isDark
+                className={`${isDark
                     ? "text-dark-text-secondary"
                     : "text-light-text-secondary"
-                } flex items-start`}
+                  } flex items-start`}
               >
                 <FaMapMarkerAlt className="text-primary mt-1 mr-3 flex-shrink-0" />
-               <a href='https://maps.app.goo.gl/aRVCuJ6Xmrqj3X4f8' target="_blank"> <span>Sitapura, Jaipur</span></a>
+                <a href='https://maps.app.goo.gl/aRVCuJ6Xmrqj3X4f8' target="_blank"> <span>Sitapura, Jaipur</span></a>
               </li>
               <li
-                className={`${
-                  isDark
+                className={`${isDark
                     ? "text-dark-text-secondary"
                     : "text-light-text-secondary"
-                } flex items-center`}
+                  } flex items-center`}
               >
                 <FaPhone className="text-primary mr-3 flex-shrink-0" />
-                <span>+1 (555) 123-4567</span>
+                <span>+91 7878952931</span>
               </li>
               <li
-                className={`${
-                  isDark
+                className={`${isDark
                     ? "text-dark-text-secondary"
                     : "text-light-text-secondary"
-                } flex items-center`}
+                  } flex items-center`}
               >
                 <FaEnvelope className="text-primary mr-3 flex-shrink-0" />
-                <a href="mailto:rscodify@gmail.com"><span>support@codify.com</span></a>
+                <a href="mailto:rscodify@gmail.com"><span>rscodify@gmail.com</span></a>
               </li>
             </ul>
           </div>
@@ -371,11 +344,10 @@ const Footer = () => {
                 Subscribe to our newsletter
               </h3>
               <p
-                className={`${
-                  isDark
+                className={`${isDark
                     ? "text-dark-text-secondary"
                     : "text-light-text-secondary"
-                }`}
+                  }`}
               >
                 Get the latest updates, tutorials and offers directly to your
                 inbox.
@@ -388,10 +360,9 @@ const Footer = () => {
                   placeholder="Enter your email"
                   className={`
                     flex-1 px-4 py-2 rounded-lg backdrop-blur-sm
-                    ${
-                      isDark
-                        ? "bg-gray-800/50 text-dark-text-primary border-gray-600/30"
-                        : "bg-white/50 text-light-text-primary border-white/30"
+                    ${isDark
+                      ? "bg-gray-800/50 text-dark-text-primary border-gray-600/30"
+                      : "bg-white/50 text-light-text-primary border-white/30"
                     } border focus:outline-none focus:ring-2 focus:ring-primary
                   `}
                 />
@@ -405,19 +376,19 @@ const Footer = () => {
 
         {/* Copyright */}
         <div
-          className={`text-center pt-6 border-t ${
-            isDark ? "border-gray-600/30" : "border-white/30"
-          }`}
+          className={`text-center pt-6 border-t ${isDark ? "border-gray-600/30" : "border-white/30"
+            }`}
         >
           <p
-            className={`${
-              isDark ? "text-dark-text-secondary" : "text-light-text-secondary"
-            } text-sm flex items-center justify-center gap-1`}
+            className={`${isDark ? "text-dark-text-secondary" : "text-light-text-secondary"
+              } text-sm flex items-center flex-col justify-center gap-1`}
           >
             &copy; {new Date().getFullYear()} Codify. All rights reserved. Made
             with
-            <FaHeart className="text-primary animate-pulse" />
-            by Roshan Suthar
+            <p className="flex gap-2 justify-center items-baseline text-sm" >
+              <FaHeart className="text-primary animate-pulse" />
+              <a className="text-primary text-xl hover:text-primary-dark cursor-pointer hover:underline " href="http://roshansuthar.netlify.app" target="_blank" rel="noopener noreferrer"> Roshan Suthar</a>
+            </p>
           </p>
         </div>
       </div>

@@ -1,14 +1,21 @@
-import React, { useEffect } from 'react';
+import  { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { NavLink } from 'react-router-dom';
 import { RiCloseLargeLine } from 'react-icons/ri';
-import { FaBook, FaBookReader,FaBookmark , FaEnvelope, FaGraduationCap, FaHome, FaRoad, FaSignInAlt, FaSignOutAlt, FaUser, FaUserPlus, FaUserTie,FaQuestionCircle } from 'react-icons/fa';
+import { FaBook, FaBookReader, FaBookmark, FaEnvelope, FaGraduationCap, FaHome, FaRoad, FaSignInAlt, FaSignOutAlt, FaUser, FaUserPlus, FaUserTie, FaArrowUp, FaArrowDown, FaQuestionCircle } from 'react-icons/fa';
 import { useTheme } from '../context/ThemeContext';
-import { FaCode } from "react-icons/fa";  
+import { FaCode } from "react-icons/fa";
+import ThemeSwitcher from './ThemeSwitcher';
+import ThemeColorSelector from './ThemeColorSelector';  
 
 function MobileMenu({ isOpen, onClose, isLoggedIn, userdata }) {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
+
+  const handleBackToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    onClose();
+  };
 
   // Prevent scrolling when menu is open
   useEffect(() => {
@@ -44,7 +51,7 @@ function MobileMenu({ isOpen, onClose, isLoggedIn, userdata }) {
 
         {/* Menu panel */}
         <div className={`
-          absolute right-0 top-0 h-full w-64 overflow-y-auto z-[9100]
+          absolute right-0 top-0 h-full w-[85vw] sm:w-80 md:w-96 max-w-sm overflow-y-auto z-[9100]
           ${isDark ? 'bg-dark-bg-primary' : 'bg-white'}
           ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}
           shadow-lg transform transition-transform duration-300 ease-in-out
@@ -125,8 +132,7 @@ function MobileMenu({ isOpen, onClose, isLoggedIn, userdata }) {
                 >
                   <FaCode className='text-xl' /> <span className='text-xl'>Code Editor</span>
                 </NavLink>
-
-                <NavLink
+                 <NavLink
                   to="/courses"
                   onClick={onClose}
                   className={({ isActive }) => `
@@ -338,6 +344,39 @@ function MobileMenu({ isOpen, onClose, isLoggedIn, userdata }) {
                   </>
                 )}
               </nav>
+
+              {/* Theme Controls */}
+              <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+                <div className="flex items-center gap-3">
+                  <ThemeSwitcher />
+                  <ThemeColorSelector />
+                </div>
+              </div>
+
+              {/* Scroll Controls */}
+              <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                <div className="flex space-x-2">
+                  <button
+                    onClick={handleBackToTop}
+                    className="flex-1 flex items-center justify-center space-x-2 px-3 py-2 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary transition-colors text-sm"
+                    title="Back to Top"
+                  >
+                    <FaArrowUp className="text-xs" />
+                    <span>Top</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                      onClose();
+                    }}
+                    className="flex-1 flex items-center justify-center space-x-2 px-3 py-2 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary transition-colors text-sm"
+                    title="Go to Bottom"
+                  >
+                    <FaArrowDown className="text-xs" />
+                    <span>Bottom</span>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>

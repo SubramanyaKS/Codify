@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../store/auth";
 import { useTheme } from "../context/ThemeContext";
+import { FaGraduationCap, FaUser, FaBookOpen, FaRoad, FaStickyNote } from "react-icons/fa";
 import { RiMenu3Fill } from "react-icons/ri";
-import { FaGraduationCap, FaArrowUp, FaArrowDown } from "react-icons/fa";
-import ThemeSwitcher from "./ThemeSwitcher";
-import ThemeColorSelector from "./ThemeColorSelector";
 import MobileMenu from "./MobileMenu";
 
 function NavBar() {
@@ -14,6 +12,15 @@ function NavBar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const isDark = theme === 'dark';
+  const displayName = (userdata?.firstName && userdata?.lastName)
+    ? `${userdata.firstName} ${userdata.lastName}`
+    : (userdata?.firstName || userdata?.username || (userdata?.email ? userdata.email.split('@')[0] : ' '));
+  const profileImageUrl = userdata?.profileImage
+    || userdata?.avatar
+    || userdata?.picture
+    || (Array.isArray(userdata?.photos) && userdata.photos[0]?.value)
+    || userdata?.image
+    || '';
 
   // Function to handle scrolling
   useEffect(() => {
@@ -42,231 +49,115 @@ function NavBar() {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  // Scroll to top handler
-  const handleBackToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
   return (
 
 
     <nav
       className={`
-      sticky top-0 z-50 w-full transition-all duration-300
+      sticky top-0 z-50 w-full transition-all duration-300 backdrop-blur-sm
       ${scrolled
-          ? `${isDark ? 'bg-dark-bg-primary/70 border-white/50' : 'bg-light-bg-primary/70 border-black/50'} border-b-2 shadow-nav backdrop-blur-sm`
-          : `${isDark ? 'border-white' : ' border-black'} border-0`}
-      ${isDark ? 'text-dark-text-primary' : 'text-white'}
+          ? `${isDark ? 'bg-dark-bg-secondary/85 border-dark-border' : 'bg-light-bg-secondary/85 border-light-border'} border-b`
+          : `${isDark ? 'bg-dark-bg-secondary/70 border-dark-border/50' : 'bg-light-bg-secondary/70 border-light-border/50'} border-b`}
+      ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}
     `}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
+        <div className="flex justify-between items-center h-14 sm:h-16">
           {/* Logo */}
           <div className="flex-shrink-0 flex items-center">
-            <NavLink to="/" className={`flex items-center space-x-2 font-bold text-3xl text-primary-500 transition-colors`}>
-              <FaGraduationCap className="text-3xl" />
-              <span className="font-righteous text-3xl">Codify</span>
+            <NavLink to="/" className={`flex items-center space-x-2 font-bold text-2xl sm:text-3xl text-primary transition-colors`}>
+              <FaGraduationCap className="text-2xl sm:text-3xl" />
+              <span className="font-righteous text-2xl sm:text-3xl">Codify</span>
             </NavLink>
             
           </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden ">
-            <div className="ml-10 flex items-center space-x-4">
-              <NavLink
-                to="/"
-                className={({ isActive }) => `
-                  px-3 py-2 rounded-md text-lg font-medium transition-colors
-                  ${isActive
-                    ? 'bg-primary text-white'
-                    : `${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'} hover:bg-primary-400 hover:text-white`}
-                `}
-              >
-                Home
-              </NavLink>
+          {/* Direct Navigation Links */}
+          <div className="hidden lg:flex items-center space-x-6">
+            <NavLink
+              to="/courses"
+              className={({ isActive }) => `
+                flex items-center space-x-2 px-4 py-2 rounded-lg text-base font-medium transition-all duration-200
+                ${isActive
+                  ? 'bg-primary text-white shadow-md'
+                  : (isDark ? 'text-dark-text-primary hover:bg-dark-bg-tertiary hover:text-white' : 'text-light-text-primary hover:bg-light-bg-tertiary hover:text-white')}
+              `}
+            >
+              <FaBookOpen className="text-lg" />
+              <span>Courses</span>
+            </NavLink>
 
-              <NavLink
-                to="/about"
-                className={({ isActive }) => `
-                  px-3 py-2 rounded-md text-lg font-medium transition-colors
-                  ${isActive
-                    ? 'bg-primary text-white'
-                    : `${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'} hover:bg-primary-400 hover:text-white`}
-                `}
-              >
-                About
-              </NavLink>
+            <NavLink
+              to="/roadmap"
+              className={({ isActive }) => `
+                flex items-center space-x-2 px-4 py-2 rounded-lg text-base font-medium transition-all duration-200
+                ${isActive
+                  ? 'bg-primary text-white shadow-md'
+                  : (isDark ? 'text-dark-text-primary hover:bg-dark-bg-tertiary hover:text-white' : 'text-light-text-primary hover:bg-light-bg-tertiary hover:text-white')}
+              `}
+            >
+              <FaRoad className="text-lg" />
+              <span>Roadmaps</span>
+            </NavLink>
 
-              <NavLink
-                to="/editor"
-                className={({ isActive }) => `
-                  px-3 py-2 rounded-md text-lg font-medium transition-colors
-                  ${isActive
-                    ? 'bg-primary text-white'
-                    : `${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'} hover:bg-primary-400 hover:text-white`}
-                `}
-              >
-                Editor
-              </NavLink>
-              
-
-              <NavLink
-                to="/courses"
-                className={({ isActive }) => `
-                  px-3 py-2 rounded-md text-lg font-medium transition-colors
-                  ${isActive
-                    ? 'bg-primary text-white'
-                    : `${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'} hover:bg-primary-400 hover:text-white`}
-                `}
-              >
-                Courses
-              </NavLink>
-              <NavLink
-                to="/notes"
-                className={({ isActive }) => `
-                  px-3 py-2 rounded-md text-lg font-medium transition-colors
-                  ${isActive
-                    ? 'bg-primary text-white'
-                    : `${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'} hover:bg-primary-400 hover:text-white`}
-                `}
-              >
-                Notes
-              </NavLink>
-              <NavLink
-                to="/roadmap"
-                className={({ isActive }) => `
-                  px-3 py-2 rounded-md text-lg font-medium transition-colors
-                  ${isActive
-                    ? 'bg-primary text-white'
-                    : `${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'} hover:bg-primary-400 hover:text-white`}
-                `}
-              >
-                Roadmaps
-              </NavLink>
-
-              <NavLink
-                to="/contributors"
-                className={({ isActive }) => `
-                  px-3 py-2 rounded-md text-lg font-medium transition-colors
-                  ${isActive
-                    ? 'bg-primary text-white'
-                    : `${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'} hover:bg-primary-400 hover:text-white`}
-                `}
-              >
-                Contributor
-              </NavLink>
-
-              <NavLink
-                to="/contact"
-                className={({ isActive }) => `
-                  px-3 py-2 rounded-md text-lg font-medium transition-colors
-                  ${isActive
-                    ? 'bg-primary text-white'
-                    : `${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'} hover:bg-primary-400 hover:text-white`}
-                `}
-              >
-                Contact
-              </NavLink>
-
-
-              <NavLink
-                to="/bookmarks"
-                className={({ isActive }) => `
-                  px-3 py-2 rounded-md text-lg font-medium transition-colors
-                  ${isActive
-                    ? 'bg-primary text-white'
-                    : `${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'} hover:bg-primary-400 hover:text-white`}
-                `}
-              >
-                Bookmark
-              </NavLink>
-
-              {isLoggedIn ? (
-                <>
-                  <NavLink
-                    to="/dashboard"
-                    className={({ isActive }) => `
-                      px-3 py-2 rounded-md text-lg font-medium transition-colors
-                      ${isActive
-                        ? 'bg-primary text-white'
-                        : `${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'} hover:bg-primary-400 hover:text-white`}
-                    `}
-                  >
-                    Dashboard
-                  </NavLink>
-
-                  {(userdata?.isAdmin || userdata?.isReadOnlyAdmin) && (
-                    <NavLink
-                      to="/admin"
-                      className={({ isActive }) => `
-                        px-3 py-2 rounded-md text-lg font-medium transition-colors
-                        ${isActive
-                          ? 'bg-primary text-white'
-                          : `${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'} hover:bg-primary-400 hover:text-white`}
-                      `}
-                    >
-                      Admin
-                    </NavLink>
-                  )}
-
-                  <NavLink
-                    to="/logout"
-                    className={`px-3 py-2 rounded-md text-lg font-medium ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary '} hover:bg-primary-400 hover:text-white transition-colors`}
-                  >
-                    Logout
-                  </NavLink>
-                </>
-              ) : (
-                <>
-                  <NavLink
-                    to="/login"
-                    className={`px-3 py-2 rounded-md text-lg font-medium ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary '} hover:bg-primary-400 hover:text-white transition-colors`}
-                  >
-                    Login
-                  </NavLink>
-                </>
-              )}
-            </div>
+            <NavLink
+              to="/notes"
+              className={({ isActive }) => `
+                flex items-center space-x-2 px-4 py-2 rounded-lg text-base font-medium transition-all duration-200
+                ${isActive
+                  ? 'bg-primary text-white shadow-md'
+                  : (isDark ? 'text-dark-text-primary hover:bg-dark-bg-tertiary hover:text-white' : 'text-light-text-primary hover:bg-light-bg-tertiary hover:text-white')}
+              `}
+            >
+              <FaStickyNote className="text-lg" />
+              <span>Notes</span>
+            </NavLink>
           </div>
 
 
-          {/* Theme Controls & Back to Top */}
-          <div className="hidden  items-center space-x-3">
-            <ThemeSwitcher />
-            <ThemeColorSelector />
-            {/* Back to Top Arrow */}
-            <button
-              onClick={handleBackToTop}
-              className="ml-4 p-2 rounded-full bg-primary-500 hover:bg-primary-600 text-white shadow transition-colors focus:outline-none"
-              title="Back to Top"
-              style={{ position: 'relative', right: 0 }}
-            >
-              <FaArrowUp className="text-xl" />
-            </button>
-            {/* Top to Bottom Arrow */}
-            <button
-              onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
-              className="ml-2 p-2 rounded-full bg-primary-500 hover:bg-primary-600 text-white shadow transition-colors focus:outline-none"
-              title="Top to Bottom"
-              style={{ position: 'relative', right: 0 }}
-            >
-              <FaArrowDown className="text-xl" />
-            </button>
-          </div>
-
-          {/* Mobile menu button */}
-          <div className="flex  items-center space-x-3">
-            <ThemeSwitcher />
-            <ThemeColorSelector />
+          {/* Right Side - Profile & Controls */}
+          <div className="flex items-center space-x-3">
+            {/* Profile Section - Clickable Box */}
+            {/* Mobile hamburger */}
             <button
               onClick={toggleMenu}
-              className={`inline-flex items-center justify-center p-2 rounded-md 
-    ${isDark ? "text-white" : "text-black"} 
-    hover:bg-white/10 focus:outline-none`}
+              className={`sm:hidden flex items-center justify-center p-2 rounded-lg border transition-colors ${
+                isDark ? 'border-dark-border text-dark-text-primary hover:bg-dark-bg-tertiary' : 'border-light-border text-light-text-primary hover:bg-light-bg-tertiary'
+              }`}
+              aria-label="Open menu"
             >
-              <span className="sr-only">Open main menu</span>
-              <RiMenu3Fill className="block h-6 w-6" />
+              <RiMenu3Fill className="text-xl" />
             </button>
+
+            {/* Profile button (desktop/tablet) */}
+            <button
+              onClick={toggleMenu}
+              className={`hidden sm:flex items-center space-x-2 sm:space-x-3 px-2 py-1 sm:px-4 sm:py-2 rounded-xl border backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] ${
+                isDark 
+                  ? 'bg-dark-bg-tertiary/50 border-dark-border hover:border-primary/40' 
+                  : 'bg-light-bg-tertiary/50 border-light-border hover:border-primary/40'
+              }`}
+            >
+              <span
+                className={`hidden sm:block max-w-[10rem] md:max-w-[14rem] truncate text-sm font-semibold tracking-wide ${isDark ? 'text-white drop-shadow-sm' : 'text-gray-800'}`}
+                title={displayName}
+                aria-label="User name"
+              >
+                {displayName}
+              </span>
+              <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                {profileImageUrl ? (
+                  <img 
+                    src={profileImageUrl}
+                    alt="Profile" 
+                    className="w-full h-full rounded-full object-cover"
+                  />
+                ) : (
+                  <FaUser className="text-primary text-sm" />
+                )}
+              </div>
+            </button>
+
           </div>
         </div>
       </div>
