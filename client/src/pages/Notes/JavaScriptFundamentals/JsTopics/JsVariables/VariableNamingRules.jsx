@@ -1,4 +1,6 @@
 import React from 'react';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
 const VariableNamingRules = () => {
     const examples = [
@@ -70,10 +72,73 @@ const VariableNamingRules = () => {
                         <li>Cannot be a reserved keyword (e.g., let, const, if, for, function, etc.)</li>
                     </ul>
 
-                    <div className={`mb-6 bg-white dark:bg-black p-4 rounded-md shadow-sm border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-gray-600 transition-colors`}>
+                    <div className="mb-6 bg-white dark:bg-black p-4 rounded-md shadow-sm border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-gray-600 transition-colors">
                         <p className="text-primary-500 dark:text-primary-400">
                             <strong className="font-semibold">Note:</strong> While JavaScript allows non-ASCII characters in variable names, it's best to stick to English letters for better compatibility.
                         </p>
+                    </div>
+
+                    <div className="mt-8">
+                        <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">Examples</h3>
+                        <div className="space-y-6">
+                            {examples.map((example, index) => (
+                                <div key={index} className="bg-white dark:bg-transparent rounded-lg p-4 shadow-sm border border-gray-200 dark:border-gray-800">
+                                    <div className="flex items-start">
+                                        <div className={`w-6 h-6 rounded-full flex items-center justify-center mr-3 mt-1 ${
+                                            example.valid ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'
+                                        }`}>
+                                            {example.valid ? '✓' : '✗'}
+                                        </div>
+                                        <div className="flex-1">
+                                            <p className="text-gray-700 dark:text-gray-300 mb-3">{example.description}</p>
+                                            <div className="overflow-hidden rounded-lg">
+                                                <SyntaxHighlighter
+                                                    language="javascript"
+                                                    style={vscDarkPlus}
+                                                    customStyle={{
+                                                        margin: 0,
+                                                        padding: '1.25rem',
+                                                        borderRadius: '0.5rem',
+                                                        background: '#1e1e1e',
+                                                        fontSize: '0.875rem',
+                                                        lineHeight: '1.5',
+                                                    }}
+                                                    wrapLines={true}
+                                                    wrapLongLines={true}
+                                                    codeTagProps={{
+                                                        style: {
+                                                            fontFamily: 'Fira Code, monospace',
+                                                            wordBreak: 'break-word',
+                                                            whiteSpace: 'pre-wrap',
+                                                        },
+                                                    }}
+                                                    lineProps={{
+                                                        style: {
+                                                            wordBreak: 'break-word',
+                                                            whiteSpace: 'pre-wrap',
+                                                        },
+                                                    }}
+                                                >
+                                                    {example.code}
+                                                </SyntaxHighlighter>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="mt-10">
+                        <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">Best Practices</h3>
+                        <ul className="space-y-3">
+                            {bestPractices.map((practice, index) => (
+                                <li key={index} className="flex items-start">
+                                    <span className="text-green-500 mr-2 mt-1">•</span>
+                                    <span className="text-gray-700 dark:text-gray-300">{practice}</span>
+                                </li>
+                            ))}
+                        </ul>
                     </div>
                 </section>
 
@@ -138,8 +203,35 @@ const VariableNamingRules = () => {
                     <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4">Variable Usage Examples</h2>
                     <div className="space-y-6">
                         <div className="bg-gray-900 dark:bg-gray-900 rounded-md p-4 overflow-x-auto">
-                            <pre className="text-green-400 dark:text-primary-400 text-sm">
-                                <code>{`// Declaring and initializing variables
+                            <div className="overflow-hidden rounded-lg">
+                                <SyntaxHighlighter
+                                    language="javascript"
+                                    style={vscDarkPlus}
+                                    customStyle={{
+                                        margin: 0,
+                                        padding: '1.25rem',
+                                        borderRadius: '0.5rem',
+                                        background: '#1e1e1e',
+                                        fontSize: '0.875rem',
+                                        lineHeight: '1.5',
+                                    }}
+                                    wrapLines={true}
+                                    wrapLongLines={true}
+                                    codeTagProps={{
+                                        style: {
+                                            fontFamily: 'Fira Code, monospace',
+                                            wordBreak: 'break-word',
+                                            whiteSpace: 'pre-wrap',
+                                        },
+                                    }}
+                                    lineProps={{
+                                        style: {
+                                            wordBreak: 'break-word',
+                                            whiteSpace: 'pre-wrap',
+                                        },
+                                    }}
+                                >
+                                    {`// Declaring and initializing variables
 let counter = 0;
 const MAX_ATTEMPTS = 3;
 let isUserLoggedIn = false;
@@ -161,8 +253,8 @@ if (isUserLoggedIn) {
 for (let i = 0; i < 5; i++) {
     console.log('Iteration:', i);
 }`}
-                                </code>
-                            </pre>
+                                </SyntaxHighlighter>
+                            </div>
                         </div>
                     </div>
                 </section>
