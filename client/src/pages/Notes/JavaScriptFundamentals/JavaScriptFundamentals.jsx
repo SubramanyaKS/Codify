@@ -10,6 +10,7 @@ import useMobile from '../../../hooks/useMobile';
 const JsIntroduction = React.lazy(() => import('./JsTopics/JsIntroduction'));
 const WhatAreVariables = React.lazy(() => import('./JsTopics/WhatAreVariables'));
 const JsExecution = React.lazy(() => import('./JsTopics/JsExecution'));
+const NodeJsInstallation = React.lazy(() => import('./JsTopics/NodeJsInstallation'));
 
 const JavaScriptFundamentals = () => {
   const location = useLocation();
@@ -65,6 +66,7 @@ const JavaScriptFundamentals = () => {
                 <Route index element={<JsHeroPage />} />
                 <Route path="js-introduction" element={<JsIntroduction />} />
                 <Route path="js-execution" element={<JsExecution />} />
+                <Route path="node.js-installation" element={<NodeJsInstallation />} />
                 <Route path="what-are-variables" element={<WhatAreVariables />} />
               </Routes>
             </React.Suspense>
