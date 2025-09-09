@@ -269,7 +269,7 @@ export default function LeaderBoard() {
           transition={{ duration: 0.5 }}
         >
           <h1
-          ref ={ref}
+            ref={ref}
             className={`text-2xl sm:text-4xl font-bold mb-2 sm:mb-4 text-primary-600`}
           >
             {/* GSSoC'25 Leaderboard */}
