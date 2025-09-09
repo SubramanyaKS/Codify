@@ -76,7 +76,7 @@ const JavaScriptFundamentals = () => {
 
           {/* ROUTES OF THE SUB NOTES */}
           <div className="p-4 md:p-8">
-            <React.Suspense fallback={<Loader />}>
+            <React.Suspense fallback={<Loader asOverlay={false} />}>
               <Routes>
                 <Route index element={<JsHeroPage />} />
 
