@@ -2,12 +2,12 @@ import {
   FaGithub,
   FaInstagram,
   FaLinkedin,
-  FaTwitter,
   FaYoutube,
   FaHeart,
   FaMapMarkerAlt,
   FaPhone,
   FaEnvelope,
+  FaDiscord,
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
@@ -97,7 +97,7 @@ const Footer = () => {
               <FaLinkedin />
             </a>
             <a
-              href="https://twitter.com/roshansuthar1105"
+              href="https://discord.com/users/1317732270047498343"
               target="_blank"
               rel="noopener noreferrer"
               className={`
@@ -109,9 +109,9 @@ const Footer = () => {
                 ${isDark ? "text-dark-text-primary" : "text-light-text-primary"
                 } hover:text-primary border ${isDark ? "border-gray-600" : "border-white/20"}
               `}
-              aria-label="Twitter"
+              aria-label="Discord"
             >
-              <FaTwitter />
+              <FaDiscord />
             </a>
             <a
               href="https://www.youtube.com"
@@ -316,7 +316,7 @@ const Footer = () => {
                   } flex items-center`}
               >
                 <FaPhone className="text-primary mr-3 flex-shrink-0" />
-                <span>+1 (555) 123-4567</span>
+                <span>+91 7878952931</span>
               </li>
               <li
                 className={`${isDark
@@ -325,7 +325,7 @@ const Footer = () => {
                   } flex items-center`}
               >
                 <FaEnvelope className="text-primary mr-3 flex-shrink-0" />
-                <a href="mailto:rscodify@gmail.com"><span>support@codify.com</span></a>
+                <a href="mailto:rscodify@gmail.com"><span>rscodify@gmail.com</span></a>
               </li>
             </ul>
           </div>
