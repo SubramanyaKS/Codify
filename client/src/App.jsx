@@ -1,10 +1,8 @@
-import React, { lazy, Suspense, useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
-import { useAuth } from "./store/auth";
 import { useTheme } from "./context/ThemeContext";
 import { LoadingProvider } from "./components/loadingContext.jsx";
 import 'react-toastify/ReactToastify.css';
-import { PopupProvider } from "./context/PopupContext.jsx";
 // Always loaded components
 import NavBar from "./components/NavBar";
 import Footer from "./components/Footer.jsx";
