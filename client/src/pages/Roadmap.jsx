@@ -17,6 +17,85 @@ const Roadmap = () => {
   const [bookmarks, setBookmarks] = useState([]);
   const [bookmarkSaving, setBookmarkSaving] = useState({});
 
+  // Unique descriptions for each roadmap
+  const roadmapDescriptions = {
+    // Role-based descriptions
+    "frontend developer": "Focuses on building the user interface UI and UX of web applications. Works with HTML, CSS, JavaScript, and frameworks like React, Angular, or Vue to create interactive and responsive designs.",
+    "backend developer": "Works on the server-side logic, databases, and APIs that power applications. Common tools include Node.js, Python, Java, Ruby, SQL, and frameworks like Django, Spring, or Express.",
+    "devops engineer": "Bridges development and operations by automating workflows, managing infrastructure, CI/CD pipelines, and ensuring scalability and reliability of systems.",
+    "full stack developer": "Combine frontend and backend expertise to build complete web applications from start to finish.",
+    "ai engineer": "Dive into machine learning, neural networks, and AI frameworks to create intelligent systems.",
+    "data analyst": "Transform raw data into actionable insights using statistical analysis and visualization techniques.",
+    "software architect": "Design scalable system architectures and make high-level technical decisions for complex projects.",
+    "software design and architecture engineer": "Focus on design patterns, system modeling, and creating maintainable software solutions.",
+    "qa engineer": "Ensure software quality through comprehensive testing strategies and quality assurance processes.",
+    "software testing engineer": "Specialize in automated testing frameworks and validation techniques for reliable software.",
+    "cyber security engineer": "Protect systems from threats through security analysis, penetration testing, and incident response.",
+    "ux designer": "Create intuitive user experiences through research, wireframing, and user-centered design principles.",
+    "computer science engineer": "Build a strong foundation in algorithms, data structures, and core computer science concepts.",
+    
+    // Skill-based descriptions
+    "computer science": "Master fundamental concepts including algorithms, data structures, and computational theory.",
+    "react": "Build dynamic user interfaces with the most popular JavaScript library for modern web development.",
+    "vue": "Create progressive web applications with Vue.js's approachable and flexible framework architecture.",
+    "angular": "Develop enterprise-scale applications using Google's comprehensive TypeScript-based framework.",
+    "javascript": "Master the versatile language that powers modern web development, from frontend to backend.",
+    "node.js": "Build scalable server-side applications and APIs using JavaScript's powerful runtime environment.",
+    "typescript": "Add static typing to JavaScript for more robust, maintainable, and error-free applications.",
+    "python": "Learn the versatile language used in web development, data science, AI, and automation.",
+    "sql": "Master database querying and management with the standard language for relational databases.",
+    "system design": "Learn to architect scalable, reliable systems that can handle millions of users.",
+    "api design": "Design robust, RESTful APIs that are secure, scalable, and developer-friendly.",
+    "asp.net core": "Build high-performance web applications and APIs using Microsoft's cross-platform framework.",
+    "java": "Master the enterprise-grade programming language used in large-scale applications worldwide.",
+    "c++": "Develop high-performance applications with this powerful systems programming language.",
+    "flutter": "Create beautiful, natively compiled mobile apps for iOS and Android from a single codebase.",
+    "spring boot": "Build production-ready Java applications quickly with this powerful, convention-based framework.",
+    "go": "Master Google's efficient programming language designed for modern, concurrent applications.",
+    "rust": "Learn systems programming with memory safety, zero-cost abstractions, and blazing performance.",
+    "graphql": "Query APIs more efficiently with this powerful data query and manipulation language.",
+    "design and architecture": "Master software design principles, patterns, and architectural best practices.",
+    "design system": "Create consistent, scalable design systems that unify user experience across products.",
+    "react native": "Build native mobile apps for iOS and Android using React and JavaScript.",
+    "aws": "Master cloud computing with Amazon's comprehensive suite of scalable web services.",
+    "code review": "Learn best practices for reviewing code, ensuring quality, and mentoring team members.",
+    "docker": "Containerize applications for consistent deployment across different environments and platforms.",
+    "kubernetes": "Orchestrate containerized applications at scale with automated deployment and management.",
+    "linux": "Master the open-source operating system that powers servers, containers, and cloud infrastructure.",
+    "mongodb": "Work with flexible, document-based NoSQL databases for modern application development.",
+    "prompt engineering": "Master the art of crafting effective prompts for AI models and language systems.",
+    "terraform": "Automate infrastructure provisioning and management with infrastructure-as-code principles.",
+    "data structures & algorithms": "Master the fundamental building blocks of efficient programming and problem-solving.",
+    "git and github": "Master version control, collaboration workflows, and open-source contribution practices.",
+    "redis": "Implement high-performance caching and data storage with this in-memory database system."
+  };
+
+  // Function to get description for a roadmap
+  const getDescription = (name, type) => {
+    if (!name) return "Explore this comprehensive learning path to advance your skills.";
+    
+    const normalizedName = name.toLowerCase().trim();
+    
+    // Check for exact match first
+    if (roadmapDescriptions[normalizedName]) {
+      return roadmapDescriptions[normalizedName];
+    }
+    
+    // Check for partial matches
+    for (const [key, desc] of Object.entries(roadmapDescriptions)) {
+      if (normalizedName.includes(key) || key.includes(normalizedName)) {
+        return desc;
+      }
+    }
+    
+    // Default descriptions based on type
+    if (type === 'role') {
+      return "Master the essential skills and knowledge needed to excel in this professional role.";
+    } else {
+      return "Develop expertise in this technology with hands-on projects and practical applications.";
+    }
+  };
+
   useEffect(() => {
     if (!isLoggedIn) return;
     const fetchBookmarks = async () => {
@@ -42,7 +121,6 @@ const Roadmap = () => {
 
     fetchBookmarks();
   }, [API, isLoggedIn]);
-
 
   const toggleBookmark = async (item) => {
     if (!isLoggedIn) {
@@ -583,7 +661,7 @@ const Roadmap = () => {
                       {item.name || 'Untitled Roadmap'}
                     </h3>
                     <p className={`text-sm ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'} mb-6`}>
-                      Master the skills needed for this role with our comprehensive learning path.
+                      {getDescription(item.name, item.type)}
                     </p>
                   </div>
 
@@ -703,7 +781,7 @@ const Roadmap = () => {
                       {item.name || 'Untitled Roadmap'}
                     </h3>
                     <p className={`text-sm ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'} mb-6`}>
-                      Master the skills needed for this role with our comprehensive learning path.
+                      {getDescription(item.name, item.type)}
                     </p>
                   </div>
 
