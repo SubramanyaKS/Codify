@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import { MdBookmarkBorder, MdBookmarkAdded, MdEdit, MdPlayCircleOutline } from "react-icons/md";
 import { Link, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { useState } from 'react';
 
 
 const CardBody = ({ course, watchlist = [], updateWatchlist, onClick, size = 'default' }) => {
@@ -15,6 +16,7 @@ const CardBody = ({ course, watchlist = [], updateWatchlist, onClick, size = 'de
   const isDark = theme === 'dark';
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
+  const [isSaving, setIsSaving] = useState(false);
 
 
 
@@ -44,6 +46,7 @@ const CardBody = ({ course, watchlist = [], updateWatchlist, onClick, size = 'de
     }
 
     try {
+      setIsSaving(true);
       //console.log(`${isInWatchlist ? 'Removing from' : 'Adding to'} watchlist:`, course._id);
 
       const response = await fetch(`${API}/user/addToWatchlist`, {
@@ -76,6 +79,8 @@ const CardBody = ({ course, watchlist = [], updateWatchlist, onClick, size = 'de
     } catch (error) {
       console.error("Error updating watchlist:", error);
       toast.error("Failed to update saved courses");
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -171,11 +176,18 @@ const CardBody = ({ course, watchlist = [], updateWatchlist, onClick, size = 'de
                       : 'bg-light-bg-tertiary/80 text-light-text-primary hover:bg-light-bg-tertiary'} 
                      backdrop-blur-sm border border-current/10`
                 }
-                hover:scale-[1.05]
+                hover:scale-[1.05] ${isSaving ? 'opacity-60 cursor-not-allowed hover:scale-100' : ''}
               `}
               aria-label={isInWatchlist ? "Remove from watchlist" : "Add to watchlist"}
+              aria-busy={isSaving}
+              disabled={isSaving}
             >
-              {isInWatchlist ? (
+              {isSaving ? (
+                <svg className="animate-spin h-5 w-5 text-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                </svg>
+              ) : isInWatchlist ? (
                 <MdBookmarkAdded className="text-xl" />
               ) : (
                 <MdBookmarkBorder className="text-xl" />

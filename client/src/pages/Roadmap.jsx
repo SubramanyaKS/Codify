@@ -16,6 +16,7 @@ const Roadmap = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("all"); // all, roles, skills
   const [bookmarks, setBookmarks] = useState([]);
+  const [bookmarkSaving, setBookmarkSaving] = useState({});
 
   useEffect(() => {
     if (!isLoggedIn) return;
@@ -54,8 +55,10 @@ const Roadmap = () => {
       b => b && b.name && item.name && b.name.toLowerCase() === item.name.toLowerCase()
     );
     const action = isBookmarked ? "remove" : "add";
+    const key = (item.name || '').toLowerCase();
 
     try {
+      setBookmarkSaving(prev => ({ ...prev, [key]: true }));
       const token = localStorage.getItem("token");
       if (!token) return toast.error("Please login again");
 
@@ -87,6 +90,8 @@ const Roadmap = () => {
     } catch (err) {
       console.error(err);
       toast.error("Something went wrong");
+    } finally {
+      setBookmarkSaving(prev => ({ ...prev, [key]: false }));
     }
   };
 
@@ -533,9 +538,16 @@ const Roadmap = () => {
                   {/* Bookmark Button */}
                   <button
                     onClick={() => toggleBookmark(item)}
-                    className="absolute top-4 right-4 z-20 text-primary hover:text-primary-dark"
+                    className={`absolute top-4 right-4 z-20 text-primary hover:text-primary-dark ${bookmarkSaving[(item.name || '').toLowerCase()] ? 'opacity-60 cursor-not-allowed hover:text-primary' : ''}`}
+                    aria-busy={bookmarkSaving[(item.name || '').toLowerCase()]}
+                    disabled={!!bookmarkSaving[(item.name || '').toLowerCase()]}
                   >
-                    {bookmarks.some(b => b && b.name && item.name && b.name.toLowerCase() === item.name.toLowerCase())
+                    {bookmarkSaving[(item.name || '').toLowerCase()] ? (
+                      <svg className="animate-spin h-5 w-5 text-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                      </svg>
+                    ) : bookmarks.some(b => b && b.name && item.name && b.name.toLowerCase() === item.name.toLowerCase())
                       ? <FaBookmark size={22} />
                       : <FaRegBookmark size={22} />}
                   </button>
@@ -646,9 +658,16 @@ const Roadmap = () => {
                   {/* Bookmark Button */}
                   <button
                     onClick={() => toggleBookmark(item)}
-                    className="absolute top-4 right-4 z-20 text-primary hover:text-primary-dark"
+                    className={`absolute top-4 right-4 z-20 text-primary hover:text-primary-dark ${bookmarkSaving[(item.name || '').toLowerCase()] ? 'opacity-60 cursor-not-allowed hover:text-primary' : ''}`}
+                    aria-busy={bookmarkSaving[(item.name || '').toLowerCase()]}
+                    disabled={!!bookmarkSaving[(item.name || '').toLowerCase()]}
                   >
-                    {bookmarks.some(b => b && b.name && item.name && b.name.toLowerCase() === item.name.toLowerCase())
+                    {bookmarkSaving[(item.name || '').toLowerCase()] ? (
+                      <svg className="animate-spin h-5 w-5 text-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                      </svg>
+                    ) : bookmarks.some(b => b && b.name && item.name && b.name.toLowerCase() === item.name.toLowerCase())
                       ? <FaBookmark size={22} />
                       : <FaRegBookmark size={22} />}
                   </button>
