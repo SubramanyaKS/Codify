@@ -11,7 +11,6 @@ const Roadmap = () => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   const { API, userdata, isLoggedIn } = useAuth(); //get API
-  
   // Search state
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("all"); // all, roles, skills
