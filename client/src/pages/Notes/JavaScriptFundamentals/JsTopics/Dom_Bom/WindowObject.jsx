@@ -134,7 +134,7 @@ window.addEventListener('scroll', () => {
 
                 <div className="mb-6 bg-white dark:bg-black p-4 rounded-md shadow-sm border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-gray-600 transition-colors">
                     <p className="text-primary-500 dark:text-primary-400">
-                        <strong className="font-semibold">Note: </strong> In browser JavaScript, the <code className="bg-gray-800 px-1.5 py-0.5 rounded">window</code> object is the global object, which means that global variables and functions become properties and methods of the window object. For example, <code className="bg-gray-800 px-1.5 py-0.5 rounded">var x = 10;</code> is the same as <code className="bg-gray-800 px-1.5 py-0.5 rounded">window.x = 10;</code>
+                        <strong className="font-semibold">Note: </strong> In browser JavaScript, the <code className="bg-gray-200 dark:bg-gray-800 px-1.5 py-0.5 rounded">window</code> object is the global object, which means that global variables and functions become properties and methods of the window object. For example, <code className="bg-gray-200 dark:bg-gray-800 px-1.5 py-0.5 rounded">var x = 10;</code> is the same as <code className="bg-gray-200 dark:bg-gray-800 px-1.5 py-0.5 rounded">window.x = 10;</code>
                     </p>
                 </div>
 
