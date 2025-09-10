@@ -30,6 +30,13 @@ const Functions = React.lazy(() => import('./JsTopics/JsBasics/Functions'));
 
 // JavaScript Objects
 const Strings = React.lazy(() => import('./JsTopics/JsObjects/StringsInJS'));
+const ArraysAndMethods = React.lazy(() => import('./JsTopics/JsObjects/ArraysAndMethods'));
+const LoopsWithArrays = React.lazy(() => import('./JsTopics/JsObjects/LoopsWithArrays'));
+const MapFilterAndReduce = React.lazy(() => import('./JsTopics/JsObjects/MapFilterReduce'));
+const DateInJs = React.lazy(() => import('./JsTopics/JsObjects/DateInJS'));
+const MathInJs = React.lazy(() => import('./JsTopics/JsObjects/MathInJS'));
+const NumberinJs = React.lazy(() => import('./JsTopics/JsObjects/NumberInJS'));
+const BooleanInJs = React.lazy(() => import('./JsTopics/JsObjects/BooleanInJS'));
 
 // Lazy load the note components --------------------------------------
 
@@ -110,6 +117,13 @@ const JavaScriptFundamentals = () => {
 
                 {/* Javascript objects */}
                 <Route path="strings" element={<Strings />} />
+                <Route path="arrays-and-array-methods" element={<ArraysAndMethods />} />
+                <Route path="loops-with-arrays" element={<LoopsWithArrays />} />
+                <Route path="map-filter-reduce" element={<MapFilterAndReduce />} />
+                <Route path="date" element={<DateInJs />} />
+                <Route path="math" element={<MathInJs />} />
+                <Route path="number" element={<NumberinJs />} />
+                <Route path="boolean" element={<BooleanInJs />} />
 
                 {/* DOM and BOM */}
 

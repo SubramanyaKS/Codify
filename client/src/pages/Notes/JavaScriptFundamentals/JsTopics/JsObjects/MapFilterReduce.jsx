@@ -65,7 +65,7 @@ const total = products
 
                 <div className="space-y-6">
                     {examples.map((example, i) => (
-                        <div key={i} className="bg-white p-4 rounded border">
+                        <div key={i} className="bg-white dark:bg-black p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
                             <h3 className="text-xl font-semibold mb-2">{example.title}</h3>
                             <CodeBlock code={example.code} />
                             <p className="mt-2">{example.explanation}</p>
@@ -73,7 +73,7 @@ const total = products
                     ))}
                 </div>
 
-                <div className="mt-8 p-4 bg-gray-50 rounded">
+                <div className="mt-8 p-4 bg-gray-50 dark:bg-black rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
                     <h3 className="text-xl font-semibold mb-2">Key Points</h3>
                     <ul className="list-disc pl-5 space-y-2">
                         <li><strong>Immutability:</strong> All methods return new arrays/values, leaving the original data unchanged</li>
