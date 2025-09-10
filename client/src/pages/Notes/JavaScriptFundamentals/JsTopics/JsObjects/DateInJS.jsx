@@ -169,7 +169,7 @@ console.log('London Time:', formatTime(now, 'Europe/London'));`,
     ];
 
     return (
-        <div className="max-w-7xl mx-auto p-4">
+        <div className="max-w-7xl mx-auto">
             <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-6">
                 <span className="text-primary-600 dark:text-primary-400">JavaScript</span> Date Object
             </h1>

@@ -50,19 +50,19 @@ const MathInJS = () => {
     return (
         <div className="max-w-7xl mx-auto">
             <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-6">
-                JavaScript <span className="text-primary-600 dark:text-primary-400">Math</span> Object
+                <span className="text-primary-600 dark:text-primary-400">JavaScript</span> Math Object
             </h1>
 
             <div className="prose max-w-none">
                 <p className="text-base text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
-                    The JavaScript <code className="text-primary-600 dark:text-primary-400">Math</code> object allows you to perform mathematical tasks on numbers. Unlike other global objects, 
-                    <code className="text-primary-600 dark:text-primary-400">Math</code> is not a constructor. All properties and methods of <code className="text-primary-600 dark:text-primary-400">Math</code> are static and can be called by using 
+                    The JavaScript <code className="text-primary-600 dark:text-primary-400">Math</code> object allows you to perform mathematical tasks on numbers. Unlike other global objects,
+                    <code className="text-primary-600 dark:text-primary-400">Math</code> is not a constructor. All properties and methods of <code className="text-primary-600 dark:text-primary-400">Math</code> are static and can be called by using
                     <code className="text-primary-600 dark:text-primary-400">Math</code> as an object without creating it.
                 </p>
 
                 <div className="mb-6 bg-white dark:bg-black p-4 rounded-md shadow-sm border border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-gray-600 transition-colors">
                     <p className="text-primary-500 dark:text-primary-400">
-                        <strong className="font-semibold">Note: </strong> The Math object provides many useful mathematical functions and constants. All Math methods are called using the syntax <code className="bg-gray-200 dark:bg-gray-800 px-1.5 py-0.5 rounded">Math.method()</code> 
+                        <strong className="font-semibold">Note: </strong> The Math object provides many useful mathematical functions and constants. All Math methods are called using the syntax <code className="bg-gray-200 dark:bg-gray-800 px-1.5 py-0.5 rounded">Math.method()</code>
                         and all properties are accessed using <code className="bg-gray-200 dark:bg-gray-800 px-1.5 py-0.5 rounded">Math.property</code>.
                     </p>
                 </div>
