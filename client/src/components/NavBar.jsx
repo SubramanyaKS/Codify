@@ -110,6 +110,18 @@ function NavBar() {
                 Roadmaps
               </NavLink>
               <NavLink
+                to="/ide"
+                className={({ isActive }) => `
+                  px-3 py-2 rounded-md text-sm font-medium transition-colors relative
+                  ${isActive 
+                    ? 'bg-primary text-white' 
+                    : `${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'} hover:bg-primary-400 hover:text-white`}
+                `}
+              >
+                IDE
+                <span className="absolute -top-1 -right-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">AI</span>
+              </NavLink>
+              <NavLink
                 to="/contact"
                 className={({ isActive }) => `
                   px-3 py-2 rounded-md text-sm font-medium transition-colors

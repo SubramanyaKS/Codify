@@ -11,6 +11,7 @@ import router from './routes/router.js';
 import adminRouter from './routes/adminRouter.js';
 import progressRouter from './routes/progressRoute.js';
 import activityRouter from './routes/activityRoute.js';
+import ideRouter from './routes/ideRoute.js';
 dotenv.config();
 const app= express();
 
@@ -30,6 +31,7 @@ app.use("/user",userRouter);
 app.use("/api/v1/courses",coursesRouter);
 app.use("/progress",progressRouter);
 app.use("/activity",activityRouter);
+app.use("/api/ide",ideRouter);
 app.use("/",router)
 app.use("/admin",adminRouter);
 // app.get("/",)
