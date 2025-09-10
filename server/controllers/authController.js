@@ -4,6 +4,8 @@ import Course from "../models/courseSchema.js";
 import bcryptjs from "bcryptjs";
 import { generateOTP } from "../utils/generateOTP.js";
 import { sendEmail } from "../utils/sendEmail.js";
+import { otpEmailTemplate } from "../utils/OTPemailTemplates.js";
+import { feedbackEmailTemplate } from "../utils/feedbackEmailTemplate.js";
 const otpStore = {}; // temporary in-memory store
 import passport from "passport";
 
@@ -60,7 +62,18 @@ const contact = async (req, res) => {
     // if (!userExist) {
     //   return res.status(400).send({ message: "user not found Sign Up now" });
     // }
+    // Save feedback to DB
     const newMessage = await Feedback.create({ email, username, message });
+    // Build email content
+    const { subject, html } = feedbackEmailTemplate(username, message);
+    // Send email
+    await sendEmail(
+      email,            
+      subject,          
+      html,             
+      `Hi ${username}, thanks for your feedback: ${message}` // text fallback
+    );
+    //frontend response
     res.status(201).json({"hello ":"hello from contact , message sent",
     message: newMessage.message,
       userId: newMessage._id.toString(),
@@ -103,9 +116,11 @@ const sendOTP = async (req, res) => {
 
     const otp = generateOTP();
     otpStore[email] = { otp, expiresAt: Date.now() + 5 * 60 * 1000 };
+    const { subject, html } = otpEmailTemplate(otp);
 
-    await sendEmail(email, "Your OTP Code", `Your OTP is ${otp}`);
+    await sendEmail(email, subject, html);
     return res.status(200).json({ message: "OTP sent successfully" });
+    
   } catch (error) {
     console.error("Error in sendOTP:", error);
     return res.status(500).json({ message: "Failed to send OTP" });

@@ -1,5 +1,5 @@
 import React from "react";
-import { useTheme } from '../context/ThemeContext';
+import { useTheme } from "../../../context/ThemeContext";
 
 const reactbasic = [
   {
@@ -238,7 +238,7 @@ const ReactPattern = () => {
         </div>
         <div className="pyfund-vertical-stack">
           {reactbasic.length === 0 ? (
-            <div style={{color: '#ff6b6b', textAlign: 'center', fontSize: '1.2rem', marginTop: '40px'}}>No notes available.</div>
+            <div style={{ color: '#ff6b6b', textAlign: 'center', fontSize: '1.2rem', marginTop: '40px' }}>No notes available.</div>
           ) : (
             reactbasic.map(note => (
               <div key={note.id} className={`pyfund-card group relative p-6 rounded-2xl shadow-lg flex flex-col justify-between w-full max-w-2xl mx-auto mb-8 hover:border-b-2 hover:border-r-2 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-secondary-1000 backdrop-blur-xl ${isDark ? 'bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-secondary-1000 backdrop-blur-xl' : 'bg-light-bg-secondary border border-light-border hover:border-primary/50'} transition-all duration-300 overflow-hidden`}>
