@@ -5,6 +5,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motion } from "framer-motion";
 import NewsletterSubscribeInput from "../NewsletterSubscribeInput";
+import { toast } from "react-toastify";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -13,6 +14,25 @@ const NewsLetter = () => {
   const isDark = theme === 'dark';
   const sectionRef = useRef(null);
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!email.trim()) {
+      toast.error("Please enter your email address.");
+      return;
+    }
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+      toast.error("Please enter a valid email address.");
+      return;
+    }
+
+    toast.success(`Thank you for subscribing with: ${email}`);
+    setEmail("");
+  };
+
+  // 🔥 Animate whole section from left → right
   useEffect(() => {
     if (!sectionRef.current) return;
 
