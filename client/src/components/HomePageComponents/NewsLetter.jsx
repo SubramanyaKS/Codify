@@ -4,21 +4,14 @@ import { FaPaperPlane } from "react-icons/fa";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motion } from "framer-motion";
+import NewsletterSubscribeInput from "../NewsletterSubscribeInput";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const NewsLetter = () => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
-  const [email, setEmail] = useState("");
   const sectionRef = useRef(null);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Here you would typically handle the newsletter subscription
-    alert(`Thank you for subscribing with: ${email}`);
-    setEmail("");
-  };
 
   useEffect(() => {
     if (!sectionRef.current) return;
@@ -55,32 +48,7 @@ const NewsLetter = () => {
             Subscribe to our newsletter and never miss new courses and learning opportunities
           </p>
 
-          <form
-            onSubmit={handleSubmit}
-            className="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto"
-          >
-            <input
-              type="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className={`
-                flex-grow px-5 py-3 rounded-2xl shadow-md bg-transparent border-none outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
-                ${isDark ? 'text-dark-text-primary placeholder-dark-text-secondary' : 'text-light-text-primary placeholder-light-text-secondary'}
-                transition-all duration-300
-              `}
-            />
-            <motion.button
-              type="submit"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.98 }}
-              className="bg-primary hover:bg-primary-dark text-white py-3 px-6 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 font-semibold shadow-lg"
-            >
-              <span>Subscribe</span>
-              <FaPaperPlane />
-            </motion.button>
-          </form>
+          <NewsletterSubscribeInput isDark={isDark} />
         </div>
       </div>
     </section>

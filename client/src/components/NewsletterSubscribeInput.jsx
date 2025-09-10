@@ -1,23 +1,24 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
+import { useAuth } from "../store/auth";
+import { toast } from "react-toastify";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function NewsletterSubscribeInput({ isDark }) {
+  const {API}=useAuth();
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState({ type: "idle", message: "" });
   const [loading, setLoading] = useState(false);
 
   const handleSubscribe = async () => {
     if (!EMAIL_REGEX.test(email)) {
-      setStatus({ type: "error", message: "Please enter a valid email." });
+      toast.error("Please enter a valid email.");
       return;
     }
     try {
       setLoading(true);
-      setStatus({ type: "idle", message: "" });
       const res = await fetch(
-        "http://localhost:5050/api/newsletter/subscribe",
+        `${API}/api/newsletter/subscribe`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -28,13 +29,13 @@ function NewsletterSubscribeInput({ isDark }) {
       if (!res.ok || data?.success === false) {
         throw new Error(data?.message || "Subscription failed");
       }
-      setStatus({ type: "success", message: data?.message || "Subscribed!" });
+      if(data?.message=="Already subscribed")
+      toast.info(data?.message || "Subscribed!" )
+      else
+      toast.success(data?.message || "Subscribed!" )
       setEmail("");
     } catch (err) {
-      setStatus({
-        type: "error",
-        message: err.message || "Something went wrong",
-      });
+      toast.error(err?.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -59,21 +60,12 @@ function NewsletterSubscribeInput({ isDark }) {
       <button
         onClick={handleSubscribe}
         disabled={loading}
-        className={`bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg transition-colors my-3 mx-1 shadow-md ${
+        className={`bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg transition-colors shadow-md ${
           loading ? "opacity-70 cursor-not-allowed" : ""
         }`}
       >
         {loading ? "Subscribing..." : "Subscribe"}
       </button>
-      {status.message && (
-        <div
-          className={`text-sm my-auto ${
-            status.type === "error" ? "text-red-500" : "text-green-500"
-          }`}
-        >
-          {status.message}
-        </div>
-      )}
     </div>
   );
 }
