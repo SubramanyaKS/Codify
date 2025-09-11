@@ -4,43 +4,102 @@ import roadmap from "../assets/json/rolebasedRoadmaps.json";
 import skills from "../assets/json/skillbasedRoadmaps.json";
 import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../store/auth";
-import { FaRegBookmark, FaBookmark } from "react-icons/fa";
 import { toast } from "react-toastify";
+
+import {
+  FaRegBookmark,
+  FaBookmark,
+  FaReact,
+  FaVuejs,
+  FaAngular,
+  FaJava,
+  FaPython,
+  FaNodeJs,
+  FaAws,
+  FaDocker,
+  FaLinux,
+  FaGitAlt,
+} from "react-icons/fa";
+
+import {
+  SiTypescript,
+  SiJavascript,
+  SiMongodb,
+  SiKubernetes,
+  SiRust,
+  SiGo,
+  SiSpringboot,
+  SiGraphql,
+  SiFlutter,
+  SiRedis,
+  SiDotnet,
+  SiCplusplus,
+} from "react-icons/si";
+
+const skillIcons = {
+  React: <FaReact className="text-sky-500" />,
+  Vue: <FaVuejs className="text-green-500" />,
+  Angular: <FaAngular className="text-red-600" />,
+  JavaScript: <SiJavascript className="text-yellow-400" />,
+  TypeScript: <SiTypescript className="text-blue-500" />,
+  "Node.js": <FaNodeJs className="text-green-600" />,
+  Python: <FaPython className="text-yellow-400" />,
+  Java: <FaJava className="text-red-500" />,
+  "C++": <SiCplusplus className="text-blue-500" />,
+  "Spring Boot": <SiSpringboot className="text-green-700" />,
+  Go: <SiGo className="text-cyan-500" />,
+  Rust: <SiRust className="text-orange-600" />,
+  GraphQL: <SiGraphql className="text-pink-500" />,
+  Flutter: <SiFlutter className="text-sky-400" />,
+  MongoDB: <SiMongodb className="text-green-600" />,
+  AWS: <FaAws className="text-orange-400" />,
+  Docker: <FaDocker className="text-blue-500" />,
+  Kubernetes: <SiKubernetes className="text-blue-600" />,
+  Linux: <FaLinux className="text-black dark:text-white" />,
+  "Git and GitHub": <FaGitAlt className="text-orange-600" />,
+  Redis: <SiRedis className="text-red-500" />,
+  "ASP.NET Core": <SiDotnet className="text-purple-500" />,
+};
 
 //Define learning tiers and associated skills
 const LEARNING_TIERS = {
   foundational: {
     name: "Foundational",
     description: "Core concepts every developer should master",
+    icon: "🏗️",
     skills: ["Computer Science", "Data Structures & Algorithms", "Git and GitHub", "SQL"]
   },
   languages: {
     name: "Programming Languages",
     description: "Master programming languages and their ecosystems",
+    icon: "💻",
     skills: ["JavaScript", "TypeScript", "Python", "Java", "C++", "Go", "Rust"]
   },
   frameworks: {
     name: "Frameworks & Libraries",
     description: "Popular frameworks for rapid development",
+    icon: "🚀",
     skills: ["React", "Vue", "Angular", "Node.js", "Spring Boot", "ASP.NET Core", "Flutter", "React Native"]
   },
   specialization: {
     name: "Architecture and Design",
     description: "Specialized skills for different domains",
+    icon: "🎨",
     skills: ["System Design", "API Design", "GraphQL", "Design and Architecture", "Design System", "UX Design"]
   },
   infrastructure: {
     name: "Infrastructure & DevOps",
     description: "Deploy, monitor, and scale applications",
+    icon: "☁️",
     skills: ["Docker", "Kubernetes", "AWS", "Terraform", "Linux", "MongoDB", "Redis"]
   },
   emerging: {
     name: "Emerging Technologies",
     description: "Latest technologies shaping the future",
+    icon: "🔮",
     skills: ["Prompt Engineering", "Code Review"]
   }
 };
-
 
 const Roadmap = () => {
   const { theme } = useTheme();
@@ -597,9 +656,6 @@ const Roadmap = () => {
               ))}
             </div>
 
-            {/* Tier Filter Buttons - Show only when tiers is active */}
-
-
             {/* Search Results Count */}
             {searchQuery && (
               <motion.p
@@ -690,10 +746,10 @@ const Roadmap = () => {
                 >
                   {filteredRoadmaps.roles.map((item, index) => (
                     <motion.div
-                      key={`role-${item.roadmap_name}-${index}`}
+                      key={`role-${item.name}-${index}`}
                       variants={cardVariants}
                       whileHover="hover"
-                      className={`group relative p-4 sm:p-6 lg:p-8 rounded-2xl shadow-lg flex flex-col justify-between min-h-[200px] hover:border-b-2 hover:border-r-2 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-secondary-1000 backdrop-blur-xl ${isDark ? 'bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-secondary-1000 backdrop-blur-xl' : 'bg-light-bg-secondary border border-light-border hover:border-primary/50'} transition-all duration-300 overflow-hidden`}
+                      className={`group relative p-4 sm:p-6 lg:p-8 rounded-2xl shadow-lg flex flex-col justify-between min-h-[200px] bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 backdrop-blur-xl ${isDark ? 'border border-dark-border hover:border-primary/50' : 'bg-light-bg-secondary border border-light-border hover:border-primary/50'} transition-all duration-300 overflow-hidden`}
                     >
                       {/* Bookmark Button */}
                       <button
@@ -734,8 +790,8 @@ const Roadmap = () => {
                         whileHover={{ rotate: 360 }}
                         transition={{ duration: 0.5 }}
                       >
-                        <span className="text-xl sm:text-2xl">
-                          {item.icon || "⚡"}
+                        <span className="text-3xl sm:text-4xl flex items-center justify-center">
+                          {skillIcons[item.name] || item.icon || "⚡"}
                         </span>
                       </motion.div>
 
@@ -782,7 +838,6 @@ const Roadmap = () => {
                 initial="hidden"
                 animate="visible"
               >
-
                 <motion.div
                   variants={sectionHeaderVariants}
                   initial="hidden"
@@ -793,9 +848,15 @@ const Roadmap = () => {
                   <div className={`h-px flex-1 ${isDark ? 'bg-dark-border' : 'bg-light-border'}`}></div>
                   <h2 className={`text-2xl sm:text-3xl md:text-4xl font-righteous tracking-wider px-4 sm:px-8 ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
                     Skill Based Roadmaps
+                    {searchQuery && (
+                      <span className={`ml-2 text-base font-normal ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
+                        ({filteredRoadmaps.skills.length})
+                      </span>
+                    )}
                   </h2>
                   <div className={`h-px flex-1 ${isDark ? 'bg-dark-border' : 'bg-light-border'}`}></div>
                 </motion.div>
+
                 {Object.entries(filteredRoadmaps.skillsByTier).map(([tierKey, tierSkills]) => {
                   const tierData = LEARNING_TIERS[tierKey] || { name: 'Other Skills', icon: '📚', description: 'Additional skills' };
 
@@ -833,7 +894,7 @@ const Roadmap = () => {
                             key={`tier-${tierKey}-${item.name}-${index}`}
                             variants={cardVariants}
                             whileHover="hover"
-                            className={`group relative p-4 sm:p-6 lg:p-8 rounded-2xl shadow-lg flex flex-col justify-between min-h-[200px] hover:border-b-2 hover:border-r-2 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-secondary-1000 backdrop-blur-xl ${isDark ? 'bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-secondary-1000 backdrop-blur-xl' : 'bg-light-bg-secondary border border-light-border hover:border-primary/50'} transition-all duration-300 overflow-hidden`}
+                            className={`group relative p-4 sm:p-6 lg:p-8 rounded-2xl shadow-lg flex flex-col justify-between min-h-[200px] bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 backdrop-blur-xl ${isDark ? 'border border-dark-border hover:border-primary/50' : 'bg-light-bg-secondary border border-light-border hover:border-primary/50'} transition-all duration-300 overflow-hidden`}
                           >
                             {/* Bookmark Button */}
                             <button
@@ -868,14 +929,14 @@ const Roadmap = () => {
                               }}
                             />
 
-                            {/* Role icon with enhanced animation */}
+                            {/* Skill icon with enhanced animation */}
                             <motion.div
                               className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg mb-4 flex items-center justify-center ${isDark ? 'bg-dark-bg-primary' : 'bg-light-bg-primary'}`}
                               whileHover={{ rotate: 360 }}
                               transition={{ duration: 0.5 }}
                             >
-                              <span className="text-xl sm:text-2xl">
-                                {item.icon || "⚡"}
+                              <span className="text-3xl sm:text-4xl flex items-center justify-center">
+                                {skillIcons[item.name] || item.icon || "⚡"}
                               </span>
                             </motion.div>
 
@@ -907,7 +968,7 @@ const Roadmap = () => {
                                 viewBox="0 0 24 24"
                               >
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                              </motion.svg>
+                              </svg>
                             </motion.a>
                           </motion.div>
                         ))}
@@ -919,7 +980,6 @@ const Roadmap = () => {
             )}
           </>
         )}
-
 
         {/* Call to Action Section - Only show when not searching or when search has results */}
         {(!searchQuery || (filteredRoadmaps.roles.length > 0 || filteredRoadmaps.skills.length > 0)) && (
