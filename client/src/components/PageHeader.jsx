@@ -7,7 +7,7 @@ import "react-quill/dist/quill.snow.css";
 
 function Modal({ children, onClose, isDark }) {
   const bgPrimary = isDark ? "bg-gray-900" : "bg-white";
-  
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
@@ -24,8 +24,8 @@ function Modal({ children, onClose, isDark }) {
 }
 
 export default function PageHeader() {
-  const { search, setSearch, sort, setSort, askQuestion } = useQuestions();
-  const { isDark, themeColor } = useTheme();
+  const { search, setSearch, sort, setSort, askQuestion } = useQuestions(); // backend-aware function
+  const { isDark, themeColor, authorizationToken } = useTheme(); // if needed for headers
 
   const [modalOpen, setModalOpen] = useState(false);
   const [title, setTitle] = useState("");
@@ -36,21 +36,28 @@ export default function PageHeader() {
   const textSecondary = isDark ? "text-gray-300" : "text-gray-500";
   const bgTertiary = isDark ? "bg-gray-800" : "bg-gray-100";
   const borderColor = isDark ? "border-gray-700" : "border-gray-200";
-  const bgSecondaryHover = isDark
-    ? "hover:bg-gray-700/50"
-    : "hover:bg-gray-200";
+  const bgSecondaryHover = isDark ? "hover:bg-gray-700/50" : "hover:bg-gray-200";
 
-  const handleSubmit = () => {
-    askQuestion({
-      title,
-      excerpt: questionContent.replace(/<[^>]+>/g, "").slice(0, 100),
-      description: questionContent,
-      tags: tags.split(",").map((t) => t.trim()),
-    });
-    setModalOpen(false);
-    setTitle("");
-    setTags("");
-    setQuestionContent("");
+  const handleSubmit = async () => {
+    if (!title || !questionContent) return alert("Please fill all fields");
+
+    try {
+      // Call context function that hits backend
+      await askQuestion({
+        title,
+        excerpt: questionContent.replace(/<[^>]+>/g, "").slice(0, 100),
+        description: questionContent,
+        tags: tags.split(",").map((t) => t.trim()),
+      });
+
+      // Reset modal
+      setModalOpen(false);
+      setTitle("");
+      setTags("");
+      setQuestionContent("");
+    } catch (err) {
+      console.error("Error submitting question:", err);
+    }
   };
 
   return (
@@ -58,9 +65,7 @@ export default function PageHeader() {
       {/* Header Title and Button */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-0">
         <div>
-          <h1
-            className={`text-3xl md:text-4xl font-semibold tracking-tight ${textPrimary}`}
-          >
+          <h1 className={`text-3xl md:text-4xl font-semibold tracking-tight ${textPrimary}`}>
             Questions
           </h1>
           <p className={`mt-1 text-sm ${textSecondary}`}>
@@ -69,7 +74,7 @@ export default function PageHeader() {
         </div>
         <button
           onClick={() => setModalOpen(true)}
-          className={`inline-flex items-center gap-2 rounded-2xl px-4 py-2 text-sm font-medium bg-${themeColor}  text-black dark:text-white shadow hover:bg-${themeColor}-600 transition`}
+          className={`inline-flex items-center gap-2 rounded-2xl px-4 py-2 text-sm font-medium bg-${themeColor} text-black dark:text-white shadow hover:bg-${themeColor}-600 transition`}
         >
           <Plus size={16} /> Ask a Question
         </button>
@@ -78,9 +83,7 @@ export default function PageHeader() {
       {/* Search and Filters */}
       <div className="flex flex-col md:flex-row gap-3">
         <div className="flex-1 relative w-full">
-          <div
-            className={`absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none ${textSecondary}`}
-          >
+          <div className={`absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none ${textSecondary}`}>
             <Search size={18} />
           </div>
           <input
@@ -91,9 +94,7 @@ export default function PageHeader() {
           />
         </div>
         <div className="flex flex-wrap gap-2 md:gap-2">
-          <button
-            className={`inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-sm ${textSecondary} ${borderColor} ${bgSecondaryHover} transition-colors`}
-          >
+          <button className={`inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-sm ${textSecondary} ${borderColor} ${bgSecondaryHover} transition-colors`}>
             <Filter size={16} /> Filters
           </button>
           <div className="relative w-full md:w-auto">
@@ -117,9 +118,7 @@ export default function PageHeader() {
       {/* Modal */}
       {modalOpen && (
         <Modal onClose={() => setModalOpen(false)} isDark={isDark}>
-          <h2 className={`text-xl font-bold mb-4 ${textPrimary}`}>
-            Ask a Question
-          </h2>
+          <h2 className={`text-xl font-bold mb-4 ${textPrimary}`}>Ask a Question</h2>
           <label className={`block mb-2 text-sm font-medium ${textPrimary}`}>Title</label>
           <input
             type="text"
@@ -128,9 +127,7 @@ export default function PageHeader() {
             className={`w-full mb-4 rounded-xl border px-3 py-2 ${bgTertiary} ${textPrimary} ${borderColor} focus:outline-none focus:ring-2 focus:ring-${themeColor}/60`}
             placeholder="Enter your question title"
           />
-          <label className={`block mb-2 text-sm font-medium ${textPrimary}`}>
-            Tags (comma separated)
-          </label>
+          <label className={`block mb-2 text-sm font-medium ${textPrimary}`}>Tags (comma separated)</label>
           <input
             type="text"
             value={tags}
@@ -139,7 +136,7 @@ export default function PageHeader() {
             placeholder="e.g., javascript, react"
           />
           <label className={`block mb-2 text-sm font-medium ${textPrimary}`}>Question</label>
-          <div className={`mb-4 ${isDark ? 'quill-dark' : ''}`}>
+          <div className={`mb-4 ${isDark ? "quill-dark" : ""}`}>
             <ReactQuill
               theme="snow"
               value={questionContent}
@@ -176,7 +173,7 @@ export default function PageHeader() {
             </button>
             <button
               onClick={handleSubmit}
-              className={`px-4 py-2 rounded-xl bg-${themeColor}  text-black dark:text-white hover:bg-${themeColor}-600 transition-colors`}
+              className={`px-4 py-2 rounded-xl bg-${themeColor} text-black dark:text-white hover:bg-${themeColor}-600 transition-colors`}
             >
               Submit
             </button>

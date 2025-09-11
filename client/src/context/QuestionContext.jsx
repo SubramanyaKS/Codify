@@ -8,6 +8,25 @@ export function useQuestions() {
   return ctx;
 }
 
+// 🔹 Helpers for reply updates in nested structures
+const updateReplyInArray = (replies, replyId, updatedReply) =>
+  replies.map((reply) =>
+    reply._id === replyId
+      ? { ...updatedReply, children: reply.children || [] }
+      : reply.children
+      ? { ...reply, children: updateReplyInArray(reply.children, replyId, updatedReply) }
+      : reply
+  );
+
+const removeReplyFromArray = (replies, replyId) =>
+  replies
+    .filter((reply) => reply._id !== replyId)
+    .map((reply) =>
+      reply.children
+        ? { ...reply, children: removeReplyFromArray(reply.children, replyId) }
+        : reply
+    );
+
 export function QuestionsProvider({ children }) {
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,164 +34,191 @@ export function QuestionsProvider({ children }) {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("latest");
 
-  // Load mock questions (simulate API)
-  useEffect(() => {
-    setLoading(true);
-    const timer = setTimeout(() => {
-      try {
-        const mock = [
-          {
-            id: "q1",
-            author: { name: "Muhammad Zunnoorain Rafi" },
-            updatedAgo: "13 hours ago",
-            title: "Video cannot be loaded",
-            excerpt: "Video fails to load intermittently on course page.",
-            tags: ["Server Failed", "Network Failed"],
-            upvotes: 442,
-            downvotes: 0,
-            replies: [
-              { id: "r1", author: "Admin", text: "We are checking the server logs.", updatedAgo: "12 hours ago" },
-              { id: "r2", author: "Student", text: "I also face this issue sometimes.", updatedAgo: "11 hours ago" }
-            ],
-            bookmarked: false
-          },
-          {
-            id: "q2",
-            author: { name: "Sadam Khan" },
-            updatedAgo: "1 day ago",
-            title: "Other courses missing",
-            excerpt: "Some tracks are missing from the dashboard menu.",
-            tags: [],
-            upvotes: 240,
-            downvotes: 0,
-            replies: [
-              { id: "r3", author: "Support", text: "We temporarily removed them for updates.", updatedAgo: "22 hours ago" }
-            ],
-            bookmarked: false
-          },
-          {
-            id: "q3",
-            author: { name: "Ratan Pyla" },
-            updatedAgo: "3 days ago",
-            title: "Discord Complaint",
-            excerpt: "I am unable to join discord server. Logged in with a wrong account.",
-            tags: ["Discord", "Support", "Account"],
-            upvotes: 135,
-            downvotes: 0,
-            replies: [
-              { id: "r4", author: "Arsalaan", text: "Same issue here.", updatedAgo: "9 days ago" },
-              { id: "r5", author: "AMAN", text: "Cannot join either.", updatedAgo: "8 days ago", parentId: "r4", replyToAuthor: "Arsalaan" }
-            ],
-            bookmarked: false
-          },
-          {
-            id: "q4",
-            author: { name: "Sushmitha Halli Sudhakara" },
-            updatedAgo: "1 day ago",
-            title: "Machine Learning Course Access",
-            excerpt: "Cannot access videos for the ML module.",
-            tags: ["ML", "Course Access"],
-            upvotes: 106,
-            downvotes: 0,
-            replies: [],
-            bookmarked: true
-          }
-        ];
+  const API =  import.meta.env.VITE_SERVER_API;
+  const token = localStorage.getItem("token");
 
-        setQuestions(mock);
-        setLoading(false);
-      } catch (e) {
-        setError("Failed to load questions");
-        setLoading(false);
+  const getAuthHeader = () =>
+    token ? { Authorization: `Bearer ${token}` } : {};
+
+  // 🔹 Centralized fetch wrapper
+  const apiFetch = async (url, options = {}) => {
+    try {
+      const res = await fetch(url, {
+        headers: {
+          "Content-Type": "application/json",
+          ...getAuthHeader(),
+          ...options.headers,
+        },
+        ...options,
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message || `Request failed: ${res.status}`);
       }
-    }, 600);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Add a new question
-  const askQuestion = (payload) => {
-    const newQuestion = {
-      id: Math.random().toString(36).slice(2),
-      author: { name: payload.author ?? "You" },
-      updatedAgo: "just now",
-      title: payload.title,
-      excerpt: payload.excerpt ?? "",
-      tags: payload.tags ?? [],
-      upvotes: 0,
-      downvotes: 0,
-      replies: [],
-      bookmarked: false
-    };
-    setQuestions(prev => [newQuestion, ...prev]);
+      return res.json();
+    } catch (err) {
+      console.error("API Error:", err);
+      throw err;
+    }
   };
 
-  // Add a reply (supports nested replies)
-  const addReply = (questionId, reply) => {
-    setQuestions(prev =>
-      prev.map(q =>
-        q.id === questionId
-          ? {
-              ...q,
-              replies: [
-                ...(q.replies || []),
-                {
-                  id: Math.random().toString(36).slice(2),
-                  author: reply.author ?? "You",
-                  text: reply.text,
-                  parentId: reply.parentId || null,
-                  replyToAuthor: reply.replyToAuthor || null,
-                  updatedAgo: "just now",
-                  upvotes: 0,
-                  downvotes: 0
-                }
-              ]
-            }
+  // Fetch all questions
+  const fetchQuestions = async () => {
+    setLoading(true);
+    try {
+      const data = await apiFetch(`${API}/api/questions/getAll`);
+      setQuestions(data || []);
+      setError(null);
+    } catch (err) {
+      setError(err.message);
+      setQuestions([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchQuestions();
+  }, [token]);
+
+  // Create question
+  const askQuestion = async (payload) => {
+    const newQuestion = await apiFetch(`${API}/api/questions/create`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+    setQuestions((prev) => [newQuestion, ...prev]);
+  };
+
+  // Add reply
+  const addReply = async (questionId, reply) => {
+    const newReply = await apiFetch(`${API}/api/questions/${questionId}/replies`, {
+      method: "POST",
+      body: JSON.stringify(reply),
+    });
+    setQuestions((prev) =>
+      prev.map((q) =>
+        q._id === questionId
+          ? { ...q, replies: [...(q.replies || []), newReply] }
           : q
       )
     );
   };
 
-  // Voting & Bookmarking
-  const upvote = (id) => {
-    setQuestions(prev => prev.map(q => q.id === id ? { ...q, upvotes: q.upvotes + 1 } : q));
+  // Update reply
+  const updateReply = async (replyId, text) => {
+    const updatedReply = await apiFetch(`${API}/api/replies/${replyId}`, {
+      method: "PATCH",
+      body: JSON.stringify({ text }),
+    });
+    setQuestions((prev) =>
+      prev.map((q) => ({
+        ...q,
+        replies: updateReplyInArray(q.replies || [], replyId, updatedReply),
+      }))
+    );
   };
 
-  const downvote = (id) => {
-    setQuestions(prev => prev.map(q => q.id === id ? { ...q, downvotes: q.downvotes + 1 } : q));
+  // Delete reply
+  const deleteReply = async (replyId, questionId) => {
+    await apiFetch(`${API}/api/replies/${replyId}`, { method: "DELETE" });
+    setQuestions((prev) =>
+      prev.map((q) =>
+        q._id === questionId
+          ? { ...q, replies: removeReplyFromArray(q.replies || [], replyId) }
+          : q
+      )
+    );
   };
 
-  const bookmark = (id) => {
-    setQuestions(prev => prev.map(q => q.id === id ? { ...q, bookmarked: !q.bookmarked } : q));
+  // Vote question
+  const voteQuestion = async (id, type) => {
+    const updated = await apiFetch(`${API}/api/questions/${type}/${id}`, {
+      method: "POST",
+    });
+    setQuestions((prev) => prev.map((q) => (q._id === id ? updated : q)));
   };
+
+  // Vote reply
+  const voteReply = async (replyId, type) => {
+    const updatedReply = await apiFetch(`${API}/api/replies/${replyId}/vote`, {
+      method: "POST",
+      body: JSON.stringify({ type }),
+    });
+    setQuestions((prev) =>
+      prev.map((q) => ({
+        ...q,
+        replies: updateReplyInArray(q.replies || [], replyId, updatedReply),
+      }))
+    );
+  };
+
+  // Bookmark toggle
+  const toggleBookmark = async (id) => {
+    // Optimistic update
+    setQuestions((prev) =>
+      prev.map((q) =>
+        q._id === id ? { ...q, bookmarked: !q.bookmarked } : q
+      )
+    );
+  
+    // Then call API
+    try {
+      await apiFetch(`${API}/api/questions/bookmark/${id}`, { method: "POST" });
+    } catch (err) {
+      console.error("Bookmark toggle failed", err);
+      // Rollback if API fails
+      setQuestions((prev) =>
+        prev.map((q) =>
+          q._id === id ? { ...q, bookmarked: !q.bookmarked } : q
+        )
+      );
+    }
+  };
+  
 
   // Filter & Sort
   const filtered = useMemo(() => {
+    if (!Array.isArray(questions)) return [];
     let result = [...questions];
+
     if (search.trim()) {
       const term = search.toLowerCase();
-      result = result.filter(q => q.title.toLowerCase().includes(term) || q.excerpt.toLowerCase().includes(term));
+      result = result.filter(
+        (q) =>
+          q.title?.toLowerCase().includes(term) ||
+          q.excerpt?.toLowerCase().includes(term)
+      );
     }
-    if (sort === "upvotes") return result.sort((a, b) => b.upvotes - a.upvotes);
-    if (sort === "replies") return result.sort((a, b) => (b.replies?.length || 0) - (a.replies?.length || 0));
-    return result; // latest by default
+
+    if (sort === "upvotes")
+      result.sort((a, b) => (b.upvotes || 0) - (a.upvotes || 0));
+    if (sort === "replies")
+      result.sort((a, b) => (b.replies?.length || 0) - (a.replies?.length || 0));
+
+    return result;
   }, [questions, search, sort]);
 
   return (
-    <QuestionsContext.Provider value={{
-      questions: filtered,
-      loading,
-      error,
-      search,
-      sort,
-      setSearch,
-      setSort,
-      askQuestion,
-      upvote,
-      downvote,
-      bookmark,
-      addReply
-    }}>
+    <QuestionsContext.Provider
+      value={{
+        questions: filtered,
+        loading,
+        error,
+        search,
+        sort,
+        setSearch,
+        setSort,
+        askQuestion,
+        addReply,
+        updateReply,
+        deleteReply,
+        voteQuestion,
+        voteReply,
+        toggleBookmark,
+        fetchQuestions,
+      }}
+    >
       {children}
     </QuestionsContext.Provider>
   );
