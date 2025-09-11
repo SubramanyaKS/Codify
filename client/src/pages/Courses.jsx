@@ -354,22 +354,27 @@ const Courses = () => {
                     initial="initial"
                     whileHover="hover"
                     whileTap="tap"
-                    className={`px-4 py-2 rounded-lg font-semibold text-sm sm:text-base transition-all duration-300 ${
-                      selectedCategory === category
-                        ? 'bg-primary text-white shadow-lg'
-                        : isDark
-                        ? 'text-dark-text-secondary hover:text-dark-text-primary hover:bg-dark-bg-primary'
-                        : 'text-light-text-secondary hover:text-light-text-primary hover:bg-light-bg-primary'
-                    }`}
+                    className={`px-4 py-2 rounded-lg font-medium text-sm sm:text-base transition-all duration-300
+                      ${
+                        selectedCategory === category
+                          ? "bg-primary text-white shadow-md"
+                          : isDark
+                          ? "bg-dark-bg-secondary/40 text-dark-text-secondary border border-dark-border hover:bg-dark-bg-secondary/70 hover:text-dark-text-primary"
+                          : "bg-light-bg-secondary/40 text-light-text-secondary border border-light-border hover:bg-light-bg-secondary/70 hover:text-light-text-primary"
+                      }`}
                     onClick={() => handleCategorySelect(category)}
                   >
                     {category}
-                    <span className={`ml-2 text-xs px-2 py-1 rounded-full ${selectedCategory === category
-                        ? 'bg-white/20'
-                        : isDark
-                          ? 'bg-dark-bg-primary text-dark-text-secondary'
-                          : 'bg-light-bg-primary text-light-text-secondary'
-                      }`}>
+                    <span
+                      className={`ml-2 text-xs px-2 py-0.5 rounded-full 
+                      ${
+                        selectedCategory === category
+                          ? "bg-white/20 text-white"
+                          : isDark
+                          ? "bg-dark-bg-primary/60 text-dark-text-secondary"
+                          : "bg-light-bg-primary/60 text-light-text-secondary"
+                      }`}
+                    >
                       {categoryCount}
                     </span>
                   </motion.button>

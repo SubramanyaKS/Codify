@@ -11,104 +11,115 @@ import passport from "passport";
 
 const homePage = async (req, res) => {
   try {
-    res.status(202).send("home page");
+    res.status(202).json({ message: "home page" });
   } catch (error) {
-    res.status(404).send({error});
+    res.status(404).json({ error });
   }
 };
+
 const regPage = async (req, res) => {
   try {
     const { email, password, phone, username } = req.body;
     const userExist = await User.findOne({ email: email });
     if (userExist) {
-      return res.status(400).send({ message: "Email already exist" });
+      return res.status(400).json({ message: "Email already exist" });
     }
     const userCreated = await User.create({ email, password, phone, username });
     res.status(201).json({
-      message: userCreated,
+      message: "User created successfully",
+      user: userCreated,
       userId: userCreated._id.toString(),
       token: await userCreated.generateToken(),
     });
   } catch (error) {
-    res.status(400).send({error});
+    res.status(400).json({ error });
   }
 };
+
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const userExist = await User.findOne({ email });
     if (!userExist) {
-      return res.status(400).send({ message: "invalid Credentions" });
+      return res.status(400).json({ message: "Invalid credentials" });
     }
-    // const isCorrectPassword =await bcryptjs.compare(password,userExist.password);
+
     const isCorrectPassword = await userExist.comparePassword(password);
     if (isCorrectPassword) {
-      res.status(201).send({
-        message: "logged In Successful",
+      res.status(200).json({
+        message: "Logged in successfully",
         token: await userExist.generateToken(),
         userId: userExist._id.toString(),
       });
     } else {
-      return res.status(400).send({ message: "invalid Credentions" });
+      return res.status(400).json({ message: "Invalid credentials" });
     }
   } catch (error) {
-    res.status(500).send({ message: "internal server error" });
+    res.status(500).json({ message: "Internal server error" });
   }
 };
+
 const contact = async (req, res) => {
   try {
     const { email, message, username } = req.body;
-    // const userExist = await User.findOne({ email: email });
-    // if (!userExist) {
-    //   return res.status(400).send({ message: "user not found Sign Up now" });
-    // }
+
+    if (!email || !username || !message) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
     // Save feedback to DB
     const newMessage = await Feedback.create({ email, username, message });
     // Build email content
     const { subject, html } = feedbackEmailTemplate(username, message);
-    // Send email
+
+    // Send confirmation email
     await sendEmail(
-      email,            
-      subject,          
-      html,             
-      `Hi ${username}, thanks for your feedback: ${message}` // text fallback
+      email,
+      subject,
+      html,
+      `Hi ${username}, thanks for your feedback: ${message}`
     );
-    //frontend response
-    res.status(201).json({"hello ":"hello from contact , message sent",
-    message: newMessage.message,
-      userId: newMessage._id.toString(),
-      token: await userCreated.generateToken(),
+
+    // frontend response
+    return res.status(201).json({
+      success: true,
+      message: "Feedback submitted successfully",
+      feedbackId: newMessage._id.toString(),
     });
   } catch (error) {
-    res.status(400).send(error);
+    return res.status(500).json({ message: "Failed to send feedback" });
   }
 };
-const user = async (req,res)=>{
+
+const user = async (req, res) => {
   try {
     const user = req.user;
-    return res.status(200).json({user});
+    return res.status(200).json({ user });
   } catch (error) {
-    res.status(400).json({ message:error });
+    res.status(400).json({ message: error });
   }
-}
-const courses = async(req,res)=>{
+};
+
+const courses = async (req, res) => {
   try {
     const response = await Course.find({});
-    if(!response){
-      return res.status(400).send(`fetching courses error : ${error}`);
+    if (!response) {
+      return res.status(400).json({ message: "Fetching courses error" });
     }
-    res.status(200).json( {data:response});
+    res.status(200).json({ data: response });
   } catch (error) {
-    res.status(400).send(`fetching courses error :  ${error}`);
+    res.status(400).json({ message: `Fetching courses error: ${error}` });
   }
-}
-const defcontroller = async(req,res)=>{
+};
+
+const defcontroller = async (req, res) => {
   try {
-    res.status(200).send("hello from def controller");
+    res.status(200).json({ message: "hello from def controller" });
   } catch (error) {
-    res.status(400).send(`fetching courses error :  ${error}`);
+    res.status(400).json({ message: `Error: ${error}` });
   }
-}
+};
+
 const sendOTP = async (req, res) => {
   try {
     const { email } = req.body;
@@ -120,27 +131,30 @@ const sendOTP = async (req, res) => {
 
     await sendEmail(email, subject, html);
     return res.status(200).json({ message: "OTP sent successfully" });
-    
   } catch (error) {
     console.error("Error in sendOTP:", error);
     return res.status(500).json({ message: "Failed to send OTP" });
   }
 };
 
-
 // Verify OTP Controller
 const verifyOTP = async (req, res) => {
   try {
     const { email, otp } = req.body;
-    if (!email || !otp) return res.status(400).json({ message: "Email and OTP are required" });
+    if (!email || !otp)
+      return res.status(400).json({ message: "Email and OTP are required" });
 
     const record = otpStore[email];
-    if (!record) return res.status(400).json({ message: "OTP not found. Please request again." });
+    if (!record)
+      return res
+        .status(400)
+        .json({ message: "OTP not found. Please request again." });
     if (Date.now() > record.expiresAt) {
       delete otpStore[email];
       return res.status(400).json({ message: "OTP expired" });
     }
-    if (record.otp !== otp) return res.status(400).json({ message: "Invalid OTP" });
+    if (record.otp !== otp)
+      return res.status(400).json({ message: "Invalid OTP" });
 
     delete otpStore[email];
     return res.status(200).json({ message: "OTP verified successfully" });
@@ -171,29 +185,35 @@ const resetPassword = async (req, res) => {
   try {
     const { email, newPassword } = req.body;
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).send({ message: "User not found" });
+    if (!user) return res.status(400).json({ message: "User not found" });
 
     user.password = newPassword; // plain text
     await user.save(); // hash will happen here
-    
-    res.status(200).send({ message: "Password reset successful" });
+
+    res.status(200).json({ message: "Password reset successful" });
   } catch (error) {
-    res.status(500).send({ message: "Internal server error" });
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
-//Google Login 
 const googleLogin = async (req, res, next) => {
   try {
     passport.authenticate("google-login", (err, data, info) => {
-      if (err) return res.redirect(`${process.env.FRONTEND_URL}/login?error=server_error`);
+      if (err)
+        return res.redirect(
+          `${process.env.FRONTEND_URL}/login?error=server_error`
+        );
       if (!data) {
-        const errorMsg = encodeURIComponent(info?.message || "Authentication failed");
-        return res.redirect(`${process.env.FRONTEND_URL}/login?error=${errorMsg}`);
+        const errorMsg = encodeURIComponent(
+          info?.message || "Authentication failed"
+        );
+        return res.redirect(
+          `${process.env.FRONTEND_URL}/login?error=${errorMsg}`
+        );
       }
       // Upon Successful Login, Redirect URL with token to frontend
       const { token } = data;
-      res.redirect(`${process.env.FRONTEND_URL}/oauth/callback?token=${token}`); 
+      res.redirect(`${process.env.FRONTEND_URL}/oauth/callback?token=${token}`);
     })(req, res, next);
   } catch (error) {
     return res.redirect(`${process.env.FRONTEND_URL}/login?error=server_error`);
@@ -202,15 +222,22 @@ const googleLogin = async (req, res, next) => {
 //Google Signup
 const googleSignup = async (req, res, next) => {
   try {
-    passport.authenticate("google-signup",async (err, data, info) => {
-      if (err) return res.redirect(`${process.env.FRONTEND_URL}/signup?error=server_error`);
+    passport.authenticate("google-signup", async (err, data, info) => {
+      if (err)
+        return res.redirect(
+          `${process.env.FRONTEND_URL}/signup?error=server_error`
+        );
       if (!data) {
-        const errorMsg = encodeURIComponent(info?.message || "Authentication failed");
-        return res.redirect(`${process.env.FRONTEND_URL}/signup?error=${errorMsg}`); 
+        const errorMsg = encodeURIComponent(
+          info?.message || "Authentication failed"
+        );
+        return res.redirect(
+          `${process.env.FRONTEND_URL}/signup?error=${errorMsg}`
+        );
       }
       // Send email reminder to set password
       try {
-        const userEmail = data.user.email; // Get user email from data
+        const userEmail = data.user.email;
         const forgotPasswordLink = `${process.env.FRONTEND_URL}/forgot-password`;
 
         await sendEmail(
@@ -233,8 +260,24 @@ const googleSignup = async (req, res, next) => {
       res.redirect(`${process.env.FRONTEND_URL}/oauth/callback?token=${token}`);
     })(req, res, next);
   } catch (error) {
-    return res.redirect(`${process.env.FRONTEND_URL}/signup?error=server_error`);
+    return res.redirect(
+      `${process.env.FRONTEND_URL}/signup?error=server_error`
+    );
   }
 };
 
-export { homePage, regPage, login, contact , user ,courses ,defcontroller,sendOTP,verifyOTP ,resetPassword,forgotPasswordCheck , googleLogin, googleSignup };
+export {
+  homePage,
+  regPage,
+  login,
+  contact,
+  user,
+  courses,
+  defcontroller,
+  sendOTP,
+  verifyOTP,
+  resetPassword,
+  forgotPasswordCheck,
+  googleLogin,
+  googleSignup,
+};

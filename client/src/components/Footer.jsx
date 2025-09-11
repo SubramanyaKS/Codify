@@ -428,7 +428,7 @@ const Footer = () => {
                 inbox.
               </p>
             </div>
-            <div className="md:flex-1 w-full ">
+            <div className="flex justify-end">
               <NewsletterSubscribeInput isDark={isDark} />
             </div>
           </div>
@@ -447,7 +447,7 @@ const Footer = () => {
           >
             &copy; {new Date().getFullYear()} Codify. All rights reserved. Made
             with
-            <p className="flex gap-2 justify-center items-baseline text-sm">
+            <span className="flex gap-2 justify-center items-baseline text-sm">
               <FaHeart className="text-primary animate-pulse" />
               <a
                 className="text-primary text-xl hover:text-primary-dark cursor-pointer hover:underline "
@@ -458,7 +458,7 @@ const Footer = () => {
                 {" "}
                 Roshan Suthar
               </a>
-            </p>
+            </span>
           </p>
         </div>
       </div>
