@@ -428,7 +428,7 @@ const Footer = () => {
                 inbox.
               </p>
             </div>
-            <div className="md:flex-1 w-full ">
+            <div className="flex justify-end">
               <NewsletterSubscribeInput isDark={isDark} />
             </div>
           </div>

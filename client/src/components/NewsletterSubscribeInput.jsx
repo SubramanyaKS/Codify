@@ -41,31 +41,66 @@ function NewsletterSubscribeInput({ isDark }) {
     }
   };
 
-  return (
-    <div className="md:flex gap-2">
-      <input
-        type="email"
-        placeholder="Enter your email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        className={`
-          flex-1 px-4 py-2 rounded-lg backdrop-blur-sm
-          ${
-            isDark
-              ? "bg-gray-800/50 text-dark-text-primary border-gray-600/30"
-              : "bg-white/50 text-light-text-primary border-white/30"
-          } border focus:outline-none focus:ring-2 focus:ring-primary
-        `}
-      />
-      <button
-        onClick={handleSubscribe}
-        disabled={loading}
-        className={`bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg transition-colors shadow-md ${
-          loading ? "opacity-70 cursor-not-allowed" : ""
-        }`}
-      >
-        {loading ? "Subscribing..." : "Subscribe"}
-      </button>
+   return (
+    <div className="w-96 mx-auto">
+      <div className="relative">
+        <input
+          type="email"
+          placeholder="Enter your email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          onKeyPress={(e) => e.key === "Enter" && handleSubscribe()}
+          className={`
+            w-full pr-32 pl-4 py-3 rounded-xl backdrop-blur-sm transition-all duration-300
+            ${isDark
+              ? "bg-gray-800/60 text-white border-gray-600/40 placeholder-gray-400"
+              : "bg-white/70 text-gray-800 border-gray-300/50 placeholder-gray-500"
+            } border-2 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500
+            shadow-lg hover:shadow-xl
+          `}
+        />
+
+        <button
+          onClick={handleSubscribe}
+          disabled={loading}
+          className={`
+            absolute right-2 top-1/2 -translate-y-1/2
+            bg-gradient-to-r from-purple-600 to-blue-600
+            text-white rounded-lg
+            transition-all duration-300 shadow-md hover:shadow-lg
+            font-medium text-sm
+            ${loading ? "opacity-70 cursor-not-allowed scale-95" : "hover:scale-105"}
+            disabled:hover:scale-100
+            w-28 h-10 flex items-center justify-center
+          `}
+        >
+          {loading ? (
+            <div className="flex items-center space-x-1">
+              <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              <span>Wait...</span>
+            </div>
+          ) : status.type === "success" ? (
+            "Subscribed ✓"
+          ) : (
+            "Subscribe"
+          )}
+        </button>
+      </div>
+
+      {/* Reserved space for message */}
+      <div className="mt-2 min-h-[1.5rem] text-sm text-center transition-all duration-300">
+        {status.message && (
+          <div className={`
+            inline-block px-4 py-2 rounded-lg
+            ${status.type === "error"
+              ? "text-red-400 bg-red-500/10 border border-red-500/20"
+              : "text-green-400 bg-green-500/10 border border-green-500/20"
+            }
+          `}>
+            {status.message}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
