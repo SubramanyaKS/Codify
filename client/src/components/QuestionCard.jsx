@@ -19,7 +19,6 @@ export default function QuestionCard({ q }) {
   const primaryColor = "var(--color-primary)";
   const primaryColorLight = "var(--color-primary-light)";
   const primaryColorDark = "var(--color-primary-dark)";
-
   return (
     <div
       style={{ backgroundColor: bgPrimary, borderColor }}
@@ -43,9 +42,10 @@ export default function QuestionCard({ q }) {
       {/* Tags */}
       <div className="flex gap-2 flex-wrap">
         {q.tags?.length > 0 ? (
-          q.tags.map((tag) => (
+          q.tags.map((tag, i) => (
+            
             <span
-              key={tag}
+              key={`${tag}-${i}`}   // ensures uniqueness
               style={{
                 backgroundColor: bgSecondary,
                 color: textSecondary,
@@ -53,7 +53,7 @@ export default function QuestionCard({ q }) {
               }}
               className="px-2 py-1 text-xs rounded-full border transition-colors"
             >
-              {tag}
+              {tag || "Untitled"}
             </span>
           ))
         ) : (

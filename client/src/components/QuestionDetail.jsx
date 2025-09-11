@@ -38,7 +38,7 @@ export default function QuestionDetail() {
   const [replyText, setReplyText] = useState("");
   const [showReplyEditor, setShowReplyEditor] = useState(false);
   const [expandedReplies, setExpandedReplies] = useState(new Set());
-    console.log(userdata)
+    // console.log(userdata)
   const currentThemeColor = availableColors[themeColor];
 
   const colors = isDark
