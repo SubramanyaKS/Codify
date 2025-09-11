@@ -13,7 +13,8 @@ import progressRouter from "./routes/progressRoute.js";
 import activityRouter from "./routes/activityRoute.js";
 import leaderBoardRoute from "./routes/leaderBoardRoute.js";
 import bookmarkRouter from "./routes/bookmarkRoute.js";
-
+import questionRouter from "./routes/questionRoute.js"
+import replyRouter from "./routes/replyRoute.js"
 import todoRouter from "./routes/todoRoute.js";
 import newsletterRouter from "./routes/newsletterRoute.js";
 
@@ -62,6 +63,8 @@ app.use("/api/v1", leaderBoardRoute);
 app.use("/api/v1/bookmarks", bookmarkRouter);
 app.use("/api/todos", todoRouter);
 app.use("/api/newsletter", newsletterRouter);
+app.use("/api/questions",questionRouter);
+app.use("/api",replyRouter)
 // app.get("/",)
 const PORT = process.env.PORT || 5050;
 
