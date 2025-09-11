@@ -269,7 +269,7 @@ export default function LeaderBoard() {
           transition={{ duration: 0.5 }}
         >
           <h1
-          ref ={ref}
+            ref={ref}
             className={`text-2xl sm:text-4xl font-bold mb-2 sm:mb-4 text-primary-600`}
           >
             {/* GSSoC'25 Leaderboard */}
@@ -511,15 +511,15 @@ export default function LeaderBoard() {
                         {/* Rank Badge */}
                         <div
                           className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium flex-shrink-0 ${
-                            index === 0
+                            (index === 0 && currentPage==1)
                               ? isDark
                                 ? "bg-yellow-900/30 text-yellow-400"
                                 : "bg-yellow-100 text-yellow-600"
-                              : index === 1
+                              : (index === 1 && currentPage==1)
                               ? isDark
                                 ? "bg-gray-800 text-gray-300"
                                 : "bg-gray-100 text-gray-600"
-                              : index === 2
+                              : (index === 2 && currentPage==1)
                               ? isDark
                                 ? "bg-amber-900/30 text-amber-400"
                                 : "bg-amber-100 text-amber-600"
@@ -601,15 +601,15 @@ export default function LeaderBoard() {
                       <div className="col-span-1">
                         <div
                           className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                            index === 0
+                            (index === 0 && currentPage==1)
                               ? isDark
                                 ? "bg-yellow-900/30 text-yellow-400"
                                 : "bg-yellow-100 text-yellow-600"
-                              : index === 1
+                              : (index === 1 && currentPage==1)
                               ? isDark
                                 ? "bg-gray-800 text-gray-300"
                                 : "bg-gray-100 text-gray-600"
-                              : index === 2
+                              : (index === 2 && currentPage==1)
                               ? isDark
                                 ? "bg-amber-900/30 text-amber-400"
                                 : "bg-amber-100 text-amber-600"

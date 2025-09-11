@@ -80,7 +80,7 @@ function NavBar() {
                 flex items-center space-x-2 px-4 py-2 rounded-lg text-base font-medium transition-all duration-200
                 ${isActive
                   ? 'bg-primary text-white shadow-md'
-                  : (isDark ? 'text-dark-text-primary hover:bg-dark-bg-tertiary hover:text-white' : 'text-light-text-primary hover:bg-light-bg-tertiary hover:text-white')}
+                  : (isDark ? 'text-dark-text-primary hover:bg-dark-bg-tertiary hover:text-white' : 'text-light-text-primary hover:bg-light-bg-tertiary')}
               `}
             >
               <FaBookOpen className="text-lg" />
@@ -93,7 +93,7 @@ function NavBar() {
                 flex items-center space-x-2 px-4 py-2 rounded-lg text-base font-medium transition-all duration-200
                 ${isActive
                   ? 'bg-primary text-white shadow-md'
-                  : (isDark ? 'text-dark-text-primary hover:bg-dark-bg-tertiary hover:text-white' : 'text-light-text-primary hover:bg-light-bg-tertiary hover:text-white')}
+                  : (isDark ? 'text-dark-text-primary hover:bg-dark-bg-tertiary hover:text-white' : 'text-light-text-primary hover:bg-light-bg-tertiary')}
               `}
             >
               <FaRoad className="text-lg" />
@@ -106,7 +106,7 @@ function NavBar() {
                 flex items-center space-x-2 px-4 py-2 rounded-lg text-base font-medium transition-all duration-200
                 ${isActive
                   ? 'bg-primary text-white shadow-md'
-                  : (isDark ? 'text-dark-text-primary hover:bg-dark-bg-tertiary hover:text-white' : 'text-light-text-primary hover:bg-light-bg-tertiary hover:text-white')}
+                  : (isDark ? 'text-dark-text-primary hover:bg-dark-bg-tertiary hover:text-white' : 'text-light-text-primary hover:bg-light-bg-tertiary')}
               `}
             >
               <FaStickyNote className="text-lg" />

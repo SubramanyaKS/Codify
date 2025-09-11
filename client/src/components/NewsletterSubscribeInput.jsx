@@ -1,22 +1,24 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
+import { useAuth } from "../store/auth";
+import { toast } from "react-toastify";
+
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function NewsletterSubscribeInput({ isDark }) {
+  const {API}=useAuth();
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState({ type: "idle", message: "" });
   const [loading, setLoading] = useState(false);
 
   const handleSubscribe = async () => {
     if (!EMAIL_REGEX.test(email)) {
-      setStatus({ type: "error", message: "Please enter a valid email." });
+      toast.error("Please enter a valid email.");
       return;
     }
     try {
       setLoading(true);
-      setStatus({ type: "idle", message: "" });
       const res = await fetch(
-        "http://localhost:5050/api/newsletter/subscribe",
+        `${API}/api/newsletter/subscribe`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -27,13 +29,13 @@ function NewsletterSubscribeInput({ isDark }) {
       if (!res.ok || data?.success === false) {
         throw new Error(data?.message || "Subscription failed");
       }
-      setStatus({ type: "success", message: data?.message || "Subscribed!" });
+      if(data?.message=="Already subscribed")
+      toast.info(data?.message || "Subscribed!" )
+      else
+      toast.success(data?.message || "Subscribed!" )
       setEmail("");
     } catch (err) {
-      setStatus({
-        type: "error",
-        message: err.message || "Something went wrong",
-      });
+      toast.error(err?.message || "Something went wrong");
     } finally {
       setLoading(false);
     }

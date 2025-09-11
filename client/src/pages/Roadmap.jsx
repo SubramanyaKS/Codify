@@ -4,8 +4,62 @@ import roadmap from "../assets/json/rolebasedRoadmaps.json";
 import skills from "../assets/json/skillbasedRoadmaps.json";
 import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../store/auth"; 
-import { FaRegBookmark, FaBookmark } from "react-icons/fa";
 import { toast } from "react-toastify";
+
+import {
+  FaRegBookmark,
+  FaBookmark,
+  FaReact,
+  FaVuejs,
+  FaAngular,
+  FaJava,
+  FaPython,
+  FaNodeJs,
+  FaAws,
+  FaDocker,
+  FaLinux,
+  FaGitAlt,
+} from "react-icons/fa";
+
+import {
+  SiTypescript,
+  SiJavascript,
+  SiMongodb,
+  SiKubernetes,
+  SiRust,
+  SiGo,
+  SiSpringboot,
+  SiGraphql,
+  SiFlutter,
+  SiRedis,
+  SiDotnet,
+  SiCplusplus,
+} from "react-icons/si";
+
+const skillIcons = {
+  React: <FaReact className="text-sky-500" />,
+  Vue: <FaVuejs className="text-green-500" />,
+  Angular: <FaAngular className="text-red-600" />,
+  JavaScript: <SiJavascript className="text-yellow-400" />,
+  TypeScript: <SiTypescript className="text-blue-500" />,
+  "Node.js": <FaNodeJs className="text-green-600" />,
+  Python: <FaPython className="text-yellow-400" />,
+  Java: <FaJava className="text-red-500" />,
+  "C++": <SiCplusplus className="text-blue-500" />,
+  "Spring Boot": <SiSpringboot className="text-green-700" />,
+  Go: <SiGo className="text-cyan-500" />,
+  Rust: <SiRust className="text-orange-600" />,
+  GraphQL: <SiGraphql className="text-pink-500" />,
+  Flutter: <SiFlutter className="text-sky-400" />,
+  MongoDB: <SiMongodb className="text-green-600" />,
+  AWS: <FaAws className="text-orange-400" />,
+  Docker: <FaDocker className="text-blue-500" />,
+  Kubernetes: <SiKubernetes className="text-blue-600" />,
+  Linux: <FaLinux className="text-black dark:text-white" />,
+  "Git and GitHub": <FaGitAlt className="text-orange-600" />,
+  Redis: <SiRedis className="text-red-500" />,
+  "ASP.NET Core": <SiDotnet className="text-purple-500" />,
+};
 
 const Roadmap = () => {
   const { theme } = useTheme();
@@ -651,9 +705,10 @@ const Roadmap = () => {
                     whileHover={{ rotate: 360 }}
                     transition={{ duration: 0.5 }}
                   >
-                    <span className="text-xl sm:text-2xl">
-                      {item.icon || "⚡"}
+                    <span className="text-3xl sm:text-4xl flex items-center justify-center">
+                      {skillIcons[item.name] || item.icon || "⚡"}
                     </span>
+
                   </motion.div>
 
                   <div className="flex-1 relative z-10">
@@ -771,9 +826,10 @@ const Roadmap = () => {
                     whileHover={{ rotate: 360 }}
                     transition={{ duration: 0.5 }}
                   >
-                    <span className="text-xl sm:text-2xl">
-                      {item.icon || "⚡"}
+                    <span className="text-3xl sm:text-4xl flex items-center justify-center">
+                      {skillIcons[item.name] || item.icon || "⚡"}
                     </span>
+
                   </motion.div>
 
                   <div className="flex-1 relative z-10">

@@ -1,7 +1,7 @@
-//C:\Users\Administrator\Codify\server\utils\sendEmail.js
+// server/utils/sendEmail.js
 import nodemailer from "nodemailer";
 
-export const sendEmail = async (to, subject, html, text = "") => {
+export const sendEmail = async (to, subject, html, text = "" ) => {
   try {
     const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -11,16 +11,19 @@ export const sendEmail = async (to, subject, html, text = "") => {
       },
     });
 
-    await transporter.sendMail({
+
+    const info = await transporter.sendMail({
       from: `"Codify Team 🚀" <${process.env.EMAIL_USER}>`,
       to,
       subject,
-      html,  
-      text,  //fallback
+      html,
+      text, //fallback for email clients that do not support HTML
     });
 
     console.log("Email sent successfully");
+    return info;
   } catch (error) {
-    console.error("Email send failed:", error);
+    console.error(" Email send failed:", error);
+    throw error;
   }
 };

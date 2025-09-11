@@ -6,7 +6,7 @@ import { useQuestions } from "../context/QuestionContext";
 import { useTheme } from "../context/ThemeContext";
 
 export default function QuestionCard({ q }) {
-  const { upvote, downvote, bookmark } = useQuestions();
+  const { voteQuestion, voteReply, toggleBookmark } = useQuestions(); // use backend-aware functions
   const { isDark } = useTheme();
 
   // Theme colors
@@ -19,14 +19,13 @@ export default function QuestionCard({ q }) {
   const primaryColor = "var(--color-primary)";
   const primaryColorLight = "var(--color-primary-light)";
   const primaryColorDark = "var(--color-primary-dark)";
-
   return (
     <div
       style={{ backgroundColor: bgPrimary, borderColor }}
       className="rounded-2xl border p-5 shadow-card flex flex-col gap-3 transition-colors"
     >
       {/* Title */}
-      <Link to={`/questions/${q.id}`}>
+      <Link to={`/questions/${q._id}`}>
         <h2
           style={{ color: textPrimary }}
           className="text-lg font-semibold hover:underline"
@@ -43,9 +42,10 @@ export default function QuestionCard({ q }) {
       {/* Tags */}
       <div className="flex gap-2 flex-wrap">
         {q.tags?.length > 0 ? (
-          q.tags.map((tag) => (
+          q.tags.map((tag, i) => (
+            
             <span
-              key={tag}
+              key={`${tag}-${i}`}   // ensures uniqueness
               style={{
                 backgroundColor: bgSecondary,
                 color: textSecondary,
@@ -53,7 +53,7 @@ export default function QuestionCard({ q }) {
               }}
               className="px-2 py-1 text-xs rounded-full border transition-colors"
             >
-              {tag}
+              {tag || "Untitled"}
             </span>
           ))
         ) : (
@@ -73,15 +73,15 @@ export default function QuestionCard({ q }) {
       {/* Stats */}
       <div className="flex gap-3 items-center pt-2">
         <button
-          onClick={() => upvote(q.id)}
+          onClick={() => voteQuestion(q._id, "upvote")}
           style={{ borderColor, backgroundColor: hoverBg, color: textPrimary }}
           className="flex items-center gap-1 px-2 py-1 rounded-lg border text-sm"
         >
-          <ArrowBigUp size={16} /> {q.upvotes}
+          <ArrowBigUp size={16} /> {q.upvotes || 0}
         </button>
 
         <button
-          onClick={() => downvote(q.id)}
+          onClick={() => voteQuestion(q._id, "downvote")}
           style={{ borderColor, backgroundColor: hoverBg, color: textPrimary }}
           className="flex items-center gap-1 px-2 py-1 rounded-lg border text-sm"
         >
@@ -89,7 +89,7 @@ export default function QuestionCard({ q }) {
         </button>
 
         <Link
-          to={`/questions/${q.id}`}
+          to={`/questions/${q._id}`}
           style={{ borderColor, backgroundColor: hoverBg, color: textPrimary }}
           className="flex items-center gap-1 px-2 py-1 rounded-lg border text-sm"
         >
@@ -97,13 +97,13 @@ export default function QuestionCard({ q }) {
         </Link>
 
         <button
-          onClick={() => bookmark(q.id)}
+          onClick={() => toggleBookmark(q._id)}
           style={{
             borderColor: q.bookmarked ? primaryColor : borderColor,
-            backgroundColor: q.bookmarked ? primaryColorLight : hoverBg,
+            backgroundColor: q.bookmarked ? bgSecondary : hoverBg,
             color: q.bookmarked ? primaryColorDark : textPrimary,
           }}
-          className="flex items-center gap-1 px-2 py-1 rounded-lg border text-sm ml-auto"
+          className="flex items-center text-bold  gap-1 px-2 py-1 rounded-lg border text-sm ml-auto"
         >
           <Bookmark size={16} />
           {q.bookmarked ? "Saved" : "Save"}
