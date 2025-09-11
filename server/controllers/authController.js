@@ -55,34 +55,39 @@ const login = async (req, res) => {
     res.status(500).send({ message: "internal server error" });
   }
 };
+
 const contact = async (req, res) => {
   try {
     const { email, message, username } = req.body;
-    // const userExist = await User.findOne({ email: email });
-    // if (!userExist) {
-    //   return res.status(400).send({ message: "user not found Sign Up now" });
-    // }
+
+    if (!email || !username || !message) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
     // Save feedback to DB
     const newMessage = await Feedback.create({ email, username, message });
     // Build email content
     const { subject, html } = feedbackEmailTemplate(username, message);
-    // Send email
+
+    // Send confirmation email
     await sendEmail(
-      email,            
-      subject,          
-      html,             
-      `Hi ${username}, thanks for your feedback: ${message}` // text fallback
+      email,
+      subject,
+      html,
+      `Hi ${username}, thanks for your feedback: ${message}`
     );
-    //frontend response
-    res.status(201).json({"hello ":"hello from contact , message sent",
-    message: newMessage.message,
-      userId: newMessage._id.toString(),
-      token: await userCreated.generateToken(),
+
+    // frontend response
+    return res.status(201).json({
+      success: true,
+      message: "Feedback submitted successfully",
+      feedbackId: newMessage._id.toString(),
     });
   } catch (error) {
-    res.status(400).send(error);
+    return res.status(500).json({ message: "Failed to send feedback" });
   }
 };
+
 const user = async (req,res)=>{
   try {
     const user = req.user;
