@@ -49,7 +49,6 @@ const Courses = () => {
   // Fetch user's watchlist
   const fetchWatchlist = async () => {
     try {
-      setIsLoading(true);
       const response = await fetch(`${API}/user/watchlist`, {
         method: "GET",
         headers: {
@@ -70,8 +69,6 @@ const Courses = () => {
       }
     } catch (error) {
       console.error("Error fetching watchlist:", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 

@@ -5,6 +5,7 @@ import bcryptjs from "bcryptjs";
 import { generateOTP } from "../utils/generateOTP.js";
 import { sendEmail } from "../utils/sendEmail.js";
 import { otpEmailTemplate } from "../utils/OTPemailTemplates.js";
+import { feedbackEmailTemplate } from "../utils/feedbackEmailTemplate.js";
 const otpStore = {}; // temporary in-memory store
 import passport from "passport";
 
@@ -61,7 +62,18 @@ const contact = async (req, res) => {
     // if (!userExist) {
     //   return res.status(400).send({ message: "user not found Sign Up now" });
     // }
+    // Save feedback to DB
     const newMessage = await Feedback.create({ email, username, message });
+    // Build email content
+    const { subject, html } = feedbackEmailTemplate(username, message);
+    // Send email
+    await sendEmail(
+      email,            
+      subject,          
+      html,             
+      `Hi ${username}, thanks for your feedback: ${message}` // text fallback
+    );
+    //frontend response
     res.status(201).json({"hello ":"hello from contact , message sent",
     message: newMessage.message,
       userId: newMessage._id.toString(),
