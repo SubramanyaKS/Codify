@@ -3,7 +3,9 @@ import PropTypes from "prop-types";
 import { useAuth } from "../store/auth";
 import { toast } from "react-toastify";
 
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const EMAIL_REGEX =
+  /^(?!\.)(?!.*\.\.)([a-zA-Z0-9._%+-]+)@[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?)+$/;
+
 
 function NewsletterSubscribeInput({ isDark }) {
   const { API } = useAuth();
