@@ -1,65 +1,63 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-// Note: Assuming 'useAuth' and 'AuthModal' are correctly imported from your project structure.
 import { useAuth } from '../store/auth'; 
 import AuthModal from './AuthModal/AuthModal';
 
-
-// This internal component contains all the feature-rich player logic.
-const AuthenticatedPlayer = ({ videoId, courseId, externalVideoId: propExternalVideoId }) => {
+// Internal feature-rich player logic
+const AuthenticatedPlayer = ({ videoUrl, videoId, courseId, externalVideoId }) => {
   const { API, userdata } = useAuth();
   const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
   const [player, setPlayer] = useState(null);
-  
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [progress, setProgress] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [courseProgress, setCourseProgress] = useState(null);
   const [error, setError] = useState(null);
   const [playerLoaded, setPlayerLoaded] = useState(false);
   const [videoLoading, setVideoLoading] = useState(true);
   const [maxWatchedTime, setMaxWatchedTime] = useState(0);
-  
+  const [videoProgressMap, setVideoProgressMap] = useState({}); // For playlists
+
   const progressInterval = useRef(null);
   const playerContainerId = `Youtubeer-container-${videoId}-${Math.random()}`; // Unique ID
 
+  // Extract ID from YouTube URL if needed
+  const getYouTubeVideoId = url => {
+    if (!url) return null;
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+  };
+  const actualVideoId = videoId || getYouTubeVideoId(videoUrl);
+
+  // Clean-up & player initialization
   useEffect(() => {
-    if (!videoId) {
+    if (!actualVideoId) {
       setError('Invalid YouTube Video ID');
       setVideoLoading(false);
       return;
     }
-    
     setError(null);
     setVideoLoading(true);
 
     const initializePlayer = () => {
-      if (player && typeof player.loadVideoById === 'function') {
-        try {
-          player.loadVideoById({ videoId: videoId });
-          return;
-        } catch (e) {
-          console.error("Error loading video, will re-initialize.", e);
-        }
-      }
-      
       const playerContainer = document.getElementById(playerContainerId);
-      if (playerContainer) {
-        playerContainer.innerHTML = ''; 
-      } else {
+      if (!playerContainer) {
         setError("Player container element not found.");
+        setVideoLoading(false);
         return;
       }
-
+      playerContainer.innerHTML = '';
       try {
         const newPlayer = new window.YT.Player(playerContainerId, {
           height: '100%',
           width: '100%',
-          videoId: videoId,
+          videoId: actualVideoId,
           playerVars: { 'playsinline': 1, 'rel': 0, 'modestbranding': 1, 'autoplay': 1 },
           events: {
-            'onReady': onPlayerReady,
-            'onStateChange': onPlayerStateChange,
-            'onError': (e) => {
+            onReady: onPlayerReady,
+            onStateChange: onPlayerStateChange,
+            onError: e => {
               setError(`Error loading video (code: ${e.data})`);
               setVideoLoading(false);
             }
@@ -67,8 +65,8 @@ const AuthenticatedPlayer = ({ videoId, courseId, externalVideoId: propExternalV
         });
         setPlayer(newPlayer);
       } catch (err) {
-          console.error("Error creating YouTube player:", err);
-          setError("Failed to create video player.");
+        console.error("Error creating YouTube player:", err);
+        setError("Failed to create video player.");
       }
     };
 
@@ -88,53 +86,109 @@ const AuthenticatedPlayer = ({ videoId, courseId, externalVideoId: propExternalV
         player.destroy();
       }
     };
-  }, [videoId, playerContainerId]);
+  }, [actualVideoId, playerContainerId]);
 
+  // Fetch and restore course/video progress (retains playlist and fallback logic)
   const fetchCourseProgress = useCallback(async () => {
     if (!token || !userdata?._id || !courseId) return;
-    
-    const currentVideoId = propExternalVideoId || videoId;
+    const currentVideoId = externalVideoId || actualVideoId;
     if (!currentVideoId) return;
 
     try {
       const response = await fetch(`${API}/progress/${courseId}`, {
+        method: 'GET',
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (response.ok) {
         const data = await response.json();
-        const videoSpecificProgress = data.progress?.videoProgress?.[currentVideoId];
-        const savedTime = videoSpecificProgress?.currentTime || 0;
+        setCourseProgress(data.progress);
+
+        // Playlist/Map progress support
+        let progressMap = data.progress?.videoProgress;
+        if (typeof progressMap !== 'object' || progressMap === null) progressMap = {};
+        setVideoProgressMap(progressMap);
+
+        // Smart fallback
+        let savedTime = 0;
+        const videoSpecificProgress = progressMap[currentVideoId];
+        if (videoSpecificProgress && videoSpecificProgress.currentTime > 0) {
+          savedTime = videoSpecificProgress.currentTime;
+        } else if (data.progress?.currentVideoTime && data.progress.currentVideoTime > 0) {
+          savedTime = data.progress.currentVideoTime;
+        }
         if (savedTime > 0) {
-            setMaxWatchedTime(savedTime);
-            if(player && typeof player.seekTo === 'function') {
-                player.seekTo(savedTime, true);
-            }
+          setMaxWatchedTime(savedTime);
+          if (player && typeof player.seekTo === 'function') player.seekTo(savedTime, true);
         }
       }
     } catch (error) {
       console.error('Error fetching course progress:', error);
     }
-  }, [API, courseId, player, token, userdata, videoId, propExternalVideoId]);
+  }, [API, courseId, player, token, userdata, actualVideoId, externalVideoId]);
 
   useEffect(() => {
-    if (playerLoaded) {
-      fetchCourseProgress();
-    }
+    if (playerLoaded) fetchCourseProgress();
   }, [playerLoaded, fetchCourseProgress]);
 
-  const onPlayerReady = (event) => {
+  // Progress + seeking after courseProgress changes (advanced restoration)
+  useEffect(() => {
+    const currentVideoId = externalVideoId || actualVideoId;
+    if (!currentVideoId || !player || !playerLoaded) return;
+    const videoProgress = courseProgress?.videoProgress || {};
+    const videoSpecificProgress = currentVideoId && videoProgress ?
+      videoProgress[currentVideoId] : null;
+
+    let savedTime = 0;
+    if (videoSpecificProgress && videoSpecificProgress.currentTime > 0) {
+      savedTime = videoSpecificProgress.currentTime;
+    } else if (courseProgress?.currentVideoTime && courseProgress.currentVideoTime > 0) {
+      savedTime = courseProgress.currentVideoTime;
+    } else return;
+
+    const currentPlayerTime = player.getCurrentTime();
+    if (Math.abs(currentPlayerTime - savedTime) > 3 && currentPlayerTime < 3) {
+      setTimeout(() => {
+        try {
+          player.seekTo(savedTime, true);
+          setCurrentTime(savedTime);
+        } catch (err) { console.error('Error seeking to saved position:', err); }
+      }, 500);
+    }
+  }, [courseProgress, player, playerLoaded, actualVideoId, externalVideoId]);
+
+  // Player ready event
+  const onPlayerReady = event => {
     setPlayerLoaded(true);
     setVideoLoading(false);
     setDuration(event.target.getDuration());
     event.target.playVideo();
+    // Delayed seeking after ready event (playlist/restore logic)
+    setTimeout(() => {
+      const currentVideoId = externalVideoId || actualVideoId;
+      const videoProgress = courseProgress?.videoProgress || {};
+      const videoSpecificProgress = currentVideoId && videoProgress ?
+        videoProgress[currentVideoId] : null;
+
+      let savedTime = 0;
+      if (videoSpecificProgress && videoSpecificProgress.currentTime > 0) savedTime = videoSpecificProgress.currentTime;
+      else if (courseProgress?.currentVideoTime && courseProgress.currentVideoTime > 0) savedTime = courseProgress.currentVideoTime;
+
+      if (savedTime > 0) {
+        setMaxWatchedTime(prevMax => Math.max(prevMax, savedTime));
+        try { event.target.seekTo(savedTime, true); setCurrentTime(savedTime); } catch (err) {}
+      }
+      event.target.playVideo();
+    }, 500);
   };
 
-  const onPlayerStateChange = (event) => {
+  // Player state change event (retains advanced interval/cleanup)
+  const onPlayerStateChange = event => {
     const playerState = event.data;
-    setVideoLoading(playerState === 3); // Buffering
+    setVideoLoading(playerState === 3);
 
     if (playerState === 1) { // Playing
       setIsPlaying(true);
+      if (progressInterval.current) clearInterval(progressInterval.current);
       progressInterval.current = setInterval(() => {
         if (player && typeof player.getCurrentTime === 'function') {
           const newCurrentTime = player.getCurrentTime();
@@ -147,13 +201,14 @@ const AuthenticatedPlayer = ({ videoId, courseId, externalVideoId: propExternalV
           }
         }
       }, 1000);
-    } else { // Paused, Ended, etc.
+    } else { // Paused, Ended...
       setIsPlaying(false);
       clearInterval(progressInterval.current);
+      progressInterval.current = null;
     }
   };
 
-  const formatTime = (seconds) => {
+  const formatTime = seconds => {
     const minutes = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
@@ -163,6 +218,7 @@ const AuthenticatedPlayer = ({ videoId, courseId, externalVideoId: propExternalV
     return (
       <div className="aspect-video flex items-center justify-center bg-black text-white p-4">
         <p className="text-red-500 text-center">{error}</p>
+        <p className="text-gray-400 text-sm">There was a problem loading the video. Please try again later or check the URL.</p>
       </div>
     );
   }
@@ -170,13 +226,11 @@ const AuthenticatedPlayer = ({ videoId, courseId, externalVideoId: propExternalV
   return (
     <div className="w-full h-full relative">
       <div id={playerContainerId} className="w-full h-full"></div>
-      
       {videoLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/70 z-10">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
         </div>
       )}
-      
       <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/70 to-transparent pointer-events-none">
         <div className="flex justify-between items-center mb-2 text-white">
           <div className="text-xs font-mono">
@@ -193,34 +247,28 @@ const AuthenticatedPlayer = ({ videoId, courseId, externalVideoId: propExternalV
   );
 };
 
-// ===================================================================================
-//  This is the main component. Its job is to act as the authentication gate.
-// ===================================================================================
-const YouTubePlayer = ({ videoId, thumbnailUrl, courseId, externalVideoId }) => {
+// Main authentication gate wrapper
+const YouTubePlayer = ({ videoUrl, videoId, thumbnailUrl, courseId, externalVideoId }) => {
   const { isLoggedIn } = useAuth();
   const [showModal, setShowModal] = useState(false);
   const [playVideo, setPlayVideo] = useState(false);
 
   const handlePlayClick = () => {
-    if (isLoggedIn) {
-      setPlayVideo(true);
-    } else {
-      setShowModal(true);
-    }
+    if (isLoggedIn) setPlayVideo(true);
+    else setShowModal(true);
   };
-  
-  useEffect(() => {
-    setPlayVideo(false);
-  }, [videoId]);
+
+  useEffect(() => { setPlayVideo(false); }, [videoId]);
 
   return (
     <>
       <div className="aspect-video w-full relative bg-black rounded-lg overflow-hidden">
         {isLoggedIn && playVideo ? (
           <AuthenticatedPlayer 
-            videoId={videoId} 
+            videoUrl={videoUrl}
+            videoId={videoId}
             courseId={courseId}
-            externalVideoId={externalVideoId} 
+            externalVideoId={externalVideoId}
           />
         ) : (
           <div 
@@ -231,7 +279,7 @@ const YouTubePlayer = ({ videoId, thumbnailUrl, courseId, externalVideoId }) => 
               src={thumbnailUrl || `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`} 
               alt="Video Thumbnail" 
               className="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105" 
-              onError={(e) => { e.target.onerror = null; e.target.src=`https://i.ytimg.com/vi/${videoId}/sddefault.jpg`}}
+              onError={e => { e.target.onerror = null; e.target.src=`https://i.ytimg.com/vi/${videoId}/sddefault.jpg`}}
             />
             <div className="absolute inset-0 bg-black/40 flex justify-center items-center transition-colors duration-300 ease-in-out group-hover:bg-black/60">
               <div className="text-6xl text-white drop-shadow-lg scale-100 transition-transform duration-200 ease-in-out group-hover:scale-110">
@@ -239,9 +287,9 @@ const YouTubePlayer = ({ videoId, thumbnailUrl, courseId, externalVideoId }) => 
               </div>
             </div>
             {!isLoggedIn && (
-                 <p className="absolute bottom-5 text-white font-bold bg-black/70 py-1.5 px-4 rounded-full text-sm backdrop-blur-sm border border-white/20">
-                    Log In to Watch
-                 </p>
+              <p className="absolute bottom-5 text-white font-bold bg-black/70 py-1.5 px-4 rounded-full text-sm backdrop-blur-sm border border-white/20">
+                Log In to Watch
+              </p>
             )}
           </div>
         )}
