@@ -1,31 +1,27 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useAuth } from '../store/auth';
+// Note: Assuming 'useAuth' and 'AuthModal' are correctly imported from your project structure.
+import { useAuth } from '../store/auth'; 
 import AuthModal from './AuthModal/AuthModal';
-import './YouTubePlayer.css';
 
-// This internal component now contains ALL of your original, feature-rich player logic.
-// Nothing has been removed.
+
+// This internal component contains all the feature-rich player logic.
 const AuthenticatedPlayer = ({ videoId, courseId, externalVideoId: propExternalVideoId }) => {
   const { API, userdata } = useAuth();
-  const token = localStorage.getItem('token');
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
   const [player, setPlayer] = useState(null);
   
-  // All of your original states are preserved
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [progress, setProgress] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [courseProgress, setCourseProgress] = useState(null);
   const [error, setError] = useState(null);
   const [playerLoaded, setPlayerLoaded] = useState(false);
   const [videoLoading, setVideoLoading] = useState(true);
   const [maxWatchedTime, setMaxWatchedTime] = useState(0);
-  const [videoProgressMap, setVideoProgressMap] = useState({});
   
   const progressInterval = useRef(null);
-  const playerContainerId = `Youtubeer-container-${videoId}`; // Unique ID for the player container
+  const playerContainerId = `Youtubeer-container-${videoId}-${Math.random()}`; // Unique ID
 
-  // Your original, detailed useEffect for initializing the YouTube IFrame Player is fully restored.
   useEffect(() => {
     if (!videoId) {
       setError('Invalid YouTube Video ID');
@@ -36,25 +32,21 @@ const AuthenticatedPlayer = ({ videoId, courseId, externalVideoId: propExternalV
     setError(null);
     setVideoLoading(true);
 
-    // This function initializes a new player or loads a new video into an existing one.
     const initializePlayer = () => {
-      // If a player instance already exists, just load the new video.
       if (player && typeof player.loadVideoById === 'function') {
         try {
           player.loadVideoById({ videoId: videoId });
           return;
         } catch (e) {
-          console.error("Error loading video by ID, will re-initialize.", e);
+          console.error("Error loading video, will re-initialize.", e);
         }
       }
       
-      // If no player, create a new one.
       const playerContainer = document.getElementById(playerContainerId);
       if (playerContainer) {
-        // Clean container for re-initialization
         playerContainer.innerHTML = ''; 
       } else {
-        setError("Player container element not found in the DOM.");
+        setError("Player container element not found.");
         return;
       }
 
@@ -91,15 +83,13 @@ const AuthenticatedPlayer = ({ videoId, courseId, externalVideoId: propExternalV
     }
 
     return () => {
-      if (progressInterval.current) clearInterval(progressInterval.current);
-      // We destroy the player on cleanup to avoid memory leaks when the component unmounts.
+      clearInterval(progressInterval.current);
       if (player && typeof player.destroy === 'function') {
         player.destroy();
       }
     };
-  }, [videoId]); // This hook correctly re-runs when the videoId changes.
+  }, [videoId, playerContainerId]);
 
-  // Your original function to fetch course progress is preserved
   const fetchCourseProgress = useCallback(async () => {
     if (!token || !userdata?._id || !courseId) return;
     
@@ -112,12 +102,8 @@ const AuthenticatedPlayer = ({ videoId, courseId, externalVideoId: propExternalV
       });
       if (response.ok) {
         const data = await response.json();
-        setCourseProgress(data.progress);
-        if (data.progress?.videoProgress) {
-          setVideoProgressMap(data.progress.videoProgress);
-        }
         const videoSpecificProgress = data.progress?.videoProgress?.[currentVideoId];
-        const savedTime = videoSpecificProgress?.currentTime || data.progress?.currentVideoTime || 0;
+        const savedTime = videoSpecificProgress?.currentTime || 0;
         if (savedTime > 0) {
             setMaxWatchedTime(savedTime);
             if(player && typeof player.seekTo === 'function') {
@@ -130,9 +116,8 @@ const AuthenticatedPlayer = ({ videoId, courseId, externalVideoId: propExternalV
     }
   }, [API, courseId, player, token, userdata, videoId, propExternalVideoId]);
 
-  // All your other original useEffects and handlers are preserved
   useEffect(() => {
-    if (playerLoaded) { // Only fetch progress once the player is ready to be controlled
+    if (playerLoaded) {
       fetchCourseProgress();
     }
   }, [playerLoaded, fetchCourseProgress]);
@@ -146,11 +131,10 @@ const AuthenticatedPlayer = ({ videoId, courseId, externalVideoId: propExternalV
 
   const onPlayerStateChange = (event) => {
     const playerState = event.data;
-    setVideoLoading(playerState === 3); // 3 = Buffering
+    setVideoLoading(playerState === 3); // Buffering
 
-    if (playerState === 1) { // 1 = Playing
+    if (playerState === 1) { // Playing
       setIsPlaying(true);
-      if (progressInterval.current) clearInterval(progressInterval.current);
       progressInterval.current = setInterval(() => {
         if (player && typeof player.getCurrentTime === 'function') {
           const newCurrentTime = player.getCurrentTime();
@@ -165,9 +149,7 @@ const AuthenticatedPlayer = ({ videoId, courseId, externalVideoId: propExternalV
       }, 1000);
     } else { // Paused, Ended, etc.
       setIsPlaying(false);
-      if (progressInterval.current) {
-        clearInterval(progressInterval.current);
-      }
+      clearInterval(progressInterval.current);
     }
   };
 
@@ -185,15 +167,13 @@ const AuthenticatedPlayer = ({ videoId, courseId, externalVideoId: propExternalV
     );
   }
 
-  // Your original JSX for the authenticated player is preserved
   return (
     <div className="w-full h-full relative">
-      {/* **FIXED**: The ID is now correct and consistent */}
       <div id={playerContainerId} className="w-full h-full"></div>
       
       {videoLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/70 z-10">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
         </div>
       )}
       
@@ -206,7 +186,7 @@ const AuthenticatedPlayer = ({ videoId, courseId, externalVideoId: propExternalV
           <span className="text-sm font-medium">{progress}% completed</span>
         </div>
         <div className="w-full bg-white/20 rounded-full h-2">
-          <div className="bg-primary h-2 rounded-full" style={{ width: `${progress}%` }}></div>
+          <div className="bg-blue-500 h-2 rounded-full" style={{ width: `${progress}%` }}></div>
         </div>
       </div>
     </div>
@@ -229,7 +209,6 @@ const YouTubePlayer = ({ videoId, thumbnailUrl, courseId, externalVideoId }) => 
     }
   };
   
-  // When the videoId changes, reset the play state.
   useEffect(() => {
     setPlayVideo(false);
   }, [videoId]);
@@ -244,17 +223,26 @@ const YouTubePlayer = ({ videoId, thumbnailUrl, courseId, externalVideoId }) => 
             externalVideoId={externalVideoId} 
           />
         ) : (
-          <div className="video-thumbnail-wrapper" onClick={handlePlayClick}>
+          <div 
+            className="group w-full h-full cursor-pointer relative flex justify-center items-center overflow-hidden" 
+            onClick={handlePlayClick}
+          >
             <img 
               src={thumbnailUrl || `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`} 
               alt="Video Thumbnail" 
-              className="video-thumbnail-img" 
+              className="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105" 
               onError={(e) => { e.target.onerror = null; e.target.src=`https://i.ytimg.com/vi/${videoId}/sddefault.jpg`}}
             />
-            <div className="play-button-overlay">
-              <div className="play-button-icon">▶</div>
+            <div className="absolute inset-0 bg-black/40 flex justify-center items-center transition-colors duration-300 ease-in-out group-hover:bg-black/60">
+              <div className="text-6xl text-white drop-shadow-lg scale-100 transition-transform duration-200 ease-in-out group-hover:scale-110">
+                ▶
+              </div>
             </div>
-            <p className="play-button-text">Log In to Watch</p>
+            {!isLoggedIn && (
+                 <p className="absolute bottom-5 text-white font-bold bg-black/70 py-1.5 px-4 rounded-full text-sm backdrop-blur-sm border border-white/20">
+                    Log In to Watch
+                 </p>
+            )}
           </div>
         )}
       </div>
@@ -264,4 +252,3 @@ const YouTubePlayer = ({ videoId, thumbnailUrl, courseId, externalVideoId }) => 
 };
 
 export default YouTubePlayer;
-
