@@ -35,7 +35,7 @@ const LoopsWithArrays = React.lazy(() => import('./JsTopics/JsObjects/LoopsWithA
 const MapFilterAndReduce = React.lazy(() => import('./JsTopics/JsObjects/MapFilterReduce'));
 const DateInJs = React.lazy(() => import('./JsTopics/JsObjects/DateInJS'));
 const MathInJs = React.lazy(() => import('./JsTopics/JsObjects/MathInJS'));
-const NumberinJs = React.lazy(() => import('./JsTopics/JsObjects/NumberInJS'));
+const NumberInJs = React.lazy(() => import('./JsTopics/JsObjects/NumberInJS'));
 const BooleanInJs = React.lazy(() => import('./JsTopics/JsObjects/BooleanInJS'));
 
 // JavaScript DOM and BOM
@@ -50,6 +50,16 @@ const JsGetElementsByName = React.lazy(() => import('./JsTopics/Dom_Bom/JsGetEle
 const JsGetElementsByTagName = React.lazy(() => import('./JsTopics/Dom_Bom/JsGetElementsByTagName'));
 const JsInnerHTML = React.lazy(() => import('./JsTopics/Dom_Bom/JsInnerHTML'));
 const JsOuterHTML = React.lazy(() => import('./JsTopics/Dom_Bom/JsOuterHTML'));
+
+// JavaScript DOM and BOM
+const JsClass = React.lazy(() => import('./JsTopics/Oops/JsClass'));
+const JsObjects = React.lazy(() => import('./JsTopics/Oops/JsObjects'));
+const JsStaticMethod = React.lazy(() => import('./JsTopics/Oops/JsStaticMethod'));
+const JsConstructor = React.lazy(() => import('./JsTopics/Oops/JsConstructor'));
+const JsEncapsulation = React.lazy(() => import('./JsTopics/Oops/JsEncapsulation'));
+const JsInheritance = React.lazy(() => import('./JsTopics/Oops/JsInheritance'));
+const JsPolymorphism = React.lazy(() => import('./JsTopics/Oops/JsPolymorphism'));
+const JsAbstraction = React.lazy(() => import('./JsTopics/Oops/JsAbstraction'));
 
 
 // Lazy load the note components --------------------------------------
@@ -136,7 +146,7 @@ const JavaScriptFundamentals = () => {
                 <Route path="map-filter-reduce" element={<MapFilterAndReduce />} />
                 <Route path="date" element={<DateInJs />} />
                 <Route path="math" element={<MathInJs />} />
-                <Route path="number" element={<NumberinJs />} />
+                <Route path="number" element={<NumberInJs />} />
                 <Route path="boolean" element={<BooleanInJs />} />
 
                 {/* DOM and BOM */}
@@ -152,11 +162,16 @@ const JavaScriptFundamentals = () => {
                 <Route path="innerHTML" element={<JsInnerHTML />} />
                 <Route path="outerHTML" element={<JsOuterHTML />} />
 
-
-
-
-
                 {/* OOPS */}
+                <Route path="class" element={<JsClass />} />
+                <Route path="objects" element={<JsObjects />} />
+                <Route path="static-method" element={<JsStaticMethod />} />
+                <Route path="constructor" element={<JsConstructor />} />
+                <Route path="encapsulation" element={<JsEncapsulation />} />
+                <Route path="inheritance" element={<JsInheritance />} />
+                <Route path="polymorphism" element={<JsPolymorphism />} />
+                <Route path="abstraction" element={<JsAbstraction />} />
+
 
               </Routes>
             </React.Suspense>
