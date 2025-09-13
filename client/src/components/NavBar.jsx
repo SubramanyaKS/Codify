@@ -72,7 +72,7 @@ function NavBar() {
           </div>
 
           {/* Direct Navigation Links */}
-          <div className="hidden lg:flex items-center space-x-6">
+          <div className="hidden lg:flex items-center space-x-6 ml-16">
             <NavLink
               to="/courses"
               className={({ isActive }) => `
