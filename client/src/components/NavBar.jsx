@@ -5,6 +5,8 @@ import { useTheme } from "../context/ThemeContext";
 import { FaGraduationCap, FaUser, FaBookOpen, FaRoad, FaStickyNote } from "react-icons/fa";
 import { RiMenu3Fill } from "react-icons/ri";
 import MobileMenu from "./MobileMenu";
+import ThemeSwitcher from './ThemeSwitcher';
+import ThemeColorSelector from './ThemeColorSelector';  
 
 function NavBar() {
   const { isLoggedIn, userdata } = useAuth();
@@ -113,6 +115,14 @@ function NavBar() {
               <span>Notes</span>
             </NavLink>
           </div>
+
+       {/* Theme Controls */}
+                 <div className="mt-0 pt-1">
+                <div className="flex items-center gap-6">
+                  <ThemeSwitcher />
+                  <ThemeColorSelector />
+                </div>
+              </div>   
 
 
           {/* Right Side - Profile & Controls */}

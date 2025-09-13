@@ -32,7 +32,7 @@ const ThemeColorSelector = () => {
       {isOpen && (
         <div 
           className={`
-            absolute left-12 -bottom-14 mt-2 p-3 rounded-lg shadow-lg z-50 grid grid-cols-3 gap-2 w-48
+            absolute mt-2 p-3 rounded-lg shadow-lg z-50 grid grid-cols-3 gap-2 w-48
             ${isDark ? 'bg-dark-bg-secondary border border-dark-border' : 'bg-white border border-light-border'}
             `}
         >
