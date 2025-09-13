@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, useLocation, Outlet } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import JavaScriptNotesSidebar from './components/JavaScriptNotesSideBar';
 import JsHeroPage from './components/JsHeroPage';
 import Loader from '../../../components/Loader';
 import Breadcrumb from '../../../components/Breadcrumb';
 import useMobile from '../../../hooks/useMobile';
+import JsPageTitleManager from './components/JsPageTitleManager';
 
 // Lazy load the note components --------------------------------------
 // Introduction
@@ -112,6 +113,9 @@ const JavaScriptFundamentals = () => {
           {/* Breadcrumb */}
           <Breadcrumb isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} className={"p-4"} />
 
+          {/* Page Title Manager */}
+          <JsPageTitleManager />
+
           {/* ROUTES OF THE SUB NOTES */}
           <div className="p-4 md:p-8">
             <React.Suspense fallback={<Loader />}>
@@ -119,8 +123,8 @@ const JavaScriptFundamentals = () => {
                 <Route index element={<JsHeroPage />} />
 
                 {/* Introduction */}
-                <Route path="js-introduction" element={<JsIntroduction />} />
-                <Route path="js-execution" element={<JsExecution />} />
+                <Route path="introduction" element={<JsIntroduction />} />
+                <Route path="execution" element={<JsExecution />} />
                 <Route path="node.js-installation" element={<NodeJsInstallation />} />
 
                 {/* Javascript variables */}
