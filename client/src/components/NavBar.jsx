@@ -30,7 +30,6 @@ function NavBar() {
       setScrolled(window.scrollY > 10);
     };
 
-    // Close mobile menu when window is resized to desktop size
     const handleResize = () => {
       if (window.innerWidth > 1080) {
         setIsMenuOpen(false);
@@ -71,8 +70,8 @@ function NavBar() {
             </NavLink>
           </div>
 
-          {/* Direct Navigation Links */}
-          <div className="hidden lg:flex items-center space-x-6 ml-16">
+          {/* Center Navigation Links */}
+          <div className="hidden lg:flex flex-1 justify-center items-center space-x-6">
             <NavLink
               to="/courses"
               className={({ isActive }) => `
