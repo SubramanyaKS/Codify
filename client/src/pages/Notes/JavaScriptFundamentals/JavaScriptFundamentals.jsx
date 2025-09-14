@@ -23,6 +23,34 @@ const OperatorsAndExpressions = React.lazy(() => import('./JsTopics/JsVariables/
 const IfElseConditionals = React.lazy(() => import('./JsTopics/JsBasics/IfElseConditionals'));
 const IfElseLadder = React.lazy(() => import('./JsTopics/JsBasics/IfElseLadder'));
 const SwitchCase = React.lazy(() => import('./JsTopics/JsBasics/SwitchCase'));
+const TernaryOperator = React.lazy(() => import('./JsTopics/JsBasics/TernaryOperator'));
+const ForLoops = React.lazy(() => import('./JsTopics/JsBasics/ForLoops'));
+const WhileLoops = React.lazy(() => import('./JsTopics/JsBasics/WhileLoops'));
+const Functions = React.lazy(() => import('./JsTopics/JsBasics/Functions'));
+
+// JavaScript Objects
+const Strings = React.lazy(() => import('./JsTopics/JsObjects/StringsInJS'));
+const ArraysAndMethods = React.lazy(() => import('./JsTopics/JsObjects/ArraysAndMethods'));
+const LoopsWithArrays = React.lazy(() => import('./JsTopics/JsObjects/LoopsWithArrays'));
+const MapFilterAndReduce = React.lazy(() => import('./JsTopics/JsObjects/MapFilterReduce'));
+const DateInJs = React.lazy(() => import('./JsTopics/JsObjects/DateInJS'));
+const MathInJs = React.lazy(() => import('./JsTopics/JsObjects/MathInJS'));
+const NumberinJs = React.lazy(() => import('./JsTopics/JsObjects/NumberInJS'));
+const BooleanInJs = React.lazy(() => import('./JsTopics/JsObjects/BooleanInJS'));
+
+// JavaScript DOM and BOM
+const JsWindowObject = React.lazy(() => import('./JsTopics/Dom_Bom/JsWindowObject'));
+const JsHistoryObject = React.lazy(() => import('./JsTopics/Dom_Bom/JsHistoryObject'));
+const JsNavigatorObject = React.lazy(() => import('./JsTopics/Dom_Bom/JsNavigatorObject'));
+const JsScreenObject = React.lazy(() => import('./JsTopics/Dom_Bom/JsScreenObject'));
+const JsDocumentObject = React.lazy(() => import('./JsTopics/Dom_Bom/JsDocumentObject'));
+const JsGetElementById = React.lazy(() => import('./JsTopics/Dom_Bom/JsGetElementById'));
+const JsGetElementsByClassName = React.lazy(() => import('./JsTopics/Dom_Bom/JsGetElementsByClassName'));
+const JsGetElementsByName = React.lazy(() => import('./JsTopics/Dom_Bom/JsGetElementsByName'));
+const JsGetElementsByTagName = React.lazy(() => import('./JsTopics/Dom_Bom/JsGetElementsByTagName'));
+const JsInnerHTML = React.lazy(() => import('./JsTopics/Dom_Bom/JsInnerHTML'));
+const JsOuterHTML = React.lazy(() => import('./JsTopics/Dom_Bom/JsOuterHTML'));
+
 
 // Lazy load the note components --------------------------------------
 
@@ -76,7 +104,7 @@ const JavaScriptFundamentals = () => {
 
           {/* ROUTES OF THE SUB NOTES */}
           <div className="p-4 md:p-8">
-            <React.Suspense fallback={<Loader asOverlay={false} />}>
+            <React.Suspense fallback={<Loader />}>
               <Routes>
                 <Route index element={<JsHeroPage />} />
 
@@ -96,11 +124,36 @@ const JavaScriptFundamentals = () => {
                 <Route path="if-else-conditionals" element={<IfElseConditionals />} />
                 <Route path="if-else-ladder" element={<IfElseLadder />} />
                 <Route path="switch-case" element={<SwitchCase />} />
+                <Route path="ternary-operator" element={<TernaryOperator />} />
+                <Route path="for-loops" element={<ForLoops />} />
+                <Route path="while-loops" element={<WhileLoops />} />
+                <Route path="functions" element={<Functions />} />
 
                 {/* Javascript objects */}
-
+                <Route path="strings" element={<Strings />} />
+                <Route path="arrays-and-array-methods" element={<ArraysAndMethods />} />
+                <Route path="loops-with-arrays" element={<LoopsWithArrays />} />
+                <Route path="map-filter-reduce" element={<MapFilterAndReduce />} />
+                <Route path="date" element={<DateInJs />} />
+                <Route path="math" element={<MathInJs />} />
+                <Route path="number" element={<NumberinJs />} />
+                <Route path="boolean" element={<BooleanInJs />} />
 
                 {/* DOM and BOM */}
+                <Route path="window-object" element={<JsWindowObject />} />
+                <Route path="history-object" element={<JsHistoryObject />} />
+                <Route path="navigator-object" element={<JsNavigatorObject />} />
+                <Route path="screen-object" element={<JsScreenObject />} />
+                <Route path="document-object" element={<JsDocumentObject />} />
+                <Route path="getElementById" element={<JsGetElementById />} />
+                <Route path="getElementsByClassName" element={<JsGetElementsByClassName />} />
+                <Route path="getElementsByName" element={<JsGetElementsByName />} />
+                <Route path="getElementsByTagName" element={<JsGetElementsByTagName />} />
+                <Route path="innerHTML" element={<JsInnerHTML />} />
+                <Route path="outerHTML" element={<JsOuterHTML />} />
+
+
+
 
 
                 {/* OOPS */}
