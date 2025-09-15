@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router';
-import Notes from "../assets/json/notes.json"
-import { useTheme } from '../context/ThemeContext';
+import { useTheme } from '../../context/ThemeContext';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import Loader from '../components/Loader';
+import Loader from '../../components/Loader';
 const cardVariants = {
     hidden: {
         opacity: 0,
@@ -51,10 +49,10 @@ const headerVariants = {
         }
     }
 };
-function NotesComponent() {
+function FallBackNotes() {
     const { theme } = useTheme();
     const isDark = theme === 'dark';
-    const { subjectname } = useParams();
+    const { topic } = useParams();
     const [subjectData, setSubjectData] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -62,7 +60,7 @@ function NotesComponent() {
         const loadSubjectData = async () => {
             try {
                 setLoading(true);
-                const response = await import(`../assets/json/notesfolder/${subjectname}.json`);
+                const response = await import(`../assets/json/notesfolder/${topic}.json`);
                 setSubjectData(response.default);
             } catch (error) {
                 console.error('Error loading notes:', error);
@@ -73,7 +71,7 @@ function NotesComponent() {
         };
 
         loadSubjectData();
-    }, [subjectname]);
+    }, [topic]);
 
     if (loading) return <Loader />;
     if (!subjectData) return (
@@ -98,7 +96,7 @@ function NotesComponent() {
                 >
                     <div className="inline-block">
                         <h1 className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-righteous tracking-wider mb-4 ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
-                            Notes & Resources for {subjectname}
+                            Notes & Resources for {topic}
                         </h1>
                         <motion.div
                             initial={{ width: 0 }}
@@ -113,7 +111,7 @@ function NotesComponent() {
                         transition={{ duration: 0.6, delay: 0.6 }}
                         className={`mt-6 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}
                     >
-                        Resources not found for {subjectname}.
+                        Resources not found for {topic}.
                     </motion.p>
                 </motion.div>
 
@@ -200,7 +198,7 @@ function NotesComponent() {
                 >
                     <div className="inline-block">
                         <h1 className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-righteous tracking-wider mb-4 ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
-                            Notes & Resources for {subjectname}
+                            Notes & Resources for {topic}
                         </h1>
                         <motion.div
                             initial={{ width: 0 }}
@@ -215,7 +213,7 @@ function NotesComponent() {
                         transition={{ duration: 0.6, delay: 0.6 }}
                         className={`mt-6 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}
                     >
-                        Access curated notes, study materials, and resources for {subjectname} to enhance your learning journey.
+                        Access curated notes, study materials, and resources for {topic} to enhance your learning journey.
                     </motion.p>
                 </motion.div>
                 {/* Notes Content Section */}
@@ -259,4 +257,4 @@ const NotesCard = ({ isDark, item }) => {
         </motion.div>
     );
 }
-export default NotesComponent;
+export default FallBackNotes;

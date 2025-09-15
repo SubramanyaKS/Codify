@@ -1,10 +1,10 @@
 import { motion } from 'framer-motion';
 import React, { useState, useEffect, useRef, forwardRef } from "react";
-import { useTheme } from "../context/ThemeContext";
+import { useTheme } from "../../context/ThemeContext";
 import { Link } from 'react-router-dom';
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Notes from "../assets/json/notes.json";
+import Notes from "../../assets/json/notes.json";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -105,11 +105,10 @@ const NotesPage = () => {
                             value={searchQuery}
                             onChange={handleSearchChange}
                             placeholder="Search notes by name or content..."
-                            className={`w-full pl-12 pr-12 py-4 text-lg rounded-2xl border-2 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary ${
-                                isDark 
-                                    ? 'bg-dark-bg-secondary border-dark-border text-dark-text-primary placeholder-dark-text-secondary focus:border-primary' 
+                            className={`w-full pl-12 pr-12 py-4 text-lg rounded-2xl border-2 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary ${isDark
+                                    ? 'bg-dark-bg-secondary border-dark-border text-dark-text-primary placeholder-dark-text-secondary focus:border-primary'
                                     : 'bg-light-bg-secondary border-light-border text-light-text-primary placeholder-light-text-secondary focus:border-primary'
-                            }`}
+                                }`}
                         />
                         {searchQuery && (
                             <button
@@ -129,7 +128,7 @@ const NotesPage = () => {
                             transition={{ duration: 0.3 }}
                             className={`mt-3 text-sm text-center ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}
                         >
-                            {filteredNotes.length === 1 
+                            {filteredNotes.length === 1
                                 ? `Found 1 note matching "${searchQuery}"`
                                 : `Found ${filteredNotes.length} notes matching "${searchQuery}"`
                             }
@@ -209,7 +208,7 @@ const NotesCard = forwardRef(({ isDark, name, content, link, icon, searchQuery }
             <p className={`mb-4 ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
                 {highlightText(content, searchQuery)}
             </p>
-            <Link 
+            <Link
                 className={`relative z-10 inline-flex items-center justify-center py-3 px-4 sm:px-6 bg-primary hover:bg-primary-dark text-white font-semibold rounded-xl transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 text-sm sm:text-base`}
                 to={link}
             >

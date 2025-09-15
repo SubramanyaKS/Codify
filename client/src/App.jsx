@@ -20,8 +20,8 @@ const Courses = lazy(() => import("./pages/Courses"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const CoursePlayer = lazy(() => import("./pages/CoursePlayer"));
 const Roadmap = lazy(() => import("./pages/Roadmap"));
-const NotesPage = lazy(() => import("./pages/NotesPage"));
-const Notes = lazy(() => import("./pages/NotesComponent.jsx"));
+const NotesPage = lazy(() => import("./pages/Notes/NotesPage"));
+const FallBackNotes = lazy(() => import("./pages/Notes/FallBackNotes.jsx"));
 const ContributorsGuide = lazy(() => import("./pages/ContributorGuide.jsx"))
 const ContributorsPage = lazy(() => import("./components/Contributor.jsx"))
 const Bookmarks = lazy(() => import("./pages/Bookmarks"));
@@ -100,11 +100,11 @@ function App() {
 
                   {/* Notes Routes */}
                   <Route path="/notes" element={<NotesPage />} />
-                  <Route path="/notes/:subjectname" element={<Notes />} />
                   <Route path="/notes/javascript/*" element={<JavaScriptFundamentals />} />
                   <Route path="/notes/python" element={<PythonNotes />} />
                   <Route path="/notes/git" element={<GitNotes />} />
                   <Route path="/notes/react" element={<ReactPattern />} />
+                  <Route path="/notes/:topic" element={<FallBackNotes />} />
 
                   {/* Auth Routes */}
                   <Route path="/signup" element={<Signup />} />
