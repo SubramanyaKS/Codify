@@ -181,13 +181,28 @@ const NotesPage = () => {
 
 
                     {/* Notes Section */}
-                    <div className="relative flex items-center justify-center mb-6">
-                        <div className="h-px flex-1 bg-light-border"></div>
-                        <h2 className="text-2xl sm:text-3xl md:text-4xl font-righteous tracking-wider px-4 sm:px-8 text-light-text-primary"> Notes Topics</h2>
-                        <div className="h-px flex-1 bg-light-border"></div>
+                    <motion.div
+                        initial="hidden"
+                        animate="visible"
+                        variants={contentAnimation}
+                        className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4"
+                    >
+                        <div className="w-full sm:w-auto">
+                            <h2 className="text-2xl sm:text-3xl font-righteous tracking-wider text-center sm:text-left">
+                                Notes Topics
+                            </h2>
+                            <p className={`text-sm mt-1 ${isDark ? 'text-dark-text-secondary' : 'text-gray-500'} text-center sm:text-left`}>
+                                Browse through our collection of curated notes and resources
+                            </p>
+                        </div>
 
-                        <span className='absolute right-4 transform -translate-y-1/2 text-sm font-semibold text-light-text-primary'>Total Notes: {filteredNotes.length}</span>
-                    </div>
+                        <div className={`px-4 py-2 rounded-lg ${isDark ? 'bg-dark-bg-secondary' : 'bg-gray-50'} border ${isDark ? 'border-dark-border' : 'border-gray-200'}`}>
+                            <p className={`text-sm font-medium ${isDark ? 'text-primary' : 'text-primary-dark'} flex items-center`}>
+                                <span className={`mr-2 ${isDark ? 'text-dark-text-secondary' : 'text-gray-500'}`}>Total Notes:</span>
+                                <span className="font-bold">{filteredNotes.length}</span>
+                            </p>
+                        </div>
+                    </motion.div>
 
 
 
@@ -203,11 +218,8 @@ const NotesPage = () => {
                             return (
                                 <motion.div
                                     key={index}
-                                    className={`relative group overflow-hidden rounded-xl p-6 transition-all ${isDark ? 'bg-dark-bg-secondary hover:bg-dark-bg-tertiary border border-dark-border' : 'bg-white hover:bg-gray-50 border border-gray-200'}`}
-                                    initial="hidden"
-                                    animate="visible"
+                                    className={`relative group overflow-hidden rounded-xl p-6 transition-all transform hover:-translate-y-0.5 ${isDark ? 'bg-dark-bg-secondary hover:bg-dark-bg-tertiary border border-dark-border hover:shadow-lg' : 'bg-white hover:bg-gray-50 border border-gray-200 hover:shadow-md'}`}
                                     variants={item}
-                                    whileHover={{ y: -3 }}
                                 >
                                     <div className="flex flex-col h-full">
                                         <div className="flex items-center space-x-4 mb-4">
@@ -218,15 +230,17 @@ const NotesPage = () => {
                                                 {note.name}
                                             </h3>
                                         </div>
-                                        <p className={`text-sm mb-6 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                                        <p className={`text-sm mb-6 ${isDark ? 'text-gray-300' : 'text-gray-600'} line-clamp-3`}>
                                             {note.content}
                                         </p>
                                         <div className="mt-auto">
                                             <Link
                                                 to={note.link}
-                                                className={`inline-flex items-center text-sm font-medium ${isDark ? 'text-primary hover:text-primary-light' : 'text-primary-dark hover:text-primary'} transition-colors`}
+                                                className={`inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium ${isDark
+                                                    ? 'bg-dark-bg-primary/50 text-primary hover:bg-dark-bg-primary/80'
+                                                    : 'bg-gray-100 text-primary-dark hover:bg-gray-200'} transition-all`}
                                             >
-                                                <span className="mr-1">Explore</span>
+                                                <span className="mr-2">View Notes</span>
                                                 <span className="inline-block transition-transform group-hover:translate-x-1">→</span>
                                             </Link>
                                         </div>
