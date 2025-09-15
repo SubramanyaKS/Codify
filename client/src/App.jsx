@@ -65,6 +65,8 @@ const ScrollToTop = ({ children }) => {
 
   return children;
 };
+
+
 function App() {
   const { theme } = useTheme();
   const isDark = theme === 'dark';

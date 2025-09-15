@@ -7,63 +7,61 @@ import Breadcrumb from '../../../components/Breadcrumb';
 import useMobile from '../../../hooks/useMobile';
 import JsPageTitleManager from './components/JsPageTitleManager';
 
-// Lazy load the note components --------------------------------------
+// Import note components
+
 // Introduction
-const JsIntroduction = React.lazy(() => import('./JsTopics/Introduction/JsIntroduction'));
-const JsExecution = React.lazy(() => import('./JsTopics/Introduction/JsExecution'));
-const NodeJsInstallation = React.lazy(() => import('./JsTopics/Introduction/NodeJsInstallation'));
+import JsIntroduction from './JsTopics/Introduction/JsIntroduction';
+import JsExecution from './JsTopics/Introduction/JsExecution';
+import NodeJsInstallation from './JsTopics/Introduction/NodeJsInstallation';
 
 // JavaScript Variables
-const WhatAreVariables = React.lazy(() => import('./JsTopics/JsVariables/WhatAreVariables'));
-const VarLetConst = React.lazy(() => import('./JsTopics/JsVariables/VarLetConst'));
-const PrimitivesAndObjects = React.lazy(() => import('./JsTopics/JsVariables/PrimitivesAndObjects'));
-const VariableNamingRules = React.lazy(() => import('./JsTopics/JsVariables/VariableNamingRules'));
-const OperatorsAndExpressions = React.lazy(() => import('./JsTopics/JsVariables/OperatorsAndExpressions'));
+import WhatAreVariables from './JsTopics/JsVariables/WhatAreVariables';
+import VarLetConst from './JsTopics/JsVariables/VarLetConst';
+import PrimitivesAndObjects from './JsTopics/JsVariables/PrimitivesAndObjects';
+import VariableNamingRules from './JsTopics/JsVariables/VariableNamingRules';
+import OperatorsAndExpressions from './JsTopics/JsVariables/OperatorsAndExpressions';
 
 // JavaScript Basics
-const IfElseConditionals = React.lazy(() => import('./JsTopics/JsBasics/IfElseConditionals'));
-const IfElseLadder = React.lazy(() => import('./JsTopics/JsBasics/IfElseLadder'));
-const SwitchCase = React.lazy(() => import('./JsTopics/JsBasics/SwitchCase'));
-const TernaryOperator = React.lazy(() => import('./JsTopics/JsBasics/TernaryOperator'));
-const ForLoops = React.lazy(() => import('./JsTopics/JsBasics/ForLoops'));
-const WhileLoops = React.lazy(() => import('./JsTopics/JsBasics/WhileLoops'));
-const Functions = React.lazy(() => import('./JsTopics/JsBasics/Functions'));
+import IfElseConditionals from './JsTopics/JsBasics/IfElseConditionals';
+import IfElseLadder from './JsTopics/JsBasics/IfElseLadder';
+import SwitchCase from './JsTopics/JsBasics/SwitchCase';
+import TernaryOperator from './JsTopics/JsBasics/TernaryOperator';
+import ForLoops from './JsTopics/JsBasics/ForLoops';
+import WhileLoops from './JsTopics/JsBasics/WhileLoops';
+import Functions from './JsTopics/JsBasics/Functions';
 
 // JavaScript Objects
-const Strings = React.lazy(() => import('./JsTopics/JsObjects/StringsInJS'));
-const ArraysAndMethods = React.lazy(() => import('./JsTopics/JsObjects/ArraysAndMethods'));
-const LoopsWithArrays = React.lazy(() => import('./JsTopics/JsObjects/LoopsWithArrays'));
-const MapFilterAndReduce = React.lazy(() => import('./JsTopics/JsObjects/MapFilterReduce'));
-const DateInJs = React.lazy(() => import('./JsTopics/JsObjects/DateInJS'));
-const MathInJs = React.lazy(() => import('./JsTopics/JsObjects/MathInJS'));
-const NumberInJs = React.lazy(() => import('./JsTopics/JsObjects/NumberInJS'));
-const BooleanInJs = React.lazy(() => import('./JsTopics/JsObjects/BooleanInJS'));
+import Strings from './JsTopics/JsObjects/StringsInJS';
+import ArraysAndMethods from './JsTopics/JsObjects/ArraysAndMethods';
+import LoopsWithArrays from './JsTopics/JsObjects/LoopsWithArrays';
+import MapFilterAndReduce from './JsTopics/JsObjects/MapFilterReduce';
+import DateInJs from './JsTopics/JsObjects/DateInJS';
+import MathInJs from './JsTopics/JsObjects/MathInJS';
+import NumberInJs from './JsTopics/JsObjects/NumberInJS';
+import BooleanInJs from './JsTopics/JsObjects/BooleanInJS';
 
 // JavaScript DOM and BOM
-const JsWindowObject = React.lazy(() => import('./JsTopics/Dom_Bom/JsWindowObject'));
-const JsHistoryObject = React.lazy(() => import('./JsTopics/Dom_Bom/JsHistoryObject'));
-const JsNavigatorObject = React.lazy(() => import('./JsTopics/Dom_Bom/JsNavigatorObject'));
-const JsScreenObject = React.lazy(() => import('./JsTopics/Dom_Bom/JsScreenObject'));
-const JsDocumentObject = React.lazy(() => import('./JsTopics/Dom_Bom/JsDocumentObject'));
-const JsGetElementById = React.lazy(() => import('./JsTopics/Dom_Bom/JsGetElementById'));
-const JsGetElementsByClassName = React.lazy(() => import('./JsTopics/Dom_Bom/JsGetElementsByClassName'));
-const JsGetElementsByName = React.lazy(() => import('./JsTopics/Dom_Bom/JsGetElementsByName'));
-const JsGetElementsByTagName = React.lazy(() => import('./JsTopics/Dom_Bom/JsGetElementsByTagName'));
-const JsInnerHTML = React.lazy(() => import('./JsTopics/Dom_Bom/JsInnerHTML'));
-const JsOuterHTML = React.lazy(() => import('./JsTopics/Dom_Bom/JsOuterHTML'));
+import JsWindowObject from './JsTopics/Dom_Bom/JsWindowObject';
+import JsHistoryObject from './JsTopics/Dom_Bom/JsHistoryObject';
+import JsNavigatorObject from './JsTopics/Dom_Bom/JsNavigatorObject';
+import JsScreenObject from './JsTopics/Dom_Bom/JsScreenObject';
+import JsDocumentObject from './JsTopics/Dom_Bom/JsDocumentObject';
+import JsGetElementById from './JsTopics/Dom_Bom/JsGetElementById';
+import JsGetElementsByClassName from './JsTopics/Dom_Bom/JsGetElementsByClassName';
+import JsGetElementsByName from './JsTopics/Dom_Bom/JsGetElementsByName';
+import JsGetElementsByTagName from './JsTopics/Dom_Bom/JsGetElementsByTagName';
+import JsInnerHTML from './JsTopics/Dom_Bom/JsInnerHTML';
+import JsOuterHTML from './JsTopics/Dom_Bom/JsOuterHTML';
 
-// JavaScript DOM and BOM
-const JsClass = React.lazy(() => import('./JsTopics/Oops/JsClass'));
-const JsObjects = React.lazy(() => import('./JsTopics/Oops/JsObjects'));
-const JsStaticMethod = React.lazy(() => import('./JsTopics/Oops/JsStaticMethod'));
-const JsConstructor = React.lazy(() => import('./JsTopics/Oops/JsConstructor'));
-const JsEncapsulation = React.lazy(() => import('./JsTopics/Oops/JsEncapsulation'));
-const JsInheritance = React.lazy(() => import('./JsTopics/Oops/JsInheritance'));
-const JsPolymorphism = React.lazy(() => import('./JsTopics/Oops/JsPolymorphism'));
-const JsAbstraction = React.lazy(() => import('./JsTopics/Oops/JsAbstraction'));
-
-
-// Lazy load the note components --------------------------------------
+// JavaScript OOPS
+import JsClass from './JsTopics/Oops/JsClass';
+import JsObjects from './JsTopics/Oops/JsObjects';
+import JsStaticMethod from './JsTopics/Oops/JsStaticMethod';
+import JsConstructor from './JsTopics/Oops/JsConstructor';
+import JsEncapsulation from './JsTopics/Oops/JsEncapsulation';
+import JsInheritance from './JsTopics/Oops/JsInheritance';
+import JsPolymorphism from './JsTopics/Oops/JsPolymorphism';
+import JsAbstraction from './JsTopics/Oops/JsAbstraction';
 
 
 const JavaScriptFundamentals = () => {
