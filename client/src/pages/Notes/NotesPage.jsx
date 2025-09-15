@@ -1,7 +1,8 @@
-import { animate, delay, motion } from 'framer-motion';
+import { animate, delay, motion, AnimatePresence } from 'framer-motion';
 import React, { useState } from "react";
 import { useTheme } from "../../context/ThemeContext";
 import { Link } from 'react-router-dom';
+import { Search, X, Plus, FileText, Link2 } from 'lucide-react';
 import NotesData from "./NotesData";
 
 const NotesPage = () => {
@@ -221,6 +222,17 @@ const NotesPage = () => {
                                     className={`relative group overflow-hidden rounded-xl p-6 transition-all transform hover:-translate-y-0.5 ${isDark ? 'bg-dark-bg-secondary hover:bg-dark-bg-tertiary border border-dark-border hover:shadow-lg' : 'bg-white hover:bg-gray-50 border border-gray-200 hover:shadow-md'}`}
                                     variants={item}
                                 >
+                                    <div className="absolute top-3 right-3">
+                                        {note.customDocs ? (
+                                            <div className={`p-1.5 rounded-lg ${isDark ? 'bg-green-900/30 text-green-400' : 'bg-green-100 text-green-600'}`}>
+                                                <FileText className="w-4 h-4" />
+                                            </div>
+                                        ) : (
+                                            <div className={`p-1.5 rounded-lg ${isDark ? 'bg-blue-900/30 text-blue-400' : 'bg-blue-100 text-blue-600'}`}>
+                                                <Link2 className="w-4 h-4" />
+                                            </div>
+                                        )}
+                                    </div>
                                     <div className="flex flex-col h-full">
                                         <div className="flex items-center space-x-4 mb-4">
                                             <div className={`p-2 rounded-lg ${isDark ? 'bg-dark-bg-primary/50' : 'bg-gray-100'}`}>
@@ -234,15 +246,17 @@ const NotesPage = () => {
                                             {note.content}
                                         </p>
                                         <div className="mt-auto">
-                                            <Link
-                                                to={note.link}
-                                                className={`inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium ${isDark
-                                                    ? 'bg-dark-bg-primary/50 text-primary hover:bg-dark-bg-primary/80'
-                                                    : 'bg-gray-100 text-primary-dark hover:bg-gray-200'} transition-all`}
-                                            >
-                                                <span className="mr-2">View Notes</span>
-                                                <span className="inline-block transition-transform group-hover:translate-x-1">→</span>
-                                            </Link>
+                                            <div className="flex items-center justify-between">
+                                                <Link
+                                                    to={note.link}
+                                                    className={`inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium ${isDark
+                                                        ? 'bg-dark-bg-primary/50 text-primary hover:bg-dark-bg-primary/80'
+                                                        : 'bg-gray-100 text-primary-dark hover:bg-gray-200'} transition-all`}
+                                                >
+                                                    <span className="mr-2">{note.customDocs ? 'View Notes' : 'View Resources'}</span>
+                                                    <span className="inline-block transition-transform group-hover:translate-x-1">→</span>
+                                                </Link>
+                                            </div>
                                         </div>
                                     </div>
                                 </motion.div>
