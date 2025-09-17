@@ -155,6 +155,17 @@ const closeColorSelector = () => setIsColorSelectorOpen(false);
   onClose={closeColorSelector}/>
           </div>
 
+          {/* Mobile Theme Controls */}
+<div className="flex lg:hidden items-center gap-2 ml-auto mr-2">
+  <ThemeSwitcher />
+  <ThemeColorSelector 
+    isOpen={isColorSelectorOpen}
+    onToggle={toggleColorSelector}
+    onClose={closeColorSelector}
+  />
+</div>
+
+
           {/* Right Side - Profile & Controls */}
           <div className="flex items-center space-x-3">
             {/* Mobile hamburger */}
