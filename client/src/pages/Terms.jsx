@@ -145,10 +145,10 @@ function Terms() {
           {/* 1. Acceptance of Terms */}
           <motion.section
             variants={itemVariants}
-            className={`p-6 rounded-2xl ${
+            className={`p-6 rounded-2xl shadow-lg ${
               isDark
-                ? "bg-dark-bg-secondary border border-dark-border"
-                : "bg-light-bg-secondary border border-light-border"
+                ? "bg-dark-card border border-dark-border"
+                : "bg-light-card border border-light-border"
             }`}
           >
             <button
@@ -196,10 +196,10 @@ function Terms() {
           {/* 2. Account Registration */}
           <motion.section
             variants={itemVariants}
-            className={`p-6 rounded-2xl ${
+            className={`p-6 rounded-2xl shadow-lg ${
               isDark
-                ? "bg-dark-bg-secondary border border-dark-border"
-                : "bg-light-bg-secondary border border-light-border"
+                ? "bg-dark-card border border-dark-border"
+                : "bg-light-card border border-light-border"
             }`}
           >
             <button
@@ -254,10 +254,10 @@ function Terms() {
           {/* 3. User Responsibilities */}
           <motion.section
             variants={itemVariants}
-            className={`p-6 rounded-2xl ${
+            className={`p-6 rounded-2xl shadow-lg ${
               isDark
-                ? "bg-dark-bg-secondary border border-dark-border"
-                : "bg-light-bg-secondary border border-light-border"
+                ? "bg-dark-card border border-dark-border"
+                : "bg-light-card border border-light-border"
             }`}
           >
             <button
@@ -331,10 +331,10 @@ function Terms() {
           {/* 4. Intellectual Property Rights */}
           <motion.section
             variants={itemVariants}
-            className={`p-6 rounded-2xl ${
+            className={`p-6 rounded-2xl shadow-lg ${
               isDark
-                ? "bg-dark-bg-secondary border border-dark-border"
-                : "bg-light-bg-secondary border border-light-border"
+                ? "bg-dark-card border border-dark-border"
+                : "bg-light-card border border-light-border"
             }`}
           >
             <button
@@ -393,10 +393,10 @@ function Terms() {
           {/* 5. Service Availability & Termination */}
           <motion.section
             variants={itemVariants}
-            className={`p-6 rounded-2xl ${
+            className={`p-6 rounded-2xl shadow-lg ${
               isDark
-                ? "bg-dark-bg-secondary border border-dark-border"
-                : "bg-light-bg-secondary border border-light-border"
+                ? "bg-dark-card border border-dark-border"
+                : "bg-light-card border border-light-border"
             }`}
           >
             <button
@@ -451,10 +451,10 @@ function Terms() {
           {/* 6. Limitation of Liability */}
           <motion.section
             variants={itemVariants}
-            className={`p-6 rounded-2xl ${
+            className={`p-6 rounded-2xl shadow-lg ${
               isDark
-                ? "bg-dark-bg-secondary border border-dark-border"
-                : "bg-light-bg-secondary border border-light-border"
+                ? "bg-dark-card border border-dark-border"
+                : "bg-light-card border border-light-border"
             }`}
           >
             <button
@@ -522,10 +522,10 @@ function Terms() {
           {/* 7. Privacy & Data Protection */}
           <motion.section
             variants={itemVariants}
-            className={`p-6 rounded-2xl ${
+            className={`p-6 rounded-2xl shadow-lg ${
               isDark
-                ? "bg-dark-bg-secondary border border-dark-border"
-                : "bg-light-bg-secondary border border-light-border"
+                ? "bg-dark-card border border-dark-border"
+                : "bg-light-card border border-light-border"
             }`}
           >
             <button
@@ -585,10 +585,10 @@ function Terms() {
           {/* 8. Updates & Modifications */}
           <motion.section
             variants={itemVariants}
-            className={`p-6 rounded-2xl ${
+            className={`p-6 rounded-2xl shadow-lg ${
               isDark
-                ? "bg-dark-bg-secondary border border-dark-border"
-                : "bg-light-bg-secondary border border-light-border"
+                ? "bg-dark-card border border-dark-border"
+                : "bg-light-card border border-light-border"
             }`}
           >
             <button
@@ -643,10 +643,10 @@ function Terms() {
           {/* Contact Information */}
           <motion.section
             variants={itemVariants}
-            className={`p-6 rounded-2xl ${
+            className={`p-6 rounded-2xl shadow-lg ${
               isDark
-                ? "bg-dark-bg-secondary border border-dark-border"
-                : "bg-light-bg-secondary border border-light-border"
+                ? "bg-dark-card border border-dark-border"
+                : "bg-light-card border border-light-border"
             }`}
           >
             <h2 className="text-2xl font-semibold text-primary mb-4">
@@ -677,10 +677,10 @@ function Terms() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 1.2 }}
-          className={`mt-12 p-6 rounded-2xl text-center ${
+          className={`mt-12 p-6 rounded-2xl text-center shadow-lg ${
             isDark
-              ? "bg-dark-bg-secondary border border-dark-border"
-              : "bg-light-bg-secondary border border-light-border"
+              ? "bg-dark-card border border-dark-border"
+              : "bg-light-card border border-light-border"
           }`}
         >
           <p className="text-lg font-semibold">
