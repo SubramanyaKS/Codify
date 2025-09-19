@@ -1,6 +1,7 @@
 import User from "../models/userSchema.js";
 import Feedback from "../models/feedbackSchema.js";
 import Course from "../models/courseSchema.js";
+import Visitor from "../models/visitorCounterSchema.js"; 
 import bcryptjs from "bcryptjs";
 import { generateOTP } from "../utils/generateOTP.js";
 import { sendEmail } from "../utils/sendEmail.js";
@@ -11,7 +12,16 @@ import passport from "passport";
 
 const homePage = async (req, res) => {
   try {
-    res.status(202).json({ message: "home page" });
+    let counter = await Visitor.findOne({ name: "visitors"});
+    if (!counter) {
+      counter = await Visitor.create({ name: "visitors", count: 1});
+    } else {
+      counter.count += 1;
+      await counter.save();
+    }
+    console.log("Visitor count:", counter.count); //check in terminal
+    res.status(200).json({ visitorCount: counter.count });
+    //res.status(202).json({ message: "home page" });
   } catch (error) {
     res.status(404).json({ error });
   }
