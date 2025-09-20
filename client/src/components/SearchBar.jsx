@@ -6,7 +6,9 @@ const SearchBar = ({ searchTerm, setSearchTerm }) => {
   const isDark = theme === 'dark';
 
   return (
-    <div className="mb-5 w-full max-w-[600px] mx-auto relative z-10">
+    <div className="w-full max-w-[600px] mx-auto relative z-10">
+
+
       <input
         type="text"
         placeholder="Search for courses..."

@@ -17,6 +17,33 @@ dist
 dist-ssr
 *.local
 
+# Python
+python/venv/
+python/__pycache__/
+python/*.pyc
+python/*.pyo
+python/*.pyd
+python/.Python
+python/env/
+python/pip-log.txt
+python/pip-delete-this-directory.txt
+python/.tox/
+python/.coverage
+python/.coverage.*
+python/.cache
+python/nosetests.xml
+python/coverage.xml
+python/*.cover
+python/*.py,cover
+python/.hypothesis/
+python/.pytest_cache/
+python/*.egg-info/
+python/dist/
+python/build/
+python/*.pdf
+python/*.json
+python/.env
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -27,3 +54,4 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+*.csv

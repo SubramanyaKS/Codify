@@ -1,4 +1,4 @@
-import React, {
+import {
   useState,
   useEffect,
   lazy,
@@ -6,6 +6,7 @@ import React, {
   useMemo,
   useCallback,
 } from "react";
+import { motion } from "framer-motion";
 import { useAuth } from "../store/auth";
 import { useTheme } from "../context/ThemeContext";
 import { useLoading } from "../components/loadingContext";
@@ -48,7 +49,6 @@ const Courses = () => {
   // Fetch user's watchlist
   const fetchWatchlist = async () => {
     try {
-      setIsLoading(true);
       const response = await fetch(`${API}/user/watchlist`, {
         method: "GET",
         headers: {
@@ -69,8 +69,6 @@ const Courses = () => {
       }
     } catch (error) {
       console.error("Error fetching watchlist:", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -148,172 +146,404 @@ const Courses = () => {
     return pages;
   };
 
+  // Animation variants matching Roadmaps page
+  const backgroundVariants = {
+    hidden: { opacity: 0, scale: 1.05 },
+    visible: { 
+      opacity: 1, 
+      scale: 1,
+      transition: {
+        duration: 1,
+        ease: "easeOut"
+      }
+    }
+  };
+
+  const headerVariants = {
+    hidden: { opacity: 0, y: -20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: "easeOut"
+      }
+    }
+  };
+
+  const searchVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: {
+        duration: 0.6,
+        delay: 0.8,
+        ease: "easeOut"
+      }
+    }
+  };
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.08,
+        delayChildren: 0.3
+      }
+    }
+  };
+
+  const cardVariants = {
+    hidden: { 
+      opacity: 0, 
+      y: 30,
+      scale: 0.95
+    },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      scale: 1,
+      transition: {
+        duration: 0.5,
+        ease: "easeOut"
+      }
+    },
+    hover: {
+      y: -8,
+      scale: 1.02,
+      transition: {
+        duration: 0.2,
+        ease: "easeInOut"
+      }
+    }
+  };
+
+  const buttonVariants = {
+    initial: { 
+      scale: 1
+    },
+    hover: { 
+      scale: 1.05,
+      transition: {
+        duration: 0.2,
+        ease: "easeInOut"
+      }
+    },
+    tap: { 
+      scale: 0.98,
+      transition: {
+        duration: 0.1
+      }
+    }
+  };
+
+  const noResultsVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: {
+        duration: 0.5,
+        ease: "easeOut"
+      }
+    }
+  };
+
   return (
-    <div
-      className={`relative min-h-screen-minus-nav p-6 overflow-hidden z-10 ${
-        isDark ? "bg-dark-bg-primary" : "bg-light-bg-primary"
-      }`}
-    >
-      {/* Background */}
-      <div
-        className={`absolute top-0 left-0 w-full h-full -z-10 bg-[size:30px_30px] ${
-          isDark ? "bg-grid-pattern-dark" : "bg-grid-pattern-light"
-        }`}
-      ></div>
+    <div className={`relative min-h-screen-minus-nav overflow-hidden z-10 ${isDark ? 'bg-dark-bg-primary text-dark-text-primary' : 'bg-light-bg-primary text-light-text-primary'}`}>
+      {/* Enhanced Background with gradient overlay */}
+      <motion.div 
+        variants={backgroundVariants}
+        initial="hidden"
+        animate="visible"
+        className={`absolute top-0 left-0 w-full h-full -z-10 bg-[size:30px_30px] ${isDark ? 'bg-grid-pattern-dark' : 'bg-grid-pattern-light'}`}
+      >
+        <div className={`absolute inset-0 ${isDark ? 'bg-gradient-to-br from-dark-bg-primary/90 via-transparent to-dark-bg-primary/50' : 'bg-gradient-to-br from-light-bg-primary/90 via-transparent to-light-bg-primary/50'}`}></div>
+      </motion.div>
 
-      <div className="relative z-20 max-w-7xl mx-auto">
-        <h2
-          className={`w-full text-center text-4xl font-black font-righteous tracking-wider mb-8 ${
-            isDark ? "text-dark-text-primary" : "text-light-text-primary"
-          }`}
+      <div className="max-w-7xl mx-auto px-4 py-12 md:py-16 lg:py-20">
+        {/* Enhanced Header Section */}
+        <motion.div 
+          variants={headerVariants}
+          initial="hidden"
+          animate="visible"
+          className="text-center mb-12"
         >
-          {selectedCategory || "All Courses"}
-        </h2>
-
-        {/* SearchBar */}
-        <Suspense
-          fallback={
-            <div className="flex items-center justify-center h-12 mb-6">
-              <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-primary"></div>
-            </div>
-          }
-        >
-          <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-        </Suspense>
-
-        {/* Categories */}
-        <div
-          className={`flex flex-wrap justify-center gap-3 mb-10 sticky top-[85px] bg-opacity-80 backdrop-blur-sm py-4 z-30
-            ${isDark ? "bg-dark-bg-primary" : "bg-light-bg-primary"}`}
-        >
-          <button
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors
-              ${
-                selectedCategory === null
-                  ? `bg-primary text-white`
-                  : `${
-                      isDark
-                        ? "bg-dark-bg-tertiary text-dark-text-primary hover:bg-dark-bg-secondary"
-                        : "bg-light-bg-tertiary text-light-text-primary hover:bg-light-bg-secondary"
-                    }`
-              }`}
-            onClick={() => handleCategorySelect("All")}
+          <div className="inline-block">
+            <h1 className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-righteous tracking-wider mb-4 ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
+              {selectedCategory || "All Courses"}
+            </h1>
+            <motion.div 
+              initial={{ width: 0 }}
+              animate={{ width: "100%" }}
+              transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+              className={`h-1 rounded-full bg-gradient-to-r ${isDark ? 'from-primary via-primary-dark to-primary' : 'from-primary via-primary-dark to-primary'}`}
+            ></motion.div>
+          </div>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+            className={`mt-6 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}
           >
-            All
-          </button>
+            Discover comprehensive courses designed to accelerate your learning journey and master new skills.
+          </motion.p>
+        </motion.div>
 
-          {categories.map((category, index) => (
-            <button
-              key={index}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors
-                ${
-                  selectedCategory === category
-                    ? `bg-primary text-white`
-                    : `${
-                        isDark
-                          ? "bg-dark-bg-tertiary text-dark-text-primary hover:bg-dark-bg-secondary"
-                          : "bg-light-bg-tertiary text-light-text-primary hover:bg-light-bg-secondary"
-                      }`
-                }`}
-              onClick={() => handleCategorySelect(category)}
-            >
-              {category}
-            </button>
-          ))}
-        </div>
-
-        {/* Courses grid */}
-        <div className="flex flex-wrap justify-center gap-8">
-          {currentCourses.length > 0 ? (
-            currentCourses.map((course) => (
-              <div key={course._id}>
-                <Suspense
-                  fallback={
-                    <div className="w-[300px] h-[400px] flex items-center justify-center">
-                      <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
+        {/* Enhanced Search Section */}
+        <motion.div
+          variants={searchVariants}
+          initial="hidden"
+          animate="visible"
+          className="mb-16"
+        >
+          <div className="flex flex-col items-center space-y-6">
+            {/* Enhanced SearchBar */}
+            <div className="w-full max-w-2xl">
+              <Suspense
+                fallback={
+                  <div className={`relative rounded-2xl overflow-hidden ${isDark ? 'bg-dark-bg-secondary border border-dark-border' : 'bg-light-bg-secondary border border-light-border'} backdrop-blur-sm`}>
+                    <div className="flex items-center justify-center h-16">
+                      <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-primary"></div>
                     </div>
-                  }
-                >
-                  <CardBody
-                    course={course}
-                    watchlist={watchlist}
-                    updateWatchlist={updateWatchlist}
-                  />
-                </Suspense>
-              </div>
-            ))
-          ) : (
-            <div
-              className={`w-[300px] border rounded-md overflow-hidden shadow-md
-              ${
-                isDark
-                  ? "bg-dark-bg-secondary border-dark-border"
-                  : "bg-light-bg-secondary border-light-border"
-              }`}
-            >
-              <img
-                src="https://img.freepik.com/free-vector/hand-drawn-no-data-illustration_23-2150544961.jpg"
-                alt="No Course Found"
-                className="w-full h-[180px] object-cover"
-              />
-              <div className="p-4">
-                <h3
-                  className={`text-lg font-medium ${
-                    isDark
-                      ? "text-dark-text-primary"
-                      : "text-light-text-primary"
-                  }`}
-                >
-                  No Courses Found{" "}
-                  {selectedCategory ? `in ${selectedCategory}` : ""}
-                </h3>
-              </div>
+                  </div>
+                }
+              >
+                {/* THIS IS THE CORRECTED LINE */}
+                <div className={`relative flex items-center h-16 rounded-2xl overflow-hidden ${isDark ? 'bg-dark-bg-secondary border border-dark-border' : 'bg-light-bg-secondary border border-light-border'} backdrop-blur-sm shadow-lg transition-all duration-300`}>
+                  <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+                </div>
+              </Suspense>
             </div>
-          )}
-        </div>
 
-        {/* Pagination Controls */}
+            {/* Enhanced Category Filters */}
+            <div className={`flex flex-wrap justify-center gap-3 p-4 rounded-xl shadow-lg bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-secondary-1000 backdrop-blur-xl ${isDark ? 'border border-dark-border' : 'border border-light-border'}`}>
+              <motion.button
+                variants={buttonVariants}
+                initial="initial"
+                whileHover="hover"
+                whileTap="tap"
+                className={`px-4 py-2 rounded-lg font-semibold text-sm sm:text-base transition-all duration-300 ${
+                  selectedCategory === null
+                    ? 'bg-primary text-white shadow-lg'
+                    : isDark
+                    ? 'text-dark-text-secondary hover:text-dark-text-primary hover:bg-dark-bg-primary'
+                    : 'text-light-text-secondary hover:text-light-text-primary hover:bg-light-bg-primary'
+                }`}
+                onClick={() => handleCategorySelect("All")}
+              >
+                All Courses
+                <span className={`ml-2 text-xs px-2 py-1 rounded-full ${selectedCategory === null
+                    ? 'bg-white/20'
+                    : isDark
+                      ? 'bg-dark-bg-primary text-dark-text-secondary'
+                      : 'bg-light-bg-primary text-light-text-secondary'
+                  }`}>
+                  {coursesData.length}
+                </span>
+              </motion.button>
+
+              {categories.map((category, index) => {
+                const categoryCount = coursesData.filter(course => course.course_category === category).length;
+                return (
+                  <motion.button
+                    key={index}
+                    variants={buttonVariants}
+                    initial="initial"
+                    whileHover="hover"
+                    whileTap="tap"
+                    className={`px-4 py-2 rounded-lg font-medium text-sm sm:text-base transition-all duration-300
+                      ${
+                        selectedCategory === category
+                          ? "bg-primary text-white shadow-md"
+                          : isDark
+                          ? "bg-dark-bg-secondary/40 text-dark-text-secondary border border-dark-border hover:bg-dark-bg-secondary/70 hover:text-dark-text-primary"
+                          : "bg-light-bg-secondary/40 text-light-text-secondary border border-light-border hover:bg-light-bg-secondary/70 hover:text-light-text-primary"
+                      }`}
+                    onClick={() => handleCategorySelect(category)}
+                  >
+                    {category}
+                    <span
+                      className={`ml-2 text-xs px-2 py-0.5 rounded-full 
+                      ${
+                        selectedCategory === category
+                          ? "bg-white/20 text-white"
+                          : isDark
+                          ? "bg-dark-bg-primary/60 text-dark-text-secondary"
+                          : "bg-light-bg-primary/60 text-light-text-secondary"
+                      }`}
+                    >
+                      {categoryCount}
+                    </span>
+                  </motion.button>
+                );
+              })}
+            </div>
+
+            {/* Search Results Count */}
+            {searchTerm && (
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className={`text-sm ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}
+              >
+                Found {filteredCourses.length} course(s) matching &quot;{searchTerm}&quot;
+              </motion.p>
+            )}
+          </div>
+        </motion.div>
+
+        {/* Enhanced Courses Grid */}
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          transition={{ delay: 1.4 }}
+          className="mb-16"
+        >
+          {currentCourses.length > 0 ? (
+            <div className="max-w-full flex flex-wrap justify-around gap-6">
+              {currentCourses.map((course) => (
+                <motion.div 
+                  key={course._id}
+                  variants={cardVariants}
+                  whileHover="hover"
+                  className="group"
+                >
+                  <Suspense
+                    fallback={
+                      <div className={`w-full h-[400px] rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-secondary-1000 backdrop-blur-xl ${isDark ? 'border border-dark-border' : 'border border-light-border'} shadow-lg flex items-center justify-center`}>
+                        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
+                      </div>
+                    }
+                  >
+                    <CardBody
+                      course={course}
+                      watchlist={watchlist}
+                      updateWatchlist={updateWatchlist}
+                    />
+                  </Suspense>
+                </motion.div>
+              ))}
+            </div>
+          ) : (
+            <motion.div
+              variants={noResultsVariants}
+              initial="hidden"
+              animate="visible"
+              className={`max-w-lg mx-auto text-center py-16 px-8 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-secondary-1000 backdrop-blur-xl ${isDark ? 'border border-dark-border' : 'border border-light-border'} shadow-lg`}
+            >
+              <div className="text-6xl mb-6">📚</div>
+              <h3 className={`text-2xl font-bold mb-4 ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
+                No Courses Found
+              </h3>
+              <p className={`text-lg mb-6 ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
+                {selectedCategory 
+                  ? `We couldn't find any courses in the "${selectedCategory}" category${searchTerm ? ` matching "${searchTerm}"` : ''}.`
+                  : `We couldn't find any courses matching "${searchTerm}".`
+                }
+              </p>
+              <motion.button
+                variants={buttonVariants}
+                initial="initial"
+                whileHover="hover"
+                whileTap="tap"
+                onClick={() => {
+                  setSearchTerm("");
+                  setSelectedCategory(null);
+                  setCurrentPage(1);
+                }}
+                className="px-6 py-3 bg-primary hover:bg-primary-dark text-white font-semibold rounded-xl transition-colors duration-300"
+              >
+                Show All Courses
+              </motion.button>
+            </motion.div>
+          )}
+        </motion.div>
+
+        {/* Enhanced Pagination Controls */}
         {totalPages > 1 && (
-          <div className="flex justify-center items-center gap-2 mt-10">
-            {/* Prev */}
-            <button
-              className="px-3 py-1 rounded bg-primary hover:bg-primary-dark disabled:opacity-50 disabled:hover:bg-primary"
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 1.8 }}
+            className="flex justify-center items-center gap-2"
+          >
+            <motion.button
+              variants={buttonVariants}
+              initial="initial"
+              whileHover="hover"
+              whileTap="tap"
+              className={`px-4 py-2 rounded-xl font-semibold text-white transition-all duration-300 ${
+                currentPage === 1 
+                  ? 'bg-gray-400 cursor-not-allowed' 
+                  : 'bg-primary hover:bg-primary-dark shadow-lg'
+              }`}
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
             >
-              Prev
-            </button>
+              Previous
+            </motion.button>
 
-            {/* Page numbers */}
             {getPageNumbers().map((page, index) =>
               page === "..." ? (
-                <span key={index} className="px-3 py-1 text-white font-bold">
+                <span key={index} className={`px-3 py-2 font-bold ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
                   ...
                 </span>
               ) : (
-                <button
+                <motion.button
                   key={index}
-                  className={`px-3 py-1 rounded ${
+                  variants={buttonVariants}
+                  initial="initial"
+                  whileHover="hover"
+                  whileTap="tap"
+                  className={`px-4 py-2 rounded-xl font-semibold transition-all duration-300 ${
                     currentPage === page
-                      ? "bg-primary-dark text-white"
-                      : "bg-primary hover:bg-primary-dark"
+                      ? "bg-primary-dark text-white shadow-lg scale-110"
+                      : "bg-primary hover:bg-primary-dark text-white shadow-md"
                   }`}
                   onClick={() => handlePageChange(page)}
                 >
                   {page}
-                </button>
+                </motion.button>
               )
             )}
 
-            {/* Next */}
-            <button
-              className="px-3 py-1 rounded bg-primary hover:bg-primary-dark disabled:opacity-50 disabled:hover:bg-primary"
+            <motion.button
+              variants={buttonVariants}
+              initial="initial"
+              whileHover="hover"
+              whileTap="tap"
+              className={`px-4 py-2 rounded-xl font-semibold text-white transition-all duration-300 ${
+                currentPage === totalPages 
+                  ? 'bg-gray-400 cursor-not-allowed' 
+                  : 'bg-primary hover:bg-primary-dark shadow-lg'
+              }`}
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
             >
               Next
-            </button>
-          </div>
+            </motion.button>
+          </motion.div>
+        )}
+
+        {/* Call to Action Section */}
+        {currentCourses.length > 0 && (
+          <motion.section 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 2.0 }}
+            className={`mt-24 text-center p-8 sm:p-12 rounded-3xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-secondary-1000 backdrop-blur-xl ${isDark ? 'border border-dark-border' : 'border border-light-border'} shadow-lg`}
+          >
+            <h3 className={`text-2xl sm:text-3xl md:text-4xl font-righteous tracking-wider mb-4 ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
+              Ready to Start Learning?
+            </h3>
+            <p className={`text-lg md:text-xl ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'} max-w-3xl mx-auto leading-relaxed`}>
+              Join thousands of learners who have advanced their careers with our expertly crafted courses.
+            </p>
+          </motion.section>
         )}
       </div>
     </div>

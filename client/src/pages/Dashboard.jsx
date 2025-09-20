@@ -1,19 +1,20 @@
-import React, { useState, useEffect, lazy, Suspense, useMemo, useCallback } from 'react';
+import { useState, useEffect, lazy, Suspense, useCallback } from 'react';
 import { useAuth } from '../store/auth';
 import { useTheme } from '../context/ThemeContext';
-import { FaBookmark, FaGraduationCap, FaChartLine, FaClock, FaPlay } from 'react-icons/fa';
+import { FaBookmark, FaGraduationCap, FaChartLine, FaClock, FaPlay, FaStar } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import { motion } from "framer-motion";
 
 // Lazy loaded components
 const CardBody = lazy(() => import('../components/CardBody'));
 const CourseModules = lazy(() => import('../components/CourseModules'));
-const UserActivity = lazy(() => import('../components/UserActivity'));
-const ContinueWatching = lazy(() => import('../components/ContinueWatching'));
+const PersonalInfoEdit = lazy(() => import('../components/PersonalInfoEdit'));
 
 function Dashboard() {
   const { userdata, API } = useAuth();
   const { theme } = useTheme();
   const isDark = theme === 'dark';
+  const [bookmarks, setBookmarks] = useState([]);
   const [watchlist, setWatchlist] = useState([]);
   // Stats for user dashboard with proper tracking
   const [stats, setStats] = useState({
@@ -21,14 +22,38 @@ function Dashboard() {
     coursesCompleted: 0,
     totalHoursLearned: 0,
     lastActive: new Date().toISOString(),
-    savedCourses: 0
+    savedCourses: 0,
+    savedRoadmaps: 0
   });
-  const [activities, setActivities] = useState([]);
   const [courseProgress, setCourseProgress] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [selectedCourseProgress, setSelectedCourseProgress] = useState(null);
-  const [continueWatchingCourses, setContinueWatchingCourses] = useState([]);
+  const [activeTab, setActiveTab] = useState('learning');
   const token = localStorage.getItem('token');
+
+  const fetchBookmarks = useCallback(async () => {
+    try {
+      const response = await fetch(`${API}/api/v1/bookmarks`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const list = data.data || [];
+        setBookmarks(list);
+        setStats(prev => ({ ...prev, savedRoadmaps: list.length }));
+      } else {
+        console.error('Failed to fetch bookmarks:', response.status, response.statusText);
+      }
+    } catch (error) {
+      console.error('Error fetching bookmarks:', error);
+    }
+  }, [API, token]);
+
 
   // Fetch user's watchlist (Saved Courses) - memoized to prevent unnecessary re-renders
   const fetchWatchlist = useCallback(async () => {
@@ -88,9 +113,6 @@ function Dashboard() {
         let completed = 0;
         let totalHours = 0;
 
-        // Filter courses in progress for "Continue Watching" section
-        const inProgressCourses = [];
-
         validProgress.forEach(course => {
           // Ensure we have valid data
           if (!course.courseId || typeof course.courseId !== 'object') {
@@ -100,12 +122,6 @@ function Dashboard() {
 
           if (course.status === 'in-progress') {
             inProgress++;
-            // Add to continue watching
-            inProgressCourses.push({
-              ...course,
-              lastWatched: course.lastAccessedAt || course.updatedAt,
-              progress: course.progress || 0
-            });
           } else if (course.status === 'completed') {
             completed++;
           }
@@ -113,16 +129,6 @@ function Dashboard() {
           // Add up total learning hours
           totalHours += course.totalHoursSpent || 0;
         });
-
-        // Sort by last accessed (most recent first)
-        inProgressCourses.sort((a, b) => {
-          const dateA = new Date(a.lastWatched || 0);
-          const dateB = new Date(b.lastWatched || 0);
-          return dateB - dateA;
-        });
-
-        //console.log('Continue watching courses:', inProgressCourses);
-        setContinueWatchingCourses(inProgressCourses);
 
         // Update stats with real data
         setStats(prev => ({
@@ -133,6 +139,7 @@ function Dashboard() {
         }));
 
         // If there's at least one course in progress, select it for the dashboard
+        const inProgressCourses = validProgress.filter(course => course.status === 'in-progress');
         if (inProgressCourses.length > 0) {
           setSelectedCourse(inProgressCourses[0].courseId);
           setSelectedCourseProgress(inProgressCourses[0]);
@@ -150,50 +157,6 @@ function Dashboard() {
     }
   }, [API, token]);
 
-  // Fetch user's activity for the activity feed - memoized to prevent unnecessary re-renders
-  const fetchUserActivity = useCallback(async () => {
-    try {
-      //console.log('Fetching user activity data...');
-      const response = await fetch(`${API}/activity`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        //console.log('Activity data:', data);
-
-        // Ensure we have valid activity data
-        const validActivities = data.activities ? data.activities.filter(
-          activity => activity && activity.timestamp
-        ) : [];
-
-        setActivities(validActivities);
-
-        // Update last active date from the most recent activity
-        if (validActivities.length > 0) {
-          // Sort activities by timestamp (newest first)
-          validActivities.sort((a, b) => {
-            const dateA = new Date(a.timestamp || 0);
-            const dateB = new Date(b.timestamp || 0);
-            return dateB - dateA;
-          });
-
-          setStats(prev => ({
-            ...prev,
-            lastActive: validActivities[0].timestamp
-          }));
-        }
-      } else {
-        console.error('Failed to fetch activity:', response.status, response.statusText);
-      }
-    } catch (error) {
-      console.error('Error fetching user activity:', error);
-    }
-  }, [API, token]);
 
   // Handle course selection and track the activity - memoized to prevent unnecessary re-renders
   const handleCourseSelect = useCallback(async (course) => {
@@ -204,36 +167,7 @@ function Dashboard() {
     const progress = courseProgress.find(p => p.courseId._id === course._id);
     setSelectedCourseProgress(progress || null);
 
-    // Track this course selection in user activity
-    if (userdata?._id && token) {
-      try {
-        //console.log('Tracking course selection activity');
-        const response = await fetch(`${API}/activity/add`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            courseId: course._id,
-            activityType: 'course_select',
-            details: {
-              courseTitle: course.course_title,
-              action: 'Selected from dashboard'
-            }
-          })
-        });
-
-        if (response.ok) {
-          //console.log('Activity tracked successfully');
-          // Refresh activity data
-          fetchUserActivity();
-        }
-      } catch (error) {
-        console.error('Error tracking course selection:', error);
-      }
-    }
-  }, [courseProgress, userdata, token, API, fetchUserActivity]);
+  }, [courseProgress]);
 
   // Handle progress update and store in database - memoized to prevent unnecessary re-renders
   const handleProgressUpdate = useCallback(async (updatedProgress) => {
@@ -247,21 +181,6 @@ function Dashboard() {
         ? prev.map(p => p._id === updatedProgress._id ? updatedProgress : p)
         : [...prev, updatedProgress];
 
-      // Update continue watching courses
-      const updatedContinueWatching = newProgress
-        .filter(course => course.status === 'in-progress' && course.courseId)
-        .map(course => ({
-          ...course,
-          lastWatched: course.lastAccessedAt || course.updatedAt,
-          progress: course.progress || 0
-        }))
-        .sort((a, b) => {
-          const dateA = new Date(a.lastWatched || 0);
-          const dateB = new Date(b.lastWatched || 0);
-          return dateB - dateA;
-        });
-
-      setContinueWatchingCourses(updatedContinueWatching);
 
       // Update stats based on new progress data
       let inProgress = 0;
@@ -316,8 +235,6 @@ function Dashboard() {
 
         if (response.ok) {
           //console.log('Progress saved successfully');
-          // Refresh activity data
-          fetchUserActivity();
         } else {
           console.error('Failed to save progress:', response.status, response.statusText);
         }
@@ -325,348 +242,625 @@ function Dashboard() {
         console.error('Error saving progress:', error);
       }
     }
-  }, [selectedCourseProgress, token, API, fetchUserActivity]);
+  }, [selectedCourseProgress, token, API]);
 
   useEffect(() => {
+    fetchBookmarks();
     fetchWatchlist();
     fetchUserProgress();
-    fetchUserActivity();
-  }, [fetchWatchlist, fetchUserProgress, fetchUserActivity]);
+  }, [fetchBookmarks, fetchWatchlist, fetchUserProgress]);
 
-  // Handle watchlist update in CardBody and track the activity - memoized to prevent unnecessary re-renders
-  const updateWatchlist = useCallback(async (course, action) => {
-    //console.log(`Watchlist update: ${action} course ${course?._id}`);
-
+  // Handle watchlist update in CardBody - memoized to prevent unnecessary re-renders
+  const updateWatchlist = useCallback(async () => {
     // Refresh watchlist data
     await fetchWatchlist();
+  }, [fetchWatchlist]);
 
-    // Track this watchlist action in user activity
-    if (userdata?._id && token && course) {
-      try {
-        //console.log('Tracking watchlist activity');
-        const response = await fetch(`${API}/activity/add`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            courseId: course._id,
-            activityType: 'watchlist_update',
-            details: {
-              courseTitle: course.course_title,
-              action: action || 'updated'
-            }
-          })
-        });
-
-        if (response.ok) {
-          //console.log('Watchlist activity tracked successfully');
-          // Refresh activity data
-          fetchUserActivity();
-        }
-      } catch (error) {
-        console.error('Error tracking watchlist activity:', error);
+  // Animation variants - matching Roadmaps
+  const backgroundVariants = {
+    hidden: { opacity: 0, scale: 1.05 },
+    visible: { 
+      opacity: 1, 
+      scale: 1,
+      transition: {
+        duration: 1,
+        ease: "easeOut"
       }
-    } else {
-      // Just refresh activity data
-      fetchUserActivity();
     }
-  }, [userdata, token, API, fetchWatchlist, fetchUserActivity]);
+  };
 
-  return (
+  const headerVariants = {
+    hidden: { opacity: 0, y: -20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: "easeOut"
+      }
+    }
+  };
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.08,
+        delayChildren: 0.3
+      }
+    }
+  };
+
+  const cardVariants = {
+    hidden: { 
+      opacity: 0, 
+      y: 30,
+      scale: 0.95
+    },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      scale: 1,
+      transition: {
+        duration: 0.5,
+        ease: "easeOut"
+      }
+    },
+    hover: {
+      y: -8,
+      scale: 1.02,
+      transition: {
+        duration: 0.2,
+        ease: "easeInOut"
+      }
+    }
+  };
+
+
+return (
     <div className={`relative min-h-screen-minus-nav overflow-hidden z-10 ${isDark ? 'bg-dark-bg-primary text-dark-text-primary' : 'bg-light-bg-primary text-light-text-primary'}`}>
-      {/* Background with gradient */}
-      <div className={`absolute top-0 left-0 w-full h-full -z-10 bg-[size:30px_30px] ${isDark ? 'bg-grid-pattern-dark' : 'bg-grid-pattern-light'}`}></div>
+      {/* Enhanced Background with gradient overlay - matching Roadmaps */}
+      <motion.div 
+        variants={backgroundVariants}
+        initial="hidden"
+        animate="visible"
+        className={`absolute top-0 left-0 w-full h-full -z-10 bg-[size:30px_30px] ${isDark ? 'bg-grid-pattern-dark' : 'bg-grid-pattern-light'}`}
+      >
+        <div className={`absolute inset-0 ${isDark ? 'bg-gradient-to-br from-dark-bg-primary/90 via-transparent to-dark-bg-primary/50' : 'bg-gradient-to-br from-light-bg-primary/90 via-transparent to-light-bg-primary/50'}`}></div>
+      </motion.div>
 
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        {/* Dashboard Header */}
-        <div className="mb-12">
-          <h1 className={`text-4xl font-bold mb-4 ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
-            Welcome back, <span className="text-primary">{userdata ? userdata.username : "Learner"}</span>!
-          </h1>
-          <p className={`text-lg ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
-            Track your progress, manage your courses, and continue your learning journey.
-          </p>
-        </div>
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          <div className={`p-6 rounded-xl ${isDark ? 'bg-dark-bg-secondary border-dark-border' : 'bg-light-bg-secondary border-light-border'} border shadow-md flex items-center`}>
-            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mr-4">
-              <FaBookmark className="text-primary text-xl" />
-            </div>
-            <div>
-              <p className={`text-sm ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>Saved Courses</p>
-              <h3 className="text-2xl font-bold">{stats.savedCourses}</h3>
-            </div>
+      <div className="max-w-7xl mx-auto px-4 py-12 md:py-16 lg:py-20">
+        {/* Enhanced Header Section - matching Roadmaps */}
+        <motion.div 
+          variants={headerVariants}
+          initial="hidden"
+          animate="visible"
+          className="text-center mb-12"
+        >
+          <div className="inline-block">
+            <h1 className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-righteous tracking-wider mb-4 ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
+              Learning Dashboard
+            </h1>
+            <motion.div 
+              initial={{ width: 0 }}
+              animate={{ width: "100%" }}
+              transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+              className={`h-1 rounded-full bg-gradient-to-r ${isDark ? 'from-primary via-primary-dark to-primary' : 'from-primary via-primary-dark to-primary'}`}
+            ></motion.div>
           </div>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+            className={`mt-6 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}
+          >
+            Welcome back, <span className="text-primary font-semibold">{userdata ? userdata.username : "Learner"}</span>! Track your progress and continue your learning journey.
+          </motion.p>
+        </motion.div>
 
-          <div className={`p-6 rounded-xl ${isDark ? 'bg-dark-bg-secondary border-dark-border' : 'bg-light-bg-secondary border-light-border'} border shadow-md flex items-center`}>
-            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mr-4">
-              <FaGraduationCap className="text-primary text-xl" />
-            </div>
-            <div>
-              <p className={`text-sm ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>Completed</p>
-              <h3 className="text-2xl font-bold">{stats.coursesCompleted}</h3>
-            </div>
-          </div>
+        {/* Enhanced Stats Cards - matching Roadmaps card style */}
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16"
+        >
+          {[
+            {
+              icon: FaStar,
+              label: "Saved Roadmaps",
+              value: stats.savedRoadmaps,
+              color: "text-yellow-500",
+              bgColor: "bg-yellow-500/10"
+            },
+            {
+              icon: FaBookmark,
+              label: "Saved Courses",
+              value: stats.savedCourses,
+              color: "text-blue-500",
+              bgColor: "bg-blue-500/10"
+            },
+            {
+              icon: FaGraduationCap,
+              label: "Completed",
+              value: stats.coursesCompleted,
+              color: "text-green-500",
+              bgColor: "bg-green-500/10"
+            },
+            {
+              icon: FaChartLine,
+              label: "In Progress",
+              value: stats.coursesInProgress,
+              color: "text-orange-500",
+              bgColor: "bg-orange-500/10"
+            }
+          ].map((stat) => (
+            <motion.div
+              key={stat.label}
+              variants={cardVariants}
+              whileHover="hover"
+              className={`group relative p-6 lg:p-8 rounded-2xl shadow-lg flex items-center bg-gradient-to-br transition-all duration-300 overflow-hidden ${
+                isDark 
+                  ? 'from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-secondary-1000 backdrop-blur-xl' 
+                  : 'from-blue-50 to-indigo-50 border border-light-border hover:border-primary/50'
+              }`}
+            >
+              {/* Animated border on hover */}
+              <motion.div 
+                className="absolute top-0 right-0 w-0 h-full bg-primary rounded-r-2xl"
+                whileHover={{ 
+                  width: "3px",
+                  transition: { duration: 0.3, ease: "easeOut" }
+                }}
+              />
+              <motion.div 
+                className="absolute bottom-0 left-0 w-full h-0 bg-primary rounded-b-2xl"
+                whileHover={{ 
+                  height: "3px",
+                  transition: { duration: 0.3, ease: "easeOut", delay: 0.05 }
+                }}
+              />
 
-          <div className={`p-6 rounded-xl ${isDark ? 'bg-dark-bg-secondary border-dark-border' : 'bg-light-bg-secondary border-light-border'} border shadow-md flex items-center`}>
-            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mr-4">
-              <FaChartLine className="text-primary text-xl" />
-            </div>
-            <div>
-              <p className={`text-sm ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>In Progress</p>
-              <h3 className="text-2xl font-bold">{stats.coursesInProgress}</h3>
-            </div>
-          </div>
-
-          <div className={`p-6 rounded-xl ${isDark ? 'bg-dark-bg-secondary border-dark-border' : 'bg-light-bg-secondary border-light-border'} border shadow-md flex items-center`}>
-            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mr-4">
-              <FaClock className="text-primary text-xl" />
-            </div>
-            <div>
-              <p className={`text-sm ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>Hours Learned</p>
-              <h3 className="text-2xl font-bold">{stats.totalHoursLearned}</h3>
-            </div>
-          </div>
-        </div>
-
-        {/* Main Dashboard Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column - Current Course & Modules */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Current Course Section */}
-            <div>
-              <div className="mb-4 flex justify-between items-center">
-                <h2 className={`text-2xl font-bold ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
-                  Continue Learning
-                </h2>
+              <motion.div 
+                className={`w-12 h-12 sm:w-16 sm:h-16 rounded-xl ${stat.bgColor} flex items-center justify-center mr-4`}
+                whileHover={{ rotate: 360 }}
+                transition={{ duration: 0.5 }}
+              >
+                <stat.icon className={`${stat.color} text-xl sm:text-2xl`} />
+              </motion.div>
+              
+              <div>
+                <p className={`text-sm ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
+                  {stat.label}
+                </p>
+                <h3 className={`text-2xl sm:text-3xl font-bold ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'} group-hover:text-primary transition-colors duration-300`}>
+                  {stat.value}
+                </h3>
               </div>
+            </motion.div>
+          ))}
+        </motion.div>
 
-              {selectedCourse ? (
-                <div className="space-y-6">
-                  {/* YouTubePlayer removed from dashboard */}
-                  <div className={`p-6 rounded-lg ${isDark ? 'bg-dark-bg-secondary' : 'bg-light-bg-secondary'} border ${isDark ? 'border-dark-border' : 'border-light-border'} shadow-md`}>
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className={`text-xl font-bold ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
-                        {selectedCourse.course_title}
-                      </h3>
-                      <Link
-                        to={`/courses/${selectedCourse._id}`}
-                        className="py-2 px-4 bg-primary hover:bg-primary-dark text-white rounded-lg transition-colors text-sm flex items-center"
-                      >
-                        <FaPlay className="mr-2" /> Continue Watching
-                      </Link>
-                    </div>
+        {/* Main Dashboard Content - Clean Tab Layout */}
+        <div className="grid grid-cols-1 xl:grid-cols-5 gap-8">
+          {/* Left Sidebar - Personal Info */}
+          <div className="xl:col-span-2">
+            <Suspense fallback={
+              <div className="flex items-center justify-center h-64">
+                <motion.div
+                  animate={{ rotate: 360 }} 
+                  transition={{ repeat: Infinity, duration: 1, ease: "linear" }} 
+                  className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full"
+                />
+              </div>
+            }>
+              <PersonalInfoEdit />
+            </Suspense>
+          </div>
 
-                    <div className="flex items-center mb-4">
-                      <img
-                        src={selectedCourse.course_image || 'https://via.placeholder.com/150'}
-                        alt={selectedCourse.course_title}
-                        className="w-20 h-20 object-cover rounded-md mr-4"
-                      />
-                      <div>
-                        <p className={`text-sm ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'} mb-1`}>
-                          By {selectedCourse.creator_name}
-                        </p>
-                        {selectedCourseProgress && (
-                          <div className="mt-2">
-                            <div className="flex justify-between items-center text-xs mb-1">
-                              <span className={`${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
-                                {selectedCourseProgress.progress || 0}% complete
-                              </span>
-                              <span className="flex items-center text-primary">
-                                <FaClock className="mr-1" />
-                                {Math.round(selectedCourseProgress.totalHoursSpent || 0)}h
-                              </span>
-                            </div>
-                            <div className="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-700">
-                              <div
-                                className="bg-primary h-2 rounded-full"
-                                style={{ width: `${selectedCourseProgress.progress || 0}%` }}
-                              ></div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  <Suspense fallback={
-                    <div className="flex items-center justify-center h-40">
-                      <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary"></div>
-                    </div>
-                  }>
-                    <CourseModules
-                      courseId={selectedCourse._id}
-                      progress={selectedCourseProgress}
-                      onModuleComplete={handleProgressUpdate}
-                    />
-                  </Suspense>
-                </div>
-              ) : (
-                <div className={`p-12 rounded-xl ${isDark ? 'bg-dark-bg-secondary border-dark-border' : 'bg-light-bg-secondary border-light-border'} border shadow-md text-center`}>
-                  <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
-                    <FaGraduationCap className="text-primary text-2xl" />
-                  </div>
-                  <h3 className={`text-xl font-semibold mb-3 ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
-                    No courses in progress
-                  </h3>
-                  <p className={`mb-6 ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
-                    Start learning by adding courses to your watchlist.
-                  </p>
-                  <Link
-                    to="/courses"
-                    className="py-2 px-6 bg-primary hover:bg-primary-dark text-white rounded-lg transition-colors"
+          {/* Main Content Area - 3/5 width */}
+          <div className="xl:col-span-3">
+            {/* Tab Navigation */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8 }}
+              className="mb-8"
+            >
+              <div className={`flex space-x-1 p-1 rounded-xl ${isDark ? 'bg-dark-bg-secondary' : 'bg-light-bg-secondary'}`}>
+                {[
+                  { id: 'learning', label: 'Continue Learning', icon: FaPlay },
+                  { id: 'watchlist', label: 'Watchlist', icon: FaBookmark },
+                  { id: 'bookmarks', label: 'Bookmarks', icon: FaStar }
+                ].map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`flex-1 flex items-center justify-center px-4 py-3 rounded-lg font-medium transition-all duration-300 ${
+                      activeTab === tab.id
+                        ? 'bg-primary text-white shadow-md'
+                        : `${isDark ? 'text-dark-text-secondary hover:text-dark-text-primary hover:bg-dark-bg-tertiary' : 'text-light-text-secondary hover:text-light-text-primary hover:bg-light-bg-tertiary'}`
+                    }`}
                   >
-                    Explore Courses
-                  </Link>
-                </div>
-              )}
-            </div>
-
-            {/* Watchlist Section */}
-            <div>
-              <div className="mb-4 flex justify-between items-center">
-                <h2 className={`text-2xl font-bold ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
-                  Your Watchlist
-                </h2>
-                <Link
-                  to="/courses"
-                  className="text-primary hover:text-primary-dark transition-colors"
-                >
-                  Browse more courses
-                </Link>
+                    <tab.icon className="mr-2 text-sm" />
+                    <span className="text-sm">{tab.label}</span>
+                  </button>
+                ))}
               </div>
+            </motion.div>
 
-              {watchlist.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {watchlist.map(course => (
-                    <div key={course._id}>
+            {/* Tab Content */}
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              {activeTab === 'learning' && (
+                <div className="space-y-6">
+                  <div className="mb-6">
+                    <h2 className={`text-2xl sm:text-3xl font-righteous tracking-wide ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
+                      Continue Learning
+                    </h2>
+                    <p className={`text-sm mt-2 ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
+                      Pick up where you left off
+                    </p>
+                  </div>
+
+                  {selectedCourse ? (
+                    <div className="space-y-6">
+                      <motion.div 
+                        whileHover={{ y: -4 }}
+                        transition={{ duration: 0.3 }}
+                        className={`relative p-6 lg:p-8 rounded-2xl shadow-lg bg-gradient-to-br backdrop-blur-xl transition-all duration-300 hover:shadow-2xl overflow-hidden ${
+                          isDark 
+                            ? 'from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-secondary-1000' 
+                            : 'from-blue-50 to-indigo-50 border border-light-border'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between mb-6">
+                          <h3 className={`text-xl lg:text-2xl font-semibold ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
+                            {selectedCourse.course_title}
+                          </h3>
+                          <Link
+                            to={`/courses/${selectedCourse._id}`}
+                            className="py-3 px-6 bg-primary hover:bg-primary-dark text-white rounded-xl transition-colors text-sm flex items-center font-semibold"
+                          >
+                            <FaPlay className="mr-2" /> Continue Watching
+                          </Link>
+                        </div>
+
+                        <div className="flex items-center mb-4">
+                          <img
+                            src={selectedCourse.course_image || 'https://via.placeholder.com/150'}
+                            alt={selectedCourse.course_title}
+                            className="w-20 h-20 object-cover rounded-xl mr-4 shadow-md"
+                          />
+                          <div className="flex-1">
+                            <p className={`text-sm ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'} mb-1`}>
+                              By {selectedCourse.creator_name}
+                            </p>
+                            {selectedCourseProgress && (
+                              <div className="mt-2">
+                                <div className="flex justify-between items-center text-xs mb-2">
+                                  <span className={`${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
+                                    {selectedCourseProgress.progress || 0}% complete
+                                  </span>
+                                  <span className="flex items-center text-primary">
+                                    <FaClock className="mr-1" />
+                                    {Math.round(selectedCourseProgress.totalHoursSpent || 0)}h
+                                  </span>
+                                </div>
+                                <div className={`w-full rounded-full h-2 ${isDark ? 'bg-gray-700' : 'bg-gray-200'}`}>
+                                  <div
+                                    className="bg-primary h-2 rounded-full transition-all duration-300"
+                                    style={{ width: `${selectedCourseProgress.progress || 0}%` }}
+                                  ></div>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </motion.div>
+
                       <Suspense fallback={
                         <div className="flex items-center justify-center h-40">
-                          <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary"></div>
+                          <motion.div
+                            animate={{ rotate: 360 }} 
+                            transition={{ repeat: Infinity, duration: 1, ease: "linear" }} 
+                            className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full"
+                          />
                         </div>
                       }>
-                        <CardBody
-                          course={course}
-                          watchlist={watchlist}
-                          updateWatchlist={updateWatchlist}
-                          onClick={handleCourseSelect}
+                        <CourseModules
+                          courseId={selectedCourse._id}
+                          progress={selectedCourseProgress}
+                          onModuleComplete={handleProgressUpdate}
                         />
                       </Suspense>
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <div className={`p-8 rounded-xl ${isDark ? 'bg-dark-bg-secondary border-dark-border' : 'bg-light-bg-secondary border-light-border'} border shadow-md text-center`}>
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
-                    <FaBookmark className="text-primary text-xl" />
-                  </div>
-                  <h3 className={`text-lg font-semibold mb-2 ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
-                    Your watchlist is empty
-                  </h3>
-                  <p className={`mb-4 ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
-                    Save courses to watch later and track your learning progress.
-                  </p>
-                  <Link
-                    to="/courses"
-                    className="py-2 px-4 bg-primary hover:bg-primary-dark text-white rounded-lg transition-colors text-sm"
-                  >
-                    Explore Courses
-                  </Link>
+                  ) : (
+                    <motion.div 
+                      whileHover={{ y: -4 }}
+                      transition={{ duration: 0.3 }}
+                      className={`relative p-12 rounded-2xl shadow-lg bg-gradient-to-br backdrop-blur-xl text-center transition-all duration-300 hover:shadow-2xl overflow-hidden ${
+                        isDark 
+                          ? 'from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-secondary-1000' 
+                          : 'from-blue-50 to-indigo-50 border border-light-border'
+                      }`}
+                    >
+                      <motion.div 
+                        className={`w-20 h-20 mx-auto mb-6 rounded-xl flex items-center justify-center ${isDark ? 'bg-dark-bg-primary' : 'bg-light-bg-primary'}`}
+                        whileHover={{ rotate: 360 }}
+                        transition={{ duration: 0.5 }}
+                      >
+                        <FaGraduationCap className="text-primary text-3xl" />
+                      </motion.div>
+                      <h3 className={`text-xl font-semibold mb-3 ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
+                        No courses in progress
+                      </h3>
+                      <p className={`mb-6 ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
+                        Start learning by adding courses to your watchlist.
+                      </p>
+                      <Link
+                        to="/courses"
+                        className="py-3 px-6 bg-primary hover:bg-primary-dark text-white rounded-xl transition-colors font-semibold"
+                      >
+                        Explore Courses
+                      </Link>
+                    </motion.div>
+                  )}
                 </div>
               )}
-            </div>
-          </div>
 
-          {/* Right Column - Stats & Activity */}
-          <div className="space-y-8">
-            {/* Continue Watching Section */}
-            <Suspense fallback={
-              <div className="flex items-center justify-center h-40">
-                <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary"></div>
-              </div>
-            }>
-              <ContinueWatching
-                courses={continueWatchingCourses}
-                onCourseSelect={handleCourseSelect}
-              />
-            </Suspense>
-
-            {/* User Activity */}
-            <Suspense fallback={
-              <div className="flex items-center justify-center h-40">
-                <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary"></div>
-              </div>
-            }>
-              <UserActivity activities={activities} />
-            </Suspense>
-
-            {/* Learning Recommendations */}
-            <div className={`p-6 rounded-xl ${isDark ? 'bg-dark-bg-secondary border-dark-border' : 'bg-light-bg-secondary border-light-border'} border shadow-md`}>
-              <h3 className={`text-xl font-bold mb-4 ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
-                Recommended For You
-              </h3>
-
-              <div className="space-y-4">
-                <div
-                  className={`p-3 rounded-lg ${isDark ? 'bg-dark-bg-tertiary' : 'bg-light-bg-tertiary'} border ${isDark ? 'border-dark-border' : 'border-light-border'} hover:border-primary transition-colors cursor-pointer`}
-                  onClick={() => window.open("https://www.youtube.com/watch?v=8zKuNo4ay8E", "_blank")}
-                >
-                  <h4 className={`font-medium ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>Advanced JavaScript Concepts</h4>
-                  <p className={`text-sm ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'} mb-2`}>
-                    Take your JS skills to the next level
-                  </p>
-                  <div className="flex items-center text-xs text-primary">
-                    <span className="bg-primary/10 px-2 py-1 rounded">Intermediate</span>
-                    <span className="ml-2">4.8 ★</span>
+              {activeTab === 'watchlist' && (
+                <div className="space-y-6">
+                  <div className="mb-6 flex justify-between items-start">
+                    <div>
+                      <h2 className={`text-2xl sm:text-3xl font-righteous tracking-wide ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
+                        Your Watchlist
+                      </h2>
+                      <p className={`text-sm mt-2 ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
+                        Courses you&apos;ve saved for later
+                      </p>
+                    </div>
+                    <Link
+                      to="/courses"
+                      className="text-primary hover:text-primary-dark transition-colors font-medium text-sm"
+                    >
+                      Browse more
+                    </Link>
                   </div>
+
+                  {watchlist.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {watchlist.map(course => (
+                        <div key={course._id} className="flex justify-center">
+                          <Suspense fallback={
+                            <div className="flex items-center justify-center h-40">
+                              <motion.div
+                                animate={{ rotate: 360 }} 
+                                transition={{ repeat: Infinity, duration: 1, ease: "linear" }} 
+                                className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full"
+                              />
+                            </div>
+                          }>
+                            <CardBody
+                              course={course}
+                              watchlist={watchlist}
+                              updateWatchlist={updateWatchlist}
+                              onClick={handleCourseSelect}
+                              size="wide"
+                            />
+                          </Suspense>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <motion.div 
+                      whileHover={{ y: -4 }}
+                      transition={{ duration: 0.3 }}
+                      className={`relative p-8 lg:p-12 rounded-2xl shadow-lg bg-gradient-to-br backdrop-blur-xl text-center transition-all duration-300 hover:shadow-2xl overflow-hidden ${
+                        isDark 
+                          ? 'from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-secondary-1000' 
+                          : 'from-blue-50 to-indigo-50 border border-light-border'
+                      }`}
+                    >
+                      <motion.div 
+                        className={`w-16 h-16 mx-auto mb-4 rounded-xl flex items-center justify-center ${isDark ? 'bg-dark-bg-primary' : 'bg-light-bg-primary'}`}
+                        whileHover={{ rotate: 360 }}
+                        transition={{ duration: 0.5 }}
+                      >
+                        <FaBookmark className="text-primary text-xl" />
+                      </motion.div>
+                      <h3 className={`text-lg font-semibold mb-2 ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
+                        Your watchlist is empty
+                      </h3>
+                      <p className={`mb-4 ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
+                        Save courses to watch later and track your learning progress.
+                      </p>
+                      <Link
+                        to="/courses"
+                        className="py-2 px-4 bg-primary hover:bg-primary-dark text-white rounded-xl transition-colors text-sm font-semibold"
+                      >
+                        Explore Courses
+                      </Link>
+                    </motion.div>
+                  )}
                 </div>
 
-                <div
-                  className={`p-3 rounded-lg ${isDark ? 'bg-dark-bg-tertiary' : 'bg-light-bg-tertiary'} border ${isDark ? 'border-dark-border' : 'border-light-border'} hover:border-primary transition-colors cursor-pointer`}
-                  onClick={() => window.open("https://www.youtube.com/watch?v=7A5X_iwWdvw", "_blank")}
-                >
-                  <h4 className={`font-medium ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>React Performance Optimization</h4>
-                  <p className={`text-sm ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'} mb-2`}>
-                    Learn techniques to optimize React apps
-                  </p>
-                  <div className="flex items-center text-xs text-primary">
-                    <span className="bg-primary/10 px-2 py-1 rounded">Advanced</span>
-                    <span className="ml-2">4.9 ★</span>
-                  </div>
-                </div>
+              )}
 
-                <div
-                  className={`p-3 rounded-lg ${isDark ? 'bg-dark-bg-tertiary' : 'bg-light-bg-tertiary'} border ${isDark ? 'border-dark-border' : 'border-light-border'} hover:border-primary transition-colors cursor-pointer`}
-                  onClick={() => window.open("https://www.youtube.com/watch?v=ktjafK4SgWM", "_blank")}
-                >
-                  <h4 className={`font-medium ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>Full Stack Development with MERN</h4>
-                  <p className={`text-sm ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'} mb-2`}>
-                    Build complete web applications
-                  </p>
-                  <div className="flex items-center text-xs text-primary">
-                    <span className="bg-primary/10 px-2 py-1 rounded">Intermediate</span>
-                    <span className="ml-2">4.7 ★</span>
+              {activeTab === 'bookmarks' && (
+                <div className="space-y-6">
+                  <div className="mb-6 flex justify-between items-center">
+                    <div>
+                      <h2 className={`text-2xl sm:text-3xl font-righteous tracking-wide ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
+                        Your Bookmarks
+                      </h2>
+                      <p className={`text-sm mt-2 ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
+                        Saved roadmaps for quick access
+                      </p>
+                    </div>
+                    {bookmarks.length > 0 && (
+                      <Link
+                        to="/bookmarks"
+                        className="text-primary hover:text-primary-dark transition-colors font-medium"
+                      >
+                        View All
+                      </Link>
+                    )}
                   </div>
-                </div>
-              </div>
 
-              <Link
-                to="/courses"
-                className="mt-4 text-primary hover:text-primary-dark transition-colors text-sm flex justify-end items-center"
-              >
-                View all recommendations
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                </svg>
-              </Link>
-            </div>
+                  {bookmarks.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {bookmarks.map((item, idx) => (
+                        <motion.div
+                          key={idx}
+                          whileHover={{ y: -6, scale: 1.02 }}
+                          transition={{ duration: 0.3 }}
+                          className={`relative p-6 rounded-2xl shadow-lg bg-gradient-to-br backdrop-blur-xl transition-all duration-300 hover:shadow-2xl overflow-hidden ${
+                            isDark 
+                              ? 'from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-secondary-1000' 
+                              : 'from-blue-50 to-indigo-50 border border-light-border'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between mb-4">
+                            <span className="text-3xl">{item.icon || "📌"}</span>
+                            <FaBookmark className="text-primary" />
+                          </div>
+                          <h3 className={`text-xl font-semibold mb-2 ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
+                            {item.name}
+                          </h3>
+                          <p className={`text-sm mb-6 capitalize ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
+                            {item.type} roadmap
+                          </p>
+                          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                            <a
+                              href={item.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-block py-2 px-4 bg-primary hover:bg-primary-dark text-white rounded-xl transition-colors text-sm font-semibold"
+                            >
+                              Explore
+                            </a>
+                          </motion.div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  ) : (
+
+                    <motion.div 
+                      whileHover={{ y: -4 }}
+                      transition={{ duration: 0.3 }}
+                      className={`relative p-8 lg:p-12 rounded-2xl shadow-lg bg-gradient-to-br backdrop-blur-xl text-center transition-all duration-300 hover:shadow-2xl overflow-hidden ${
+                        isDark 
+                          ? 'from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-secondary-1000' 
+                          : 'from-blue-50 to-indigo-50 border border-light-border'
+                      }`}
+                    >
+                      <motion.div 
+                        className={`w-16 h-16 mx-auto mb-4 rounded-xl flex items-center justify-center ${isDark ? 'bg-dark-bg-primary' : 'bg-light-bg-primary'}`}
+                        whileHover={{ rotate: 360 }}
+                        transition={{ duration: 0.5 }}
+                      >
+                        <FaBookmark className="text-primary text-xl" />
+                      </motion.div>
+                      <h3 className={`text-lg font-semibold mb-2 ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
+                        No bookmarks yet
+                      </h3>
+                      <p className={`mb-4 ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
+                        Save your favorite roadmaps here for quick access.
+                      </p>
+                      <Link
+                        to="/roadmap"
+                        className="py-2 px-4 bg-primary hover:bg-primary-dark text-white rounded-xl transition-colors text-sm font-semibold"
+                      >
+                        Explore Roadmaps
+                      </Link>
+                    </motion.div>
+                  )}
+                </div>
+              )}
+            </motion.div>
           </div>
         </div>
+
+
+
+        {/* Call to Action Section - refreshed UI */}
+        <motion.section 
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.6, duration: 0.6, ease: "easeOut" }}
+          className={`mt-24 rounded-3xl overflow-hidden border ${
+            isDark
+              ? 'bg-gradient-to-br from-dark-bg-secondary via-dark-bg-tertiary to-dark-bg-secondary border-dark-border'
+              : 'bg-gradient-to-br from-light-bg-secondary via-light-bg-tertiary to-light-bg-secondary border-light-border'
+          }`}
+        >
+          <div
+          className={`relative p-6 lg:p-8 rounded-2xl shadow-lg bg-gradient-to-br backdrop-blur-xl transition-all duration-300 hover:shadow-2xl overflow-hidden ${
+            isDark 
+              ? 'from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-secondary-1000' 
+              : 'from-blue-50 to-indigo-50 border border-light-border'
+          }`} 
+          // className="px-6 py-8 sm:px-10 sm:py-12 md:px-14 md:py-14"
+          >
+            <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+              {/* Left - Message */}
+              <div className="md:col-span-2 text-center md:text-left">
+                <h3 className={`text-2xl sm:text-3xl md:text-4xl font-righteous leading-tight ${
+                  isDark ? 'text-dark-text-primary' : 'text-light-text-primary'
+                }`}>
+                  Keep Learning,
+                  <span className="text-primary"> Keep Growing</span>
+                </h3>
+                <p className={`mt-3 sm:mt-4 text-base sm:text-lg md:text-xl ${
+                  isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'
+                }`}>
+                  Set goals, track your progress, and turn consistency into mastery.
+                </p>
+                <div className="mt-6 flex flex-wrap gap-3 justify-center md:justify-start">
+                  <Link to="/courses" className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-primary text-white hover:bg-primary-dark transition-colors text-sm sm:text-base">
+                    Browse Courses
+                  </Link>
+                  <Link to="/roadmap" className={`${
+                    isDark ? 'bg-dark-bg-primary text-dark-text-primary' : 'bg-light-bg-primary text-light-text-primary'
+                  } px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl border border-primary/30 hover:border-primary/60 transition-colors text-sm sm:text-base`}>
+                    Explore Roadmaps
+                  </Link>
+                </div>
+              </div>
+
+              {/* Right - Quick Stats */}
+              <div className={`rounded-2xl p-5 sm:p-6 border ${
+                isDark ? 'bg-dark-bg-primary/60 border-dark-border' : 'bg-light-bg-primary/60 border-light-border'
+              }`}
+              >
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="text-center">
+                    <div className="text-xs sm:text-sm opacity-70">Saved Courses</div>
+                    <div className="text-xl sm:text-2xl font-semibold text-primary">{stats.savedCourses}</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-xs sm:text-sm opacity-70">Saved Roadmaps</div>
+                    <div className="text-xl sm:text-2xl font-semibold text-primary">{stats.savedRoadmaps}</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-xs sm:text-sm opacity-70">In Progress</div>
+                    <div className="text-xl sm:text-2xl font-semibold">{stats.coursesInProgress}</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-xs sm:text-sm opacity-70">Hours</div>
+                    <div className="text-xl sm:text-2xl font-semibold">{stats.totalHoursLearned}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.section>
       </div>
     </div>
   );

@@ -69,16 +69,18 @@
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
 
-## 🌐 Live Demo
 
-**Try Codify:** https://codifylearn.netlify.app
+# 🌐 Try Codify: [https://codifylearn.netlify.app](https://codifylearn.netlify.app)
 
-<details>
-  <summary><b>Demo Accounts</b></summary>
+## Demo Accounts
 
-- **User**: `demo@codify.com` • `demo123`  
-- **Admin**: `admin@codify.com` • `admin123`
-</details>
+### 👤 User Account
+- **Email:** `demo@gmail.com`
+- **Password:** `demo1234`
+
+### 👨‍💼 Read Only Admin Account
+- **Email:** `admin@gmail.com`
+- **Password:** `admin123`
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
 
@@ -114,8 +116,10 @@ Follow these steps to set up **Codify** locally and begin contributing.
    Create .env in client/:
    
    ```bash
-    VITE_SERVER_API=http://localhost:5050
-    VITE_YOUTUBE_API=add_your_youtube_api_here
+    VITE_SERVER_API=http://localhost:5050   
+    VITE_YOUTUBE_API=add_your_youtube_api_here  
+    VITE_GITHUB_TOKEN=add_your_github_token_here   
+    VITE_RAPIDAPI_KEY=add_your_rapidapi_key_here
    ```
 4. Run Frontend
    
@@ -139,11 +143,18 @@ Follow these steps to set up **Codify** locally and begin contributing.
    Create .env in server/:
    
    ```bash
-    MONGODB_URI="mongodb+srv://publicuser:public_codify@cluster0.5bysaia.mongodb.net/" 
-    #this is the owner MONGODB URI, you can use it!
+    MONGODB_URI="mongodb+srv://publicuser:public_codify@cluster0.5bysaia.mongodb.net/" #this is the owner MONGODB URI, you can use it!
     PORT=5050
     JWT_SECRET=your_jwt_secret
-    CLIENT_CORS=http://localhost:5173
+    CLIENT_CORS=* #Allow all origins for development, change in production
+    EMAIL_USER=your@gmail.com
+    EMAIL_PASS=your_google_app_password
+    GOOGLE_CLIENT_ID=your_google_client_id
+    GOOGLE_CLIENT_SECRET=your_google_client_secret
+    GOOGLE_LOGIN_CALLBACK_URL=http://localhost:5050/api/v1/auth/google/login/callback
+    GOOGLE_SIGNUP_CALLBACK_URL=http://localhost:5050/api/v1/auth/google/signup/callback
+    FRONTEND_URL=http://localhost:5173  
+    YOUTUBE_API_KEY=your_youtube_api_key
    ```
 8. Run Backend
 
@@ -324,3 +335,5 @@ Feel free to open issues or discussions if you have any feedback, feature sugges
 <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&height=65&section=footer"/>
 
 **Ready to show off your coding achievements? Get started with Codify today! 🚀**
+
+[⬆️ Back to Top](#readme)

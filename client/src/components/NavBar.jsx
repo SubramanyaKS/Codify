@@ -1,29 +1,44 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../store/auth";
 import { useTheme } from "../context/ThemeContext";
+import { FaGraduationCap, FaUser, FaBookOpen, FaRoad, FaStickyNote } from "react-icons/fa";
 import { RiMenu3Fill } from "react-icons/ri";
-import { FaGraduationCap } from "react-icons/fa";
+import MobileMenu from "./MobileMenu";
 import ThemeSwitcher from "./ThemeSwitcher";
 import ThemeColorSelector from "./ThemeColorSelector";
-import MobileMenu from "./MobileMenu";
 
 function NavBar() {
   const { isLoggedIn, userdata } = useAuth();
   const { theme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const isDark = theme === 'dark';
 
-  // Function to handle scrolling
+  const isDark = theme === "dark";
+
+  const displayName =
+    userdata?.firstName && userdata?.lastName
+      ? `${userdata.firstName} ${userdata.lastName}`
+      : userdata?.firstName ||
+        userdata?.username ||
+        (userdata?.email ? userdata.email.split("@")[0] : " ");
+
+  const profileImageUrl =
+    userdata?.profileImage ||
+    userdata?.avatar ||
+    userdata?.picture ||
+    (Array.isArray(userdata?.photos) && userdata.photos[0]?.value) ||
+    userdata?.image ||
+    "";
+
+  // Handle scroll and resize
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 10);
     };
 
-    // Close mobile menu when window is resized to desktop size
     const handleResize = () => {
-      if (window.innerWidth > 768) {
+      if (window.innerWidth > 1080) {
         setIsMenuOpen(false);
       }
     };
@@ -37,31 +52,51 @@ function NavBar() {
     };
   }, []);
 
-  // Toggle the side menu
+  const [isColorSelectorOpen, setIsColorSelectorOpen] = useState(false);
+
+const toggleColorSelector = () => setIsColorSelectorOpen(!isColorSelectorOpen);
+const closeColorSelector = () => setIsColorSelectorOpen(false);
+
+
+  // Toggle mobile menu
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
   return (
-    <nav 
-    className={`
-      sticky top-0 z-50 w-full transition-all duration-300
-      ${scrolled
-        ? `${isDark ? 'bg-dark-bg-primary/70 border-white/50' : 'bg-light-bg-primary/70 border-black/50'} border-b-2 shadow-nav backdrop-blur-sm`
-        : `${isDark ? 'border-white' : ' border-black'} border-0`}
-      ${isDark ? 'text-dark-text-primary' : 'text-white'}
-    `}
+    <nav
+      className={`
+        sticky top-0 z-50 w-full transition-all duration-300 backdrop-blur-sm
+        ${
+          scrolled
+            ? `${
+                isDark
+                  ? "bg-dark-bg-secondary/85 border-dark-border"
+                  : "bg-light-bg-secondary/85 border-light-border"
+              } border-b`
+            : `${
+                isDark
+                  ? "bg-dark-bg-secondary/70 border-dark-border/50"
+                  : "bg-light-bg-secondary/70 border-light-border/50"
+              } border-b`
+        }
+        ${isDark ? "text-dark-text-primary" : "text-light-text-primary"}
+      `}
     >
-      <div className=" mx-auto px-4 sm:px-6 lg:4">
-        <div className="flex justify-between items-center h-16">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
+        <div className="flex justify-between items-center h-14 sm:h-16">
           {/* Logo */}
           <div className="flex-shrink-0 flex items-center">
-            <NavLink to="/" className={`flex items-center space-x-2 font-bold text-xl text-primary-500 transition-colors`}>
-              <FaGraduationCap className="text-2xl" />
-              <span className="font-righteous">Codify</span>
+            <NavLink
+              to="/"
+              className="flex items-center space-x-2 font-bold text-2xl sm:text-3xl text-primary transition-colors"
+            >
+              <FaGraduationCap className="w-7 h-7 sm:w-8 sm:h-8" />
+              <span className="font-righteous text-2xl sm:text-3xl">Codify</span>
             </NavLink>
           </div>
 
+ feature/in-browser-ide
           {/* Desktop Navigation - Centered */}
           <div className="hidden md:flex flex-1 justify-center px-4">
             <div className="flex items-center space-x-8">
@@ -135,52 +170,121 @@ function NavBar() {
             </div>
           </div>
 
-          {/* Right Side - Auth Buttons and Theme Controls */}
-          <div className="hidden md:flex items-center justify-end gap-3 min-w-[250px]">
-            {/* Auth Buttons */}
-            <div className="flex items-center gap-2">
-              {isLoggedIn ? (
-                <NavLink
-                  to="/logout"
-                  className={`px-2 py-1.5 rounded-md text-sm font-medium ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'} hover:bg-primary-400 hover:text-white transition-colors`}
-                >
-                  Logout
-                </NavLink>
-              ) : (
-                <>
-                  <NavLink
-                    to="/login"
-                    className={`px-2 py-1.5 rounded-md text-sm font-medium ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'} hover:bg-primary-400 hover:text-white transition-colors`}
-                  >
-                    Login
-                  </NavLink>
-                  <NavLink
-                    to="/signup"
-                    className={`px-2 py-1.5 rounded-md text-sm font-medium ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'} hover:bg-primary-400 hover:text-white transition-colors`}
-                  >
-                    Sign Up
-                  </NavLink>
-                </>
-              )}
-            </div>
+          {/* Centered Buttons */}
+          <div className="hidden lg:flex flex-1 justify-center items-center space-x-6">
+            <NavLink
+              to="/courses"
+              className={({ isActive }) =>
+                `flex items-center space-x-2 px-4 py-2 rounded-lg text-base font-medium transition-all duration-200 ${
+                  isActive
+                    ? "bg-primary text-white shadow-md"
+                    : isDark
+                    ? "text-dark-text-primary hover:bg-dark-bg-tertiary hover:text-white"
+                    : "text-light-text-primary hover:bg-light-bg-tertiary"
+                }`
+              }
+            >
+              <FaBookOpen className="w-5 h-5" />
+              <span>Courses</span>
+            </NavLink>
+main
 
-            {/* Theme Controls */}
-            <div className="flex items-center gap-2 border-l pl-3 border-gray-200 dark:border-gray-700">
-              <ThemeSwitcher />
-              <ThemeColorSelector />
-            </div>
+            <NavLink
+              to="/roadmap"
+              className={({ isActive }) =>
+                `flex items-center space-x-2 px-4 py-2 rounded-lg text-base font-medium transition-all duration-200 ${
+                  isActive
+                    ? "bg-primary text-white shadow-md"
+                    : isDark
+                    ? "text-dark-text-primary hover:bg-dark-bg-tertiary hover:text-white"
+                    : "text-light-text-primary hover:bg-light-bg-tertiary"
+                }`
+              }
+            >
+              <FaRoad className="w-5 h-5" />
+              <span>Roadmaps</span>
+            </NavLink>
+
+            <NavLink
+              to="/notes"
+              className={({ isActive }) =>
+                `flex items-center space-x-2 px-4 py-2 rounded-lg text-base font-medium transition-all duration-200 ${
+                  isActive
+                    ? "bg-primary text-white shadow-md"
+                    : isDark
+                    ? "text-dark-text-primary hover:bg-dark-bg-tertiary hover:text-white"
+                    : "text-light-text-primary hover:bg-light-bg-tertiary"
+                }`
+              }
+            >
+              <FaStickyNote className="w-5 h-5" />
+              <span>Notes</span>
+            </NavLink>
           </div>
 
-          {/* Mobile menu button */}
-          <div className="flex md:hidden items-center space-x-3">
+          {/* Theme Controls */}
+          <div className="hidden lg:flex items-center gap-6 ml-auto mr-12">
             <ThemeSwitcher />
-            <ThemeColorSelector />
+            <ThemeColorSelector isOpen={isColorSelectorOpen}
+  onToggle={toggleColorSelector}
+  onClose={closeColorSelector}/>
+          </div>
+
+          {/* Mobile Theme Controls */}
+<div className="flex lg:hidden items-center gap-2 ml-auto mr-2">
+  <ThemeSwitcher />
+  <ThemeColorSelector 
+    isOpen={isColorSelectorOpen}
+    onToggle={toggleColorSelector}
+    onClose={closeColorSelector}
+  />
+</div>
+
+
+          {/* Right Side - Profile & Controls */}
+          <div className="flex items-center space-x-3">
+            {/* Mobile hamburger */}
             <button
               onClick={toggleMenu}
-              className="inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-white/10 focus:outline-none"
+              className={`sm:hidden flex items-center justify-center p-2 rounded-lg border transition-colors ${
+                isDark
+                  ? "border-dark-border text-dark-text-primary hover:bg-dark-bg-tertiary"
+                  : "border-light-border text-light-text-primary hover:bg-light-bg-tertiary"
+              }`}
+              aria-label="Open menu"
             >
-              <span className="sr-only">Open main menu</span>
-              <RiMenu3Fill className="block h-6 w-6" />
+              <RiMenu3Fill className="w-6 h-6" />
+            </button>
+
+            {/* Profile button */}
+            <button
+              onClick={toggleMenu}
+              className={`hidden sm:flex items-center space-x-2 sm:space-x-3 px-2 py-1 sm:px-4 sm:py-2 rounded-xl border backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] ${
+                isDark
+                  ? "bg-dark-bg-tertiary/50 border-dark-border hover:border-primary/40"
+                  : "bg-light-bg-tertiary/50 border-light-border hover:border-primary/40"
+              }`}
+            >
+              <span
+                className={`hidden sm:block max-w-[10rem] md:max-w-[14rem] truncate text-sm font-semibold tracking-wide ${
+                  isDark ? "text-white drop-shadow-sm" : "text-gray-800"
+                }`}
+                title={displayName}
+                aria-label="User name"
+              >
+                {displayName}
+              </span>
+              <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                {profileImageUrl ? (
+                  <img
+                    src={profileImageUrl}
+                    alt="Profile"
+                    className="w-full h-full rounded-full object-cover"
+                  />
+                ) : (
+                  <FaUser className="w-5 h-5 text-primary" />
+                )}
+              </div>
             </button>
           </div>
         </div>
@@ -198,92 +302,3 @@ function NavBar() {
 }
 
 export default NavBar;
-// src/components/NavBar.jsx
-// import React, { useEffect, useState } from 'react';
-// import { NavLink, useNavigate } from 'react-router-dom';
-// import { useAuth } from '../store/auth';
-// import './css/Navbar.css'; // Import your CSS styles
-// import { RiCloseLargeLine, RiMenu3Fill } from 'react-icons/ri';
-
-// const NavBar = () => {
-//   const { isLoggedIn, LogoutUser, userdata } = useAuth();
-//   const [isMenuOpen, setIsMenuOpen] = useState(false);
-//   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
-//   const navigate = useNavigate();
-
-//   const toggleMenu = () => {
-//     setIsMenuOpen(!isMenuOpen);
-//   };
-
-//   const handleLogout = () => {
-//     LogoutUser();
-//     navigate('/login'); // Redirect to login after logout
-//   };
-
-//   useEffect(() => {
-//     const handleResize = () => {
-//       setIsMobile(window.innerWidth <= 1024);
-//     };
-
-//     window.addEventListener('resize', handleResize);
-//     return () => {
-//       window.removeEventListener('resize', handleResize);
-//     };
-//   }, []);
-
-//   return (
-//     <nav className="navbar">
-//       <div className="navbar-brand">
-//         <h1>Codify</h1>
-//         {isMobile ? (
-//           <button onClick={toggleMenu} className="menu-toggle">
-//             {isMenuOpen ? <RiCloseLargeLine /> : <RiMenu3Fill />}
-//           </button>
-//         ) : null}
-//       </div>
-//       {(isMenuOpen || !isMobile) && (
-//         <ul className="navbar-links">
-//           <li>
-//             <NavLink to="/courses" onClick={toggleMenu}>
-//               Courses
-//             </NavLink>
-//           </li>
-//           {isLoggedIn ? (
-//             <>
-//               <li>
-//                 <NavLink to={userdata.isAdmin ? '/admin' : '/dashboard'} onClick={toggleMenu}>
-//                   Dashboard
-//                 </NavLink>
-//               </li>
-//               <li>
-//                 <button onClick={handleLogout}>Logout</button>
-//               </li>
-//             </>
-//           ) : (
-//             <>
-//               <li>
-//                 <NavLink to="/login" onClick={toggleMenu}>
-//                   Login
-//                 </NavLink>
-//               </li>
-//               <li>
-//                 <NavLink to="/signup" onClick={toggleMenu}>
-//                   Signup
-//                 </NavLink>
-//               </li>
-//             </>
-//           )}
-//           {userdata.isAdmin && (
-//             <li>
-//               <NavLink to="/admin" onClick={toggleMenu}>
-//                 Admin Panel
-//               </NavLink>
-//             </li>
-//           )}
-//         </ul>
-//       )}
-//     </nav>
-//   );
-// };
-
-// export default NavBar;

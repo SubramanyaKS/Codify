@@ -32,6 +32,15 @@
   --creator:#ffa07a;
 }
 
+body {
+  cursor: url("/cursor.svg") 4 4, auto;
+}
+
+ 
+
+ 
+
+
 /* Light theme variables */
 :root.light-theme {
   --creator:#ea3322;
@@ -410,9 +419,6 @@ span.doated{
   background-color: var(--bg_buttons);
 }
 .admin-cont > .right::-webkit-scrollbar {
-  display: none;
-}
-::-webkit-scrollbar{
   display: none;
 }
 .admin-cont .right {

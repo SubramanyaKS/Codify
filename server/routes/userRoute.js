@@ -6,7 +6,7 @@
 // userRouter.route("/").get(authMiddleware,user);
 // export default userRouter ;
 import express from 'express';
-import { user, toggleWatchlist, getWatchlist } from '../controllers/userController.js';
+import { user, toggleWatchlist, getWatchlist, updateProfile } from '../controllers/userController.js';
 import authMiddleware from '../middlewares/authMiddleware.js';
 
 const userRouter = express.Router();
@@ -19,5 +19,8 @@ userRouter.post('/addToWatchlist', authMiddleware, toggleWatchlist);
 
 // Route to get the user's watchlist
 userRouter.get('/watchlist', authMiddleware, getWatchlist);
+
+// Update profile for logged-in user
+userRouter.put('/profile', authMiddleware, updateProfile);
 
 export default userRouter;
