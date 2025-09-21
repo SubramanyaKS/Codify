@@ -33,7 +33,7 @@ const JsHeroPage = () => {
                 </p>
                 <div className="flex flex-col sm:flex-row justify-center gap-4">
                     <Link
-                        to="/notes/javascript/js-introduction"
+                        to="/notes/javascript/introduction"
                         className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 dark:bg-primary-700 dark:hover:bg-primary-600 transition-colors duration-200"
                     >
                         Get Started
