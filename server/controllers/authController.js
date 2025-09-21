@@ -19,7 +19,7 @@ const homePage = async (req, res) => {
       counter.count += 1;
       await counter.save();
     }
-    console.log("Visitor count:", counter.count); //check in terminal
+    //console.log("Visitor count:", counter.count); //check in terminal
     res.status(200).json({ visitorCount: counter.count });
     //res.status(202).json({ message: "home page" });
   } catch (error) {
