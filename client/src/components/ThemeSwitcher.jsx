@@ -34,12 +34,12 @@ const ThemeSwitcher = () => {
           className={`
           absolute top-0 left-0 right-0 bottom-0
           ${isLightTheme ? 'bg-light-bg-tertiary' : 'bg-dark-bg-tertiary'}
-          rounded-full transition-all duration-300
+          rounded-full border backdrop-blur-sm transition-all duration-300
           before:absolute before:content-[''] before:h-5 before:w-5
           before:left-1 before:bottom-1 before:rounded-full before:transition-all before:duration-300
           ${isLightTheme
-              ? 'before:transform before:translate-x-7 before:bg-primary'
-              : 'before:bg-primary'}
+              ? 'before:transform before:translate-x-7 before:bg-primary border-light-border'
+              : 'before:bg-primary border-dark-border'}
           hover:shadow-md
         `}>
           <FaSun className={`
