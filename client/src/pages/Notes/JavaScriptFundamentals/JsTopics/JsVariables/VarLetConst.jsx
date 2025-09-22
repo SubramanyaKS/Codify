@@ -1,5 +1,5 @@
 import { Check, X } from 'lucide-react';
-import CodeBlock from '../../components/CodeBlock';
+import CodeBlock from '../../../components/CodeBlock';
 
 const VarLetConst = () => {
     const comparisonTable = [

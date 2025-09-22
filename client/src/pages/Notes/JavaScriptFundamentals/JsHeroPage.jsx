@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { FiCode, FiBookOpen, FiLayers, FiChevronRight } from 'react-icons/fi';
+import CodeBlock from '../components/CodeBlock';
 
 const JsHeroPage = () => {
     const features = [
