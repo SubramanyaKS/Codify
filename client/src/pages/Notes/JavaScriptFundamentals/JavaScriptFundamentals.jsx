@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
-import JavaScriptNotesSidebar from './components/JavaScriptNotesSideBar';
+import NotesSidebar from '../NotesSidebar';
 import JsHeroPage from './components/JsHeroPage';
 import Loader from '../../../components/Loader';
 import Breadcrumb from '../../../components/Breadcrumb';
 import useMobile from '../../../hooks/useMobile';
 import JsPageTitleManager from './components/JsPageTitleManager';
+import categories from './JsSideBarData.json';
 
 // Import note components
 
@@ -103,7 +104,7 @@ const JavaScriptFundamentals = () => {
           ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
           md:w-64 w-64
         `}>
-          <JavaScriptNotesSidebar onNavigate={toggleSidebar} />
+          <NotesSidebar categories={categories} title={"JavaScript NOTES"} basePath={"/notes/javascript"} onNavigate={toggleSidebar} />
         </div>
 
         {/* Main Content */}
