@@ -6,8 +6,10 @@ import YouTubePlayer from '../components/YouTubePlayer';
 import CodePlayground from '../components/CodePlayground';
 import YouTubePlaylist from '../components/YouTubePlaylist';
 import CourseModules from '../components/CourseModules';
+import UniversalCodePlayground from '../components/CodeEditor.';
 import { getYouTubeUrlType, extractPlaylistId, extractVideoId } from '../utils/youtubeUtils';
-import { FaArrowLeft, FaBookmark, FaPlay, FaShare, FaEye, FaThumbsUp } from 'react-icons/fa';
+import { FaArrowLeft, FaBookmark, FaPlay, FaShare, FaEye, FaThumbsUp, FaDownload } from 'react-icons/fa';
+// import UniversalCodePlayground from '../components/CodePlayground';
 
 const CoursePlayer = () => {
   const { courseId } = useParams();
@@ -24,6 +26,8 @@ const CoursePlayer = () => {
   const [courseProgress, setCourseProgress] = useState(null);
   const [progress, setProgress] = useState(0);
   const [inWatchlist, setInWatchlist] = useState(false);
+  const [isEnrolled, setIsEnrolled] = useState(false);
+  const [isDownloadingPDF, setIsDownloadingPDF] = useState(false);
   const apiKey=import.meta.env.VITE_YOUTUBE_API;
   // YouTube link analysis
   const [youtubeData, setYoutubeData] = useState({
@@ -100,7 +104,10 @@ const CoursePlayer = () => {
   // 2. Second useEffect: Check if course is in watchlist (depends on course and userdata)
   useEffect(() => {
     checkWatchlist();
-  }, [checkWatchlist]);
+    if (userdata && userdata.enrolledCourses && userdata.enrolledCourses.includes(courseId)) {
+      setIsEnrolled(true);
+    }
+  }, [checkWatchlist, userdata, courseId]);
 
   // Memoized YouTube link analysis function
   const analyzeYouTubeLink = useCallback(() => {
@@ -377,6 +384,34 @@ const CoursePlayer = () => {
     }
   }, [course]);
 
+  const enrollCourse = useCallback(async () => {
+    if (!userdata?._id) {
+      navigate('/login');
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API}/api/courses/enroll`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ courseId })
+      });
+
+      if (response.ok) {
+        setIsEnrolled(true);
+        alert('Successfully enrolled in the course!');
+      } else {
+        alert('Failed to enroll in the course.');
+      }
+    } catch (error) {
+      console.error('Error enrolling in course:', error);
+      alert('An error occurred while enrolling in the course.');
+    }
+  }, [userdata, navigate, API, token, courseId]);
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen-minus-nav">
@@ -403,9 +438,60 @@ const CoursePlayer = () => {
       </div>
     );
   }
-
+  async function handleDownloadSummary(videoId) {
+    try {
+      setIsDownloadingPDF(true);
+      
+      // Fetch the PDF from the server
+      const response = await fetch(`${API}/api/v1/courses/summary/${videoId}`);
+      
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+      
+      // Get the PDF as blob
+      const blob = await response.blob();
+      
+      // Create download link
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${videoId}_summary.pdf`;
+      
+      // Trigger download
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Clean up
+      window.URL.revokeObjectURL(url);
+      
+      console.log('PDF download completed for video:', videoId);
+    } catch (error) {
+      console.error('Error downloading summary:', error);
+      alert('Failed to download PDF. Please try again.');
+    } finally {
+      setIsDownloadingPDF(false);
+    }
+  }
+  
   return (
     <div className={`min-h-screen-minus-nav ${isDark ? 'bg-dark-bg-primary text-dark-text-primary' : 'bg-light-bg-primary text-light-text-primary'}`}>
+      {/* Loading Overlay */}
+      {isDownloadingPDF && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className={`p-8 rounded-lg ${isDark ? 'bg-dark-bg-secondary' : 'bg-light-bg-secondary'} flex flex-col items-center`}>
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mb-4"></div>
+            <p className={`text-lg font-medium ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
+              Generating PDF Summary...
+            </p>
+            <p className={`text-sm mt-2 ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
+              This may take a few moments
+            </p>
+          </div>
+        </div>
+      )}
+
       <div className="container mx-auto px-4 py-8">
         {/* Course Header */}
         <div className="mb-8">
@@ -470,6 +556,18 @@ const CoursePlayer = () => {
                 title="Share course"
               >
                 <FaShare />
+              </button>
+
+              <button
+                onClick={enrollCourse}
+                disabled={isEnrolled}
+                className={`
+                  p-2 rounded-full transition-colors
+                  ${isEnrolled ? 'bg-green-500/20 text-green-500' : isDark ? 'hover:bg-dark-bg-tertiary' : 'hover:bg-light-bg-tertiary'}
+                `}
+                title={isEnrolled ? 'Already Enrolled' : 'Enroll in course'}
+              >
+                <FaPlay />
               </button>
             </div>
           </div>
@@ -556,6 +654,22 @@ const CoursePlayer = () => {
                       </span>
                     )}
                   </div>
+                  <div className="mt-4">
+                    <button 
+                      onClick={() => handleDownloadSummary(selectedVideo.id)}
+                      disabled={isDownloadingPDF}
+                      className={`flex items-center px-4 py-2 rounded-md transition-colors font-medium ${
+                        isDownloadingPDF
+                          ? 'bg-gray-400 cursor-not-allowed text-white'
+                          : isDark 
+                            ? 'bg-primary hover:bg-primary-dark text-white' 
+                            : 'bg-primary hover:bg-primary-dark text-white'
+                      }`}
+                    >
+                      <FaDownload className="mr-2" />
+                      {isDownloadingPDF ? 'Generating PDF...' : 'Download Summary'}
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
@@ -568,14 +682,6 @@ const CoursePlayer = () => {
               </p>
             </div>
 
-            {/* Interactive Code Playground */}
-            <div className={`p-6 rounded-lg ${isDark ? 'bg-dark-bg-secondary' : 'bg-light-bg-secondary'}`}>
-              <h3 className="text-xl font-bold mb-4">Try it yourself</h3>
-              <p className={`mb-3 ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
-                Experiment with JavaScript directly below. Write code and click Run to see output instantly.
-              </p>
-              <CodePlayground isDark={isDark} />
-            </div>
 
             {/* Course Modules */}
             {/* <CourseModules
@@ -596,7 +702,16 @@ const CoursePlayer = () => {
             )}
           </div>
         </div>
-      </div>
+          {/* Interactive Code Playground */}
+          <div className={`mt-6 p-6 rounded-lg ${isDark ? 'bg-dark-bg-secondary' : 'bg-light-bg-secondary'}`}>
+              <h3 className="text-xl font-bold mb-4">Try it yourself</h3>
+              <p className={`mb-3 ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
+                Experiment with them directly below. Write code and click Run to see output instantly.
+              </p>
+              {/* <CodePlayground isDark={isDark} /> */}
+               <UniversalCodePlayground />
+            </div>
+      </div>  
     </div>
   );
 };

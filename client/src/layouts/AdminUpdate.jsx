@@ -19,7 +19,8 @@ function AdminUpdate() {
     email: "",
     phone: "",
     password: "",
-    isAdmin: false
+    isAdmin: false,
+    isReadOnlyAdmin:false,
   });
 
   const getSingleUserData = async () => {
@@ -38,7 +39,8 @@ function AdminUpdate() {
           email: data.email,
           phone: data.phone,
           password: "",
-          isAdmin: data.isAdmin
+          isAdmin: data.isAdmin,
+          isReadOnlyAdmin : data.isReadOnlyAdmin
         });
       } else {
         toast.error("Failed to fetch user data");
@@ -271,6 +273,33 @@ function AdminUpdate() {
               >
                 <FaUserShield className={userData.isAdmin ? "text-primary" : ""} />
                 Admin privileges
+              </label>
+            </div>
+            <p className={`mt-1 text-sm ${
+              isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'
+            }`}>
+              Grant this user administrative access to manage all aspects of the platform
+            </p>
+          </div>
+          {/* Read Only  Admin Toggle */}
+          <div className="mt-6">
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                id="isReadOnlyAdmin"
+                name="isReadOnlyAdmin"
+                checked={userData.isReadOnlyAdmin}
+                onChange={handleInputChange}
+                className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary"
+              />
+              <label
+                htmlFor="isReadOnlyAdmin"
+                className={`ml-2 flex items-center gap-2 font-medium ${
+                  isDark ? 'text-dark-text-primary' : 'text-light-text-primary'
+                }`}
+              >
+                <FaUserShield className={userData.isReadOnlyAdmin ? "text-primary" : ""} />
+                Read only Admin privileges
               </label>
             </div>
             <p className={`mt-1 text-sm ${

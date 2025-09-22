@@ -17,14 +17,36 @@ const userActivitySchema = mongoose.Schema({
       'watchlist_update',
       'video_change',
       'course_select',
-      'progress_update'
+      'progress_update',
+      'course_enrolled',
+      'bookmark_added',
+      'bookmark_removed'
     ],
     required: true
   },
+  // courseId: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: 'Course',
+  //   required: true
+  // },
   courseId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Course',
-    required: true
+    required: function () {
+      // courseId required only for course-related activities
+      return [
+        'started_course',
+        'completed_module',
+        'completed_course',
+        'added_to_watchlist',
+        'removed_from_watchlist',
+        'watchlist_update',
+        'video_change',
+        'course_select',
+        'progress_update',
+        'course_enrolled'
+      ].includes(this.activityType);
+    }
   },
   moduleId: {
     type: String,

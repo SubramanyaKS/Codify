@@ -4,6 +4,7 @@ import { useTheme } from "../context/ThemeContext";
 import { toast } from "react-toastify";
 import { useLoading } from "../components/loadingContext";
 import { FaPaperPlane, FaUser, FaEnvelope, FaCommentAlt } from "react-icons/fa";
+import { motion } from "framer-motion";
 
 function ContactUs() {
   const [user, setUser] = useState({
@@ -41,26 +42,29 @@ function ContactUs() {
     e.preventDefault();
     try {
       setIsLoading(true);
+
       const response = await fetch(
-        `${API}/contact`,
+        `${API}/contact`, 
         {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          method: "POST",
-          body: JSON.stringify(user),
-        }
-      );
-      const data = await response.json()
-      if (data.extraDetails) {
-        toast.error(data.extraDetails);
-      } else {
-        toast.success("Message sent successfully");
-        setUser({
-          ...user,
-          message: ""
-        })
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+        body: JSON.stringify(user),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        toast.error(data.message || "Failed to send message");
+        return;
       }
+
+      toast.success("Message sent successfully");
+
+      setUser({
+        ...user,
+      });
     } catch (error) {
       console.log("message not sent: ", error);
       toast.error("Failed to send message. Please try again.");
@@ -69,72 +73,237 @@ function ContactUs() {
     }
   };
 
+
+  // Animation variants
+  const backgroundVariants = {
+    hidden: { opacity: 0, scale: 1.05 },
+    visible: { 
+      opacity: 1, 
+      scale: 1,
+      transition: {
+        duration: 1,
+        ease: "easeOut"
+      }
+    }
+  };
+
+  const headerVariants = {
+    hidden: { opacity: 0, y: -20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: "easeOut"
+      }
+    }
+  };
+
+  const contentVariants = {
+    hidden: { opacity: 0, x: -30 },
+    visible: { 
+      opacity: 1, 
+      x: 0,
+      transition: {
+        duration: 0.6,
+        delay: 0.3,
+        ease: "easeOut"
+      }
+    }
+  };
+
+  const formVariants = {
+    hidden: { opacity: 0, x: 30 },
+    visible: { 
+      opacity: 1, 
+      x: 0,
+      transition: {
+        duration: 0.6,
+        delay: 0.5,
+        ease: "easeOut"
+      }
+    }
+  };
+
+  const buttonVariants = {
+    initial: { scale: 1 },
+    hover: { 
+      scale: 1.05,
+      transition: {
+        duration: 0.2,
+        ease: "easeInOut"
+      }
+    },
+    tap: { 
+      scale: 0.98,
+      transition: {
+        duration: 0.1
+      }
+    }
+  };
+
   return (
-    <div className={`relative min-h-screen-minus-nav flex flex-col items-center justify-center p-4 md:p-8 overflow-hidden z-10 ${
+    <div className={`relative min-h-screen-minus-nav overflow-hidden z-10 ${
       isDark ? 'bg-dark-bg-primary text-dark-text-primary' : 'bg-light-bg-primary text-light-text-primary'
     }`}>
-      {/* Animated background pattern */}
-      <div className={`absolute top-0 left-0 w-full h-full -z-10 bg-[size:30px_30px] opacity-30 ${
-        isDark ? 'bg-grid-pattern-dark' : 'bg-grid-pattern-light'
-      }`}></div>
-      
-      {/* Decorative circles */}
-      <div className="absolute top-20 left-20 w-64 h-64 rounded-full bg-primary/10 blur-3xl -z-5"></div>
-      <div className="absolute bottom-20 right-20 w-80 h-80 rounded-full bg-primary/10 blur-3xl -z-5"></div>
+      {/* Enhanced Background with gradient overlay - matching Roadmaps */}
+      <motion.div 
+        variants={backgroundVariants}
+        initial="hidden"
+        animate="visible"
+        className={`absolute top-0 left-0 w-full h-full -z-10 bg-[size:30px_30px] ${
+          isDark ? 'bg-grid-pattern-dark' : 'bg-grid-pattern-light'
+        }`}
+      >
+        <div className={`absolute inset-0 ${
+          isDark ? 'bg-gradient-to-br from-dark-bg-primary/90 via-transparent to-dark-bg-primary/50' : 'bg-gradient-to-br from-light-bg-primary/90 via-transparent to-light-bg-primary/50'
+        }`}></div>
+      </motion.div>
 
-      <div className="w-full max-w-6xl mx-auto">
-        {/* Page heading for all screen sizes */}
-        <h1 className="text-4xl md:text-5xl font-righteous text-center tracking-wider mb-8 md:mb-12">
-          <span className="text-primary">Get in</span> Touch
-        </h1>
+      <div className="max-w-7xl mx-auto px-4 py-12 md:py-16 lg:py-20">
+        {/* Enhanced Header Section - matching Roadmaps */}
+        <motion.div 
+          variants={headerVariants}
+          initial="hidden"
+          animate="visible"
+          className="text-center mb-12"
+        >
+          <div className="inline-block">
+            <h1 className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-righteous tracking-wider mb-4 ${
+              isDark ? 'text-dark-text-primary' : 'text-light-text-primary'
+            }`}>
+              Get in Touch
+            </h1>
+            <motion.div 
+              initial={{ width: 0 }}
+              animate={{ width: "100%" }}
+              transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+              className={`h-1 rounded-full bg-gradient-to-r ${
+                isDark ? 'from-primary via-primary-dark to-primary' : 'from-primary via-primary-dark to-primary'
+              }`}
+            ></motion.div>
+          </div>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+            className={`mt-6 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed ${
+              isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'
+            }`}
+          >
+            Have questions about our courses or need assistance? Our team is here to help you on your learning journey.
+          </motion.p>
+        </motion.div>
         
-        <div className="w-full flex flex-col md:flex-row items-center justify-between gap-8 md:gap-16">
-          {/* Left side - Content and Image */}
-          <div className="w-full md:w-1/2 flex flex-col items-center md:items-start">
-            <div className="mb-8 text-center md:text-left">
-              <h2 className="text-2xl font-bold mb-4">We'd love to hear from you!</h2>
-              <p className={`mb-6 ${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
-                Have questions about our courses or need assistance? 
-                Our team is here to help you on your learning journey.
-              </p>
+        <div className="w-full flex flex-col md:flex-row items-start justify-between gap-8 md:gap-16">
+          {/* Left side - Content */}
+          <motion.div 
+            variants={contentVariants}
+            initial="hidden"
+            animate="visible"
+            className="w-full md:w-1/2 flex flex-col"
+          >
+            <div className="mb-8">
+              <h2 className={`text-2xl sm:text-3xl font-righteous tracking-wide mb-6 ${
+                isDark ? 'text-dark-text-primary' : 'text-light-text-primary'
+              }`}>
+                We'd love to hear from you!
+              </h2>
               
-              <div className="flex flex-col space-y-4">
-                <div className="flex items-center">
-                  <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center mr-3">
-                    <FaEnvelope className="text-primary" />
+              <div className="space-y-6">
+                <motion.div 
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.8 }}
+                  className="flex items-center"
+                >
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center mr-4 ${
+                    isDark ? 'bg-dark-bg-secondary' : 'bg-light-bg-secondary'
+                  }`}>
+                    <FaEnvelope className="text-primary text-lg" />
                   </div>
-                  <span>support@codify.com</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center mr-3">
-                    <FaUser className="text-primary" />
+                  <div>
+                    <h4 className={`font-semibold mb-1 ${
+                      isDark ? 'text-dark-text-primary' : 'text-light-text-primary'
+                    }`}>Email Us</h4>
+                    <span className={isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
+                      support@codify.com
+                    </span>
                   </div>
-                  <span>Mon-Fri: 9AM to 5PM</span>
-                </div>
+                </motion.div>
+                
+                <motion.div 
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 1.0 }}
+                  className="flex items-center"
+                >
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center mr-4 ${
+                    isDark ? 'bg-dark-bg-secondary' : 'bg-light-bg-secondary'
+                  }`}>
+                    <FaUser className="text-primary text-lg" />
+                  </div>
+                  <div>
+                    <h4 className={`font-semibold mb-1 ${
+                      isDark ? 'text-dark-text-primary' : 'text-light-text-primary'
+                    }`}>Support Hours</h4>
+                    <span className={isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}>
+                      Mon-Fri: 9AM to 5PM
+                    </span>
+                  </div>
+                </motion.div>
               </div>
             </div>
             
-            <img
+            <motion.img
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.2, duration: 0.8 }}
               src="contact.png"
               alt="Contact illustration"
-              className="relative max-w-md sm:w-full hidden md:block mx-auto md:mx-0 drop-shadow-xl animate-float"
+              className="relative max-w-md w-full hidden md:block mx-auto drop-shadow-xl animate-float"
             />
-          </div>
+          </motion.div>
 
-          {/* Right side - Form */}
-          <div className="w-full md:w-1/2">
-            <form
+          {/* Right side - Form with Roadmaps styling */}
+          <motion.div 
+            variants={formVariants}
+            initial="hidden"
+            animate="visible"
+            className="w-full md:w-1/2"
+          >
+            <motion.form
               onSubmit={handleSubmit}
-              className={`w-full max-w-md mx-auto p-8 rounded-xl shadow-xl backdrop-blur-sm transition-all duration-300 hover:shadow-2xl ${
+              whileHover={{ y: -4 }}
+              transition={{ duration: 0.3 }}
+              className={`w-full max-w-lg mx-auto p-8 rounded-2xl shadow-lg backdrop-blur-xl bg-gradient-to-br transition-all duration-300 hover:shadow-2xl overflow-hidden relative ${
                 isDark 
-                  ? 'bg-dark-bg-secondary/90 border border-dark-border' 
-                  : 'bg-light-bg-secondary/90 border border-light-border'
+                  ? 'from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-secondary-1000' 
+                  : 'from-blue-50 to-indigo-50 border border-light-border'
               }`}
             >
+              {/* Animated border on hover */}
+              <motion.div 
+                className="absolute top-0 right-0 w-0 h-full bg-primary rounded-r-2xl"
+                whileHover={{ 
+                  width: "3px",
+                  transition: { duration: 0.3, ease: "easeOut" }
+                }}
+              />
+              <motion.div 
+                className="absolute bottom-0 left-0 w-full h-0 bg-primary rounded-b-2xl"
+                whileHover={{ 
+                  height: "3px",
+                  transition: { duration: 0.3, ease: "easeOut", delay: 0.05 }
+                }}
+              />
+
               <div className="mb-6">
                 <label
                   htmlFor="username"
-                  className={`block mb-2 text-sm font-medium ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}
+                  className={`block mb-3 text-sm font-semibold ${
+                    isDark ? 'text-dark-text-primary' : 'text-light-text-primary'
+                  }`}
                 >
                   <div className="flex items-center">
                     <FaUser className="mr-2 text-primary" />
@@ -149,18 +318,20 @@ function ContactUs() {
                   placeholder="Enter your username"
                   value={user.username}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 rounded-lg ${
+                  className={`w-full px-4 py-4 rounded-xl text-base ${
                     isDark 
                       ? 'bg-dark-bg-tertiary text-dark-text-primary border-dark-border' 
-                      : 'bg-light-bg-tertiary text-light-text-primary border-light-border'
-                  } border focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300`}
+                      : 'bg-white text-light-text-primary border-light-border'
+                  } border-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300 hover:border-primary/50`}
                 />
               </div>
 
               <div className="mb-6">
                 <label
                   htmlFor="email"
-                  className={`block mb-2 text-sm font-medium ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}
+                  className={`block mb-3 text-sm font-semibold ${
+                    isDark ? 'text-dark-text-primary' : 'text-light-text-primary'
+                  }`}
                 >
                   <div className="flex items-center">
                     <FaEnvelope className="mr-2 text-primary" />
@@ -175,18 +346,20 @@ function ContactUs() {
                   placeholder="Enter your email"
                   value={user.email}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 rounded-lg ${
+                  className={`w-full px-4 py-4 rounded-xl text-base ${
                     isDark 
                       ? 'bg-dark-bg-tertiary text-dark-text-primary border-dark-border' 
-                      : 'bg-light-bg-tertiary text-light-text-primary border-light-border'
-                  } border focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300`}
+                      : 'bg-white text-light-text-primary border-light-border'
+                  } border-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300 hover:border-primary/50`}
                 />
               </div>
 
               <div className="mb-8">
                 <label
                   htmlFor="message"
-                  className={`block mb-2 text-sm font-medium ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}
+                  className={`block mb-3 text-sm font-semibold ${
+                    isDark ? 'text-dark-text-primary' : 'text-light-text-primary'
+                  }`}
                 >
                   <div className="flex items-center">
                     <FaCommentAlt className="mr-2 text-primary" />
@@ -201,24 +374,49 @@ function ContactUs() {
                   value={user.message}
                   onChange={handleChange}
                   rows="5"
-                  className={`w-full px-4 py-3 rounded-lg ${
+                  className={`w-full px-4 py-4 rounded-xl text-base ${
                     isDark 
                       ? 'bg-dark-bg-tertiary text-dark-text-primary border-dark-border' 
-                      : 'bg-light-bg-tertiary text-light-text-primary border-light-border'
-                  } border focus:outline-none focus:ring-2 focus:ring-primary resize-none transition-all duration-300`}
+                      : 'bg-white text-light-text-primary border-light-border'
+                  } border-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none transition-all duration-300 hover:border-primary/50`}
                 ></textarea>
               </div>
 
-              <button
+              <motion.button
                 type="submit"
-                className="w-full py-3 px-4 bg-primary hover:bg-primary-dark text-white font-medium rounded-lg transition-all duration-300 transform hover:scale-[1.02] flex items-center justify-center"
+                variants={buttonVariants}
+                initial="initial"
+                whileHover="hover"
+                whileTap="tap"
+                className="w-full py-4 px-6 bg-primary hover:bg-primary-dark text-white font-semibold rounded-xl transition-all duration-300 flex items-center justify-center text-base focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
               >
                 <FaPaperPlane className="mr-2" />
                 Send Message
-              </button>
-            </form>
-          </div>
+              </motion.button>
+            </motion.form>
+          </motion.div>
         </div>
+
+        {/* Call to Action Section - matching Roadmaps */}
+        <motion.section 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.5, duration: 0.6, ease: "easeOut" }}
+          className={`mt-24 text-center p-8 sm:p-12 rounded-3xl ${
+            isDark ? 'bg-gradient-to-r from-dark-bg-secondary to-dark-bg-secondary border border-dark-border' : 'bg-gradient-to-r from-light-bg-secondary to-light-bg-secondary border border-light-border'
+          }`}
+        >
+          <h3 className={`text-xl sm:text-2xl md:text-3xl font-righteous mb-4 ${
+            isDark ? 'text-dark-text-primary' : 'text-light-text-primary'
+          }`}>
+            Ready to Start Learning?
+          </h3>
+          <p className={`text-base sm:text-lg ${
+            isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'
+          } max-w-2xl mx-auto`}>
+            Join thousands of students already advancing their careers with our comprehensive courses and expert guidance.
+          </p>
+        </motion.section>
       </div>
     </div>
   );

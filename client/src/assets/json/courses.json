@@ -115,5 +115,143 @@
         "creator_name": "CodeHelp - by Babbar",
         "creator_youtube_link": "https://www.youtube.com/@CodeHelp",
         "description": "Master Data Structures and Algorithms with this comprehensive course designed for beginners and intermediate learners."
+    },
+    {
+        "course_category": "JavaScript",
+        "course_image": "https://i.ytimg.com/vi/EerdGm-ehJQ/hqdefault.jpg",
+        "course_title": "JavaScript Tutorial Full Course – Beginner to Pro",
+        "creator_image": "https://yt3.ggpht.com/ytc/AMLnZu9fFbda7VvO8O_5rv1V1vW8p7u2rQ_LYgG0R6eW=s176-c-k-c0x00ffffff-no-rj",
+        "creator_name": "SuperSimpleDev",
+        "creator_youtube_link": "https://www.youtube.com/watch?v=EerdGm-ehJQ",
+        "description": "A complete JavaScript tutorial for beginners to advanced learners. Covers everything from basics to modern front-end JavaScript concepts, making it ideal for becoming a professional web developer."
+     },
+     {
+        "course_category": "OOP (Java)",
+        "course_image": "https://i.ytimg.com/vi/BSVKUk58K6U/hqdefault.jpg",
+        "course_title": "OOP 1 | Introduction & Concepts – Classes, Objects, Constructors",
+        "creator_name": "Kunal Kushwaha",
+        "creator_youtube_link": "https://www.youtube.com/playlist?list=PL9gnSGHSqcno1G3XjUbwzXHL8_EttOuKk",
+        "description": "Full Object-Oriented Programming playlist by Kunal Kushwaha covering Java OOP concepts such as classes, objects, constructors, inheritance, and more."
+      },
+      {
+        "course_category": "Machine Learning",
+        "course_image": "https://i.ytimg.com/vi/ECbeaTuodXg/hqdefault.jpg",
+        "course_title": "ML Roadmap | Crack Job Interviews",
+        "creator_name": "Vizuara",
+        "creator_youtube_link": "https://www.youtube.com/watch?v=ECbeaTuodXg",
+        "description": "An overview of the Machine Learning learning path and how to prepare for ML job interviews, explained by Vizuara."
+      },
+      {
+        "course_category": "AI",
+        "course_image": "https://i.ytimg.com/vi/Xpr8D6LeAtw/hqdefault.jpg",
+        "course_title": "AI Course — First Video of Series",
+        "creator_name": "Unknown",
+        "creator_youtube_link": "https://www.youtube.com/playlist?list=PLPTV0NXA_ZSgsLAr8YCgCwhPIJNNtexWu",
+        "description": "First video in an AI playlist series. Covers central AI topics—check the playlist for full coverage."
+      },
+      {
+        "course_category": "Ethical Hacking",
+        "course_image": "https://i.ytimg.com/vi/sH4JCwjybGs/hqdefault.jpg",
+        "course_title": "Ethical Hacking in 15 Hours – 2023 Edition (Part 2)",
+        "creator_name": "The Cyber Mentor",
+        "creator_youtube_link": "https://www.youtube.com/watch?v=sH4JCwjybGs",
+        "description": "Part 2 of 'Ethical Hacking in 15 Hours – 2023 Edition' by The Cyber Mentor, covering advanced penetration testing topics like enumeration, Metasploit, payloads, and more."  
+      },
+      {
+        "course_category": "Rust",
+        "course_image": "https://i.ytimg.com/vi/qP7LzZqGh30/hqdefault.jpg",
+        "course_title": "Rust Tutorial for Beginners – Full Course (With Notes and Project)",
+        "creator_name": "Harkirat",
+        "creator_youtube_link": "https://www.youtube.com/watch?v=qP7LzZqGh30",
+        "description": "A comprehensive ~4-hour full course on Rust by Harkirat. Covers memory management, ownership, borrowing, and includes notes plus a project for practical learning."
+      },{
+        "course_category": "Operating Systems",
+        "course_image": "https://i.ytimg.com/vi/vBURTt97EkA/hqdefault.jpg",
+        "course_title": "Operating System Introduction by Neso Academy",
+        "creator_name": "Neso Academy",
+        "creator_youtube_link": "https://www.youtube.com/playlist?list=PLBlnK6fEyqRiVhbXDGLXDk_OQAeuVcp2O",
+        "description": "A full Operating Systems playlist by Neso Academy, introducing core OS concepts such as process, memory management, IO, file systems, and more."  
+      },
+      
+    {
+          "course_category": "Data Structures & Algorithms",
+          "course_image": "https://i.ytimg.com/vi/WQoB2z67hvY/hqdefault.jpg",
+          "course_title": "DSA Full Course (C++)",
+          "creator_name": "Kunal Kushwaha",
+          "creator_youtube_link": "https://www.youtube.com/watch?v=WQoB2z67hvY&list=PL9gnSGHSqcno1G3XjUbwzXHL8_EttOuKk",
+          "description": "Complete Data Structures and Algorithms course in C++ by Kunal Kushwaha. Covers arrays, linked lists, stacks, queues, trees, graphs, recursion, and dynamic programming."
+    },
+    {
+          "course_category": "C++ Programming",
+          "course_image": "https://i.ytimg.com/vi/yGB9jhsEsr8/hqdefault.jpg",
+          "course_title": "C++ Full Course for Beginners",
+          "creator_name": "Apna College",
+          "creator_youtube_link": "https://www.youtube.com/watch?v=yGB9jhsEsr8",
+          "description": "Learn C++ from scratch in this full course by Apna College. Covers basics to advanced concepts including OOPs, STL, and problem-solving."
+    },
+    {
+          "course_category": "Java Programming",
+          "course_image": "https://i.ytimg.com/vi/aQatrXw0njs/hqdefault.jpg",
+          "course_title": "Java Full Course for Beginners",
+          "creator_name": "Bro Code",
+          "creator_youtube_link": "https://www.youtube.com/watch?v=aQatrXw0njs",
+          "description": "Full Java programming course covering fundamentals, OOP, collections, multithreading, and projects."
+    },
+    {
+          "course_category": "Python Programming",
+          "course_image": "https://i.ytimg.com/vi/_uQrJ0TkZlc/hqdefault.jpg",
+          "course_title": "Python Full Course for Beginners",
+          "creator_name": "Programming with Mosh",
+          "creator_youtube_link": "https://www.youtube.com/watch?v=_uQrJ0TkZlc",
+          "description": "A complete Python programming course for beginners. Includes data types, functions, OOP, file handling, and projects."
+    },
+    {
+          "course_category": "Web Development",
+          "course_image": "https://i.ytimg.com/vi/nu_pCVPKzTk/hqdefault.jpg",
+          "course_title": "Full Stack Web Development Tutorial",
+          "creator_name": "freeCodeCamp.org",
+          "creator_youtube_link": "https://www.youtube.com/watch?v=nu_pCVPKzTk",
+          "description": "A full 7-hour crash course on full stack web development including HTML, CSS, JavaScript, Node.js, Express, and MongoDB."
+    },
+    {
+          "course_category": "Machine Learning",
+          "course_image": "https://i.ytimg.com/vi/GwIo3gDZCVQ/hqdefault.jpg",
+          "course_title": "Machine Learning Full Course",
+          "creator_name": "freeCodeCamp.org",
+          "creator_youtube_link": "https://www.youtube.com/watch?v=GwIo3gDZCVQ",
+          "description": "Comprehensive machine learning course including supervised, unsupervised learning, regression, classification, and neural networks."
+    },
+    {
+          "course_category": "Artificial Intelligence",
+          "course_image": "https://i.ytimg.com/vi/Xpr8D6LeAtw/hqdefault.jpg",
+          "course_title": "Artificial Intelligence Tutorial",
+          "creator_name": "Code With Vishal",
+          "creator_youtube_link": "https://www.youtube.com/watch?v=Xpr8D6LeAtw&list=PLPTV0NXA_ZSgsLAr8YCgCwhPIJNNtexWu",
+          "description": "AI playlist covering AI basics, intelligent agents, search algorithms, ML integration, and real-world use cases."
+    },
+    {
+          "course_category": "Database Management Systems",
+          "course_image": "https://i.ytimg.com/vi/4cWkVbC2bNE/hqdefault.jpg",
+          "course_title": "DBMS Full Course",
+          "creator_name": "Gate Smashers",
+          "creator_youtube_link": "https://www.youtube.com/watch?v=4cWkVbC2bNE&list=PLxCzCOWd7aiGz9donHRrE9I3Mwn6XdP8p",
+          "description": "Complete DBMS course covering ER diagrams, normalization, SQL queries, transaction management, and indexing."
+    },
+    {
+          "course_category": "Operating Systems",
+          "course_image": "https://i.ytimg.com/vi/vBURTt97EkA/hqdefault.jpg",
+          "course_title": "Operating System Full Course",
+          "creator_name": "Neso Academy",
+          "creator_youtube_link": "https://www.youtube.com/watch?v=vBURTt97EkA&list=PLBlnK6fEyqRiVhbXDGLXDk_OQAeuVcp2O",
+          "description": "Comprehensive OS course covering CPU scheduling, memory management, deadlocks, file systems, and virtualization."
+    },
+    {
+          "course_category": "System Design",
+          "course_image": "https://i.ytimg.com/vi/rliSgjoOFTs/hqdefault.jpg",
+          "course_title": "High-Level Design (HLD) Basics to Advanced",
+          "creator_name": "Shrayansh (Concept && Coding)",
+          "creator_youtube_link": "https://www.youtube.com/playlist?list=PL6W8uoQQ2c63W58rpNFDwdrBnq5G3EfT7",
+          "description": "System Design (HLD) series by Shrayansh. Covers system architecture, CAP theorem, client-server models, scaling, and case studies."
     }
+      
 ]
