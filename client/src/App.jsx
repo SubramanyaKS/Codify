@@ -4,6 +4,8 @@ import { useAuth } from "./store/auth";
 import { useTheme } from "./context/ThemeContext";
 import { LoadingProvider } from "./components/loadingContext.jsx";
 import 'react-toastify/ReactToastify.css';
+import OfflineBanner from "./components/OfflineBanner";
+
 
 // Always loaded components
 import NavBar from "./components/NavBar";
@@ -50,44 +52,45 @@ function App() {
   return (
     <Router>
       <ScrollToTop>
-      <LoadingProvider>
-        <div className={`flex flex-col min-h-screen ${isDark ? 'bg-dark-bg-primary text-dark-text-primary' : 'bg-light-bg-primary text-light-text-primary'}`}>
-          <header className="fixed top-0 z-50 w-full">
-            <NavBar />
-          </header>
-          <main className="flex-grow pt-16">
-            <Suspense fallback={
-              <Loader />
-            }>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/courses" element={<Courses />} />
-                <Route path="/courses/:courseId" element={<CoursePlayer />} />
-                <Route path="/roadmap" element={<Roadmap />} />
-                <Route path="/contact" element={<ContactUs />} />
-                <Route path="/signup" element={<Signup />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/logout" element={<LogOut />} />
-                <Route path="*" element={<ErrorPage />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/ide" element={<IDE />} />
-                <Route path="/contributorGuide" element={<ContributorsGuide />} />
-                <Route path="/admin" element={<AdminLayout />}>
-                  <Route path="users" element={<AdminUsers />} />
-                  <Route path="users/:id/edit" element={<AdminUpdate />} />
-                  <Route path="contacts" element={<AdminContacts />} />
-                  <Route path="courses" element={<AdminCourses />} />
-                  <Route path="courses/add" element={<AddNewCourse />} />
-                  <Route path="courses/update/:id" element={<CourseUpdate />} />
-                </Route>
-              </Routes>
-            </Suspense>
-          </main>
-          <ScrollToTopButton />
-          <Footer />
-        </div>
-      </LoadingProvider>
+        <LoadingProvider>
+          <div className={`flex flex-col min-h-screen ${isDark ? 'bg-dark-bg-primary text-dark-text-primary' : 'bg-light-bg-primary text-light-text-primary'}`}>
+            <header className="fixed top-0 z-50 w-full">
+              <NavBar />
+            </header>
+            <OfflineBanner />   {/* 👈 added here */}
+              <main className="flex-grow pt-16">
+                <Suspense fallback={
+                  <Loader />
+                }>
+                  <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/courses" element={<Courses />} />
+                    <Route path="/courses/:courseId" element={<CoursePlayer />} />
+                    <Route path="/roadmap" element={<Roadmap />} />
+                    <Route path="/contact" element={<ContactUs />} />
+                    <Route path="/signup" element={<Signup />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/logout" element={<LogOut />} />
+                    <Route path="*" element={<ErrorPage />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/ide" element={<IDE />} />
+                    <Route path="/contributorGuide" element={<ContributorsGuide />} />
+                    <Route path="/admin" element={<AdminLayout />}>
+                      <Route path="users" element={<AdminUsers />} />
+                      <Route path="users/:id/edit" element={<AdminUpdate />} />
+                      <Route path="contacts" element={<AdminContacts />} />
+                      <Route path="courses" element={<AdminCourses />} />
+                      <Route path="courses/add" element={<AddNewCourse />} />
+                      <Route path="courses/update/:id" element={<CourseUpdate />} />
+                    </Route>
+                  </Routes>
+                </Suspense>
+              </main>
+              <ScrollToTopButton />
+              <Footer />
+          </div>
+        </LoadingProvider>
       </ScrollToTop>
     </Router>
   );
