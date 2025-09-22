@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import NotesSidebar from '../NotesSidebar';
-import JsHeroPage from './components/JsHeroPage';
+import JsHeroPage from './JsHeroPage';
 import Loader from '../../../components/Loader';
 import Breadcrumb from '../../../components/Breadcrumb';
 import useMobile from '../../../hooks/useMobile';
-import JsPageTitleManager from './components/JsPageTitleManager';
-import categories from './JsSideBarData.json';
+import JsPageTitleManager from './JsPageTitleManager';
+import categories from './JsTopics.json';
 
 // Import note components
 

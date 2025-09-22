@@ -1,4 +1,3 @@
-import CodeBlock from './CodeBlock';
 import { Link } from 'react-router-dom';
 import { FiCode, FiBookOpen, FiLayers, FiChevronRight } from 'react-icons/fi';
 
