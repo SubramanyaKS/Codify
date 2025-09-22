@@ -42,7 +42,6 @@ function NavBar() {
         setIsMenuOpen(false);
       }
     };
-
     window.addEventListener("resize", handleResize);
     window.addEventListener("scroll", handleScroll);
 
@@ -240,9 +239,6 @@ main
   />
 </div>
 
-
-          {/* Right Side - Profile & Controls */}
-          <div className="flex items-center space-x-3">
             {/* Mobile hamburger */}
             <button
               onClick={toggleMenu}
@@ -270,7 +266,6 @@ main
                   isDark ? "text-white drop-shadow-sm" : "text-gray-800"
                 }`}
                 title={displayName}
-                aria-label="User name"
               >
                 {displayName}
               </span>
