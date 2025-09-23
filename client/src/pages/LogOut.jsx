@@ -33,29 +33,54 @@ function LogOut() {
   }
 
   return (
-    <div className={`min-h-screen-minus-nav flex items-center justify-center ${isDark ? 'bg-dark-bg-primary' : 'bg-light-bg-primary'}`}>
-      <motion.div
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
+    <div className={`h-screen-minus-nav flex items-center justify-center ${
+      isDark ? 'bg-dark-bg-primary' : 'bg-light-bg-primary'
+    }`}>
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.8, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.8, y: -20 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className={`
-          max-w-md w-full p-8 rounded-2xl shadow-lg text-center border
-          ${isDark ? 'bg-gradient-to-br from-gray-800 to-secondary-1000 border-dark-border' : 'bg-gradient-to-br from-blue-50 to-indigo-50 border-light-border'}
-        `}
+        className={`max-w-lg w-full p-12 rounded-2xl shadow-lg text-center border transition-colors duration-300 ${
+          isDark 
+            ? 'bg-gradient-to-br from-gray-800 to-secondary-1000 border-dark-border' 
+            : 'bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200'
+        }`}
       >
-        <div className="mb-6">
-          <motion.div
+        <motion.div 
+          className="mb-8"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+        >
+          <motion.div 
+            className="w-20 h-20 mx-auto border-4 border-primary border-t-transparent rounded-full"
             animate={{ rotate: 360 }}
-            transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-            className="w-16 h-16 mx-auto border-4 border-primary border-t-transparent rounded-full"
+            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
           />
-        </div>
-        <h2 className={`text-2xl font-righteous tracking-wider mb-2 ${isDark ? 'text-dark-text-primary' : 'text-light-text-primary'}`}>
+        </motion.div>
+        
+        <motion.h2 
+          className={`text-3xl font-righteous tracking-wider mb-4 ${
+            isDark ? 'text-dark-text-primary' : 'text-blue-900'
+          }`}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+        >
           Logging Out
-        </h2>
-        <p className={`${isDark ? 'text-dark-text-secondary' : 'text-light-text-secondary'}`}>
+        </motion.h2>
+        
+        <motion.p 
+          className={`text-lg ${
+            isDark ? 'text-dark-text-secondary' : 'text-blue-700'
+          }`}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.5 }}
+        >
           Please wait while we securely log you out...
-        </p>
+        </motion.p>
       </motion.div>
     </div>
   );
