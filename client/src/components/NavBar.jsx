@@ -2,7 +2,13 @@ import { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../store/auth";
 import { useTheme } from "../context/ThemeContext";
-import { FaGraduationCap, FaUser, FaBookOpen, FaRoad, FaStickyNote } from "react-icons/fa";
+import {
+  FaGraduationCap,
+  FaUser,
+  FaBookOpen,
+  FaRoad,
+  FaStickyNote,
+} from "react-icons/fa";
 import { RiMenu3Fill } from "react-icons/ri";
 import MobileMenu from "./MobileMenu";
 import ThemeSwitcher from "./ThemeSwitcher";
@@ -53,9 +59,9 @@ function NavBar() {
 
   const [isColorSelectorOpen, setIsColorSelectorOpen] = useState(false);
 
-const toggleColorSelector = () => setIsColorSelectorOpen(!isColorSelectorOpen);
-const closeColorSelector = () => setIsColorSelectorOpen(false);
-
+  const toggleColorSelector = () =>
+    setIsColorSelectorOpen(!isColorSelectorOpen);
+  const closeColorSelector = () => setIsColorSelectorOpen(false);
 
   // Toggle mobile menu
   const toggleMenu = () => {
@@ -91,7 +97,9 @@ const closeColorSelector = () => setIsColorSelectorOpen(false);
               className="flex items-center space-x-2 font-bold text-2xl sm:text-3xl text-primary transition-colors"
             >
               <FaGraduationCap className="w-7 h-7 sm:w-8 sm:h-8" />
-              <span className="font-righteous text-2xl sm:text-3xl">Codify</span>
+              <span className="font-righteous text-2xl sm:text-3xl">
+                Codify
+              </span>
             </NavLink>
           </div>
 
@@ -104,8 +112,8 @@ const closeColorSelector = () => setIsColorSelectorOpen(false);
                   isActive
                     ? "bg-primary text-white shadow-md"
                     : isDark
-                    ? "text-dark-text-primary hover:bg-dark-bg-tertiary hover:text-white"
-                    : "text-light-text-primary hover:bg-light-bg-tertiary"
+                    ? "text-dark-text-primary hover:bg-light-bg-tertiary hover:text-light-text-primary"
+                    : "text-light-text-primary hover:bg-dark-bg-tertiary hover:text-dark-text-primary"
                 }`
               }
             >
@@ -120,8 +128,8 @@ const closeColorSelector = () => setIsColorSelectorOpen(false);
                   isActive
                     ? "bg-primary text-white shadow-md"
                     : isDark
-                    ? "text-dark-text-primary hover:bg-dark-bg-tertiary hover:text-white"
-                    : "text-light-text-primary hover:bg-light-bg-tertiary"
+                    ? "text-dark-text-primary hover:bg-light-bg-tertiary hover:text-light-text-primary"
+                    : "text-light-text-primary hover:bg-dark-bg-tertiary hover:text-dark-text-primary"
                 }`
               }
             >
@@ -136,8 +144,8 @@ const closeColorSelector = () => setIsColorSelectorOpen(false);
                   isActive
                     ? "bg-primary text-white shadow-md"
                     : isDark
-                    ? "text-dark-text-primary hover:bg-dark-bg-tertiary hover:text-white"
-                    : "text-light-text-primary hover:bg-light-bg-tertiary"
+                    ? "text-dark-text-primary hover:bg-light-bg-tertiary hover:text-light-text-primary"
+                    : "text-light-text-primary hover:bg-dark-bg-tertiary hover:text-dark-text-primary"
                 }`
               }
             >
@@ -149,64 +157,65 @@ const closeColorSelector = () => setIsColorSelectorOpen(false);
           {/* Theme Controls */}
           <div className="hidden lg:flex items-center gap-6 ml-auto mr-12">
             <ThemeSwitcher />
-            <ThemeColorSelector isOpen={isColorSelectorOpen}
-  onToggle={toggleColorSelector}
-  onClose={closeColorSelector}/>
+            <ThemeColorSelector
+              isOpen={isColorSelectorOpen}
+              onToggle={toggleColorSelector}
+              onClose={closeColorSelector}
+            />
           </div>
 
           {/* Mobile Theme Controls */}
-<div className="flex lg:hidden items-center gap-2 ml-auto mr-2">
-  <ThemeSwitcher />
-  <ThemeColorSelector 
-    isOpen={isColorSelectorOpen}
-    onToggle={toggleColorSelector}
-    onClose={closeColorSelector}
-  />
-</div>
-
-            {/* Mobile hamburger */}
-            <button
-              onClick={toggleMenu}
-              className={`sm:hidden flex items-center justify-center p-2 rounded-lg border transition-colors ${
-                isDark
-                  ? "border-dark-border text-dark-text-primary hover:bg-dark-bg-tertiary"
-                  : "border-light-border text-light-text-primary hover:bg-light-bg-tertiary"
-              }`}
-              aria-label="Open menu"
-            >
-              <RiMenu3Fill className="w-6 h-6" />
-            </button>
-
-            {/* Profile button */}
-            <button
-              onClick={toggleMenu}
-              className={`hidden sm:flex items-center space-x-2 sm:space-x-3 px-2 py-1 sm:px-4 sm:py-2 rounded-xl border backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] ${
-                isDark
-                  ? "bg-dark-bg-tertiary/50 border-dark-border hover:border-primary/40"
-                  : "bg-light-bg-tertiary/50 border-light-border hover:border-primary/40"
-              }`}
-            >
-              <span
-                className={`hidden sm:block max-w-[10rem] md:max-w-[14rem] truncate text-sm font-semibold tracking-wide ${
-                  isDark ? "text-white drop-shadow-sm" : "text-gray-800"
-                }`}
-                title={displayName}
-              >
-                {displayName}
-              </span>
-              <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 overflow-hidden">
-                {profileImageUrl ? (
-                  <img
-                    src={profileImageUrl}
-                    alt="Profile"
-                    className="w-full h-full rounded-full object-cover"
-                  />
-                ) : (
-                  <FaUser className="w-5 h-5 text-primary" />
-                )}
-              </div>
-            </button>
+          <div className="flex lg:hidden items-center gap-2 ml-auto mr-2">
+            <ThemeSwitcher />
+            <ThemeColorSelector
+              isOpen={isColorSelectorOpen}
+              onToggle={toggleColorSelector}
+              onClose={closeColorSelector}
+            />
           </div>
+
+          {/* Mobile hamburger */}
+          <button
+            onClick={toggleMenu}
+            className={`sm:hidden flex items-center justify-center p-2 rounded-lg border transition-colors ${
+              isDark
+                ? "border-dark-border text-dark-text-primary hover:bg-dark-bg-tertiary"
+                : "border-light-border text-light-text-primary hover:bg-light-bg-tertiary"
+            }`}
+            aria-label="Open menu"
+          >
+            <RiMenu3Fill className="w-6 h-6" />
+          </button>
+
+          {/* Profile button */}
+          <button
+            onClick={toggleMenu}
+            className={`hidden sm:flex items-center space-x-2 sm:space-x-3 px-2 py-1 sm:px-4 sm:py-2 rounded-xl border backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] ${
+              isDark
+                ? "bg-dark-bg-tertiary/50 border-dark-border hover:border-primary/40"
+                : "bg-light-bg-tertiary/50 border-light-border hover:border-primary/40"
+            }`}
+          >
+            <span
+              className={`hidden sm:block max-w-[10rem] md:max-w-[14rem] truncate text-sm font-semibold tracking-wide ${
+                isDark ? "text-white drop-shadow-sm" : "text-gray-800"
+              }`}
+              title={displayName}
+            >
+              {displayName}
+            </span>
+            <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 overflow-hidden">
+              {profileImageUrl ? (
+                <img
+                  src={profileImageUrl}
+                  alt="Profile"
+                  className="w-full h-full rounded-full object-cover"
+                />
+              ) : (
+                <FaUser className="w-5 h-5 text-primary" />
+              )}
+            </div>
+          </button>
         </div>
       </div>
 
