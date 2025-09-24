@@ -149,20 +149,18 @@ const closeColorSelector = () => setIsColorSelectorOpen(false);
           {/* Theme Controls */}
           <div className="hidden lg:flex items-center gap-6 ml-auto mr-12">
             <ThemeSwitcher />
-            <ThemeColorSelector isOpen={isColorSelectorOpen}
-  onToggle={toggleColorSelector}
-  onClose={closeColorSelector}/>
+            <ThemeColorSelector isOpen={isColorSelectorOpen} onToggle={toggleColorSelector} onClose={closeColorSelector}/>
           </div>
 
           {/* Mobile Theme Controls */}
-<div className="flex lg:hidden items-center gap-2 ml-auto mr-2">
-  <ThemeSwitcher />
-  <ThemeColorSelector 
-    isOpen={isColorSelectorOpen}
-    onToggle={toggleColorSelector}
-    onClose={closeColorSelector}
-  />
-</div>
+          <div className="flex lg:hidden items-center gap-2 ml-auto mr-2">
+            <ThemeSwitcher />
+            <ThemeColorSelector 
+              isOpen={isColorSelectorOpen}
+              onToggle={toggleColorSelector}
+              onClose={closeColorSelector}
+            />
+          </div>
 
             {/* Mobile hamburger */}
             <button
@@ -207,8 +205,7 @@ const closeColorSelector = () => setIsColorSelectorOpen(false);
               </div>
             </button>
           </div>
-        </div>
-      </div>
+        </div> 
 
       {/* Mobile menu */}
       <MobileMenu
