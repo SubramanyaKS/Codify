@@ -7,14 +7,12 @@ import {
 } from "react-router-dom";
 import { useTheme } from "./context/ThemeContext";
 import { LoadingProvider } from "./components/loadingContext.jsx";
-feat/pwa-offline-mode
 import 'react-toastify/ReactToastify.css';
 import OfflineBanner from "./components/OfflineBanner";
 
 
 
 import "react-toastify/ReactToastify.css";
-main
 // Always loaded components
 import NavBar from "./components/NavBar";
 import Footer from "./components/Footer.jsx";
@@ -95,7 +93,6 @@ function App() {
     <Router>
       <ScrollToTop>
         <LoadingProvider>
-         feat/pwa-offline-mode
           <div className={`flex flex-col min-h-screen ${isDark ? 'bg-dark-bg-primary text-dark-text-primary' : 'bg-light-bg-primary text-light-text-primary'}`}>
             <header className="fixed top-0 z-50 w-full">
               <NavBar />
@@ -117,7 +114,7 @@ function App() {
                     <Route path="/logout" element={<LogOut />} />
                     <Route path="*" element={<ErrorPage />} />
                     <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/ide" element={<IDE />} />
+                    {/* <Route path="/ide" element={<IDE />} /> */}
                     <Route path="/contributorGuide" element={<ContributorsGuide />} />
                     <Route path="/admin" element={<AdminLayout />}>
                       <Route path="users" element={<AdminUsers />} />
@@ -132,75 +129,6 @@ function App() {
               </main>
               <ScrollToTopButton />
               <Footer />
-
-          <div
-            className={`flex flex-col min-h-screen ${
-              isDark
-                ? "bg-dark-bg-primary text-dark-text-primary"
-                : "bg-light-bg-primary text-light-text-primary"
-            }`}
-          >
-            <header className="fixed top-0 z-50 w-full">
-              <NavBar />
-            </header>
-            <main className="flex-grow pt-14 sm:pt-16">
-              <Suspense fallback={<Loader />}>
-                <Routes>
-                  {/* Pages Routes */}
-                  <Route path="/" element={<Home />} />
-                  <Route path="/oauth/callback" element={<OAuthCallback />} />
-                  <Route path="/about" element={<About />} />
-                  <Route path="/terms" element={<Terms />} />
-                  <Route path="/courses" element={<Courses />} />
-                  <Route path="/courses/:courseId" element={<CoursePlayer />} />
-                  <Route path="/editor" element={<CodeEditor />} />
-                  <Route path="/roadmap" element={<Roadmap />} />
-                  <Route path="/bookmarks" element={<Bookmarks />} />
-                  <Route path="/contact" element={<ContactUs />} />
-                  <Route path="/questions" element={<QuestionsPage />} />
-                  <Route path="/questions/:id" element={<QuestionDetail />} />
-
-                  {/* Notes Routes */}
-                  <Route path="/notes" element={<NotesPage />} />
-                  <Route path="/notes/javascript/*" element={<JavaScriptFundamentals />} />
-                  <Route path="/notes/python" element={<PythonNotes />} />
-                  <Route path="/notes/git" element={<GitNotes />} />
-                  <Route path="/notes/react" element={<ReactPattern />} />
-                  <Route path="/notes/:topic" element={<FallBackNotes />} />
-
-                  {/* Auth Routes */}
-                  <Route path="/signup" element={<Signup />} />
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/forgot-password" element={<ForgotPassword />} />
-                  <Route path="/logout" element={<LogOut />} />
-                  <Route path="/dashboard" element={<Dashboard />} />
-
-                  {/* Admin Routes */}
-                  <Route path="/admin" element={<AdminLayout />}>
-                    <Route path="users" element={<AdminUsers />} />
-                    <Route path="users/:id/edit" element={<AdminUpdate />} />
-                    <Route path="contacts" element={<AdminContacts />} />
-                    <Route path="courses" element={<AdminCourses />} />
-                    <Route path="courses/add" element={<AddNewCourse />} />
-                    <Route
-                      path="courses/update/:id"
-                      element={<CourseUpdate />}
-                    />
-                  </Route>
-
-                  {/* Other Routes */}
-                  <Route path="/contributors" element={<ContributorsPage />} />
-                  <Route
-                    path="/contributorGuide"
-                    element={<ContributorsGuide />}
-                  />
-                  <Route path="*" element={<ErrorPage />} />
-                </Routes>
-              </Suspense>
-            </main>
-            <ScrollToTopButton />
-            <Footer />
-    main
           </div>
         </LoadingProvider>
       </ScrollToTop>
