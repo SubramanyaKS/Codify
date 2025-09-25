@@ -114,6 +114,7 @@ function App() {
                     <Route path="/logout" element={<LogOut />} />
                     <Route path="*" element={<ErrorPage />} />
                     <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/editor" element={<CodeEditor />} />
                     {/* <Route path="/ide" element={<IDE />} /> */}
                     <Route path="/contributorGuide" element={<ContributorsGuide />} />
                     <Route path="/admin" element={<AdminLayout />}>
