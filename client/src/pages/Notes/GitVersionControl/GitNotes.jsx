@@ -9,6 +9,9 @@ import { Link } from 'react-router-dom';
 import { FiGitBranch, FiBookOpen, FiChevronRight, FiZap } from 'react-icons/fi';
 import CodeBlock from '../components/CodeBlock';
 
+// ROUTES
+import GitVersionControl from './GitTopics/Introduction/GitVersionControl';
+
 const GitHeroPage = () => {
   const features = [
     {
@@ -159,7 +162,8 @@ const GitNotes = () => {
               <Routes>
                 <Route index element={<GitHeroPage />} />
 
-
+                {/* Introduction */}
+                <Route path="what-is-version-control" element={<GitVersionControl />} />
 
 
               </Routes>
