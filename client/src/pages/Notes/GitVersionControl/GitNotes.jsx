@@ -18,6 +18,7 @@ import ConfigGit from './GitTopics/GetStartedWithGit/ConfigGit'
 import GitArchitecture from './GitTopics/GetStartedWithGit/GitArchitecture'
 import GitInitRepository from './GitTopics/GetStartedWithGit/GitInitRepository'
 import GitStatus from './GitTopics/GitCommands/GitStatus'
+import GitAdd from './GitTopics/GitCommands/GitAdd'
 
 
 
@@ -185,7 +186,8 @@ const GitNotes = () => {
 
                 {/* Git Commands */}
                 <Route path='git-status' element={<GitStatus />} />
-
+                <Route path='git-add' element={<GitAdd />} />
+                
 
 
 
