@@ -24,6 +24,7 @@ import GitLog from './GitTopics/GitCommands/GitLog'
 import GitDiff from './GitTopics/GitCommands/GitDiff'
 import GitReset from './GitTopics/GitCommands/GitReset'
 import GitBranches from './GitTopics/BranchAndMerge/GitBranches'
+import GitMerge from './GitTopics/BranchAndMerge/GitMerge'
 
 
 
@@ -199,7 +200,7 @@ const GitNotes = () => {
 
                 {/* Git Branches */}
                 <Route path='creating-branches-(git-branch,-git-checkout--b)' element={<GitBranches />} />
-
+                <Route path='merging-branches-(git-merge)' element={<GitMerge />} />
 
 
               </Routes>
