@@ -15,6 +15,8 @@ import BenefitsOfVersionControl from './GitTopics/Introduction/BenefitsOfVersion
 import VersionControlComparison from './GitTopics/Introduction/VersionControlComparison'
 import GitInstallation from './GitTopics/GetStartedWithGit/GitInstallation'
 import ConfigGit from './GitTopics/GetStartedWithGit/ConfigGit'
+import GitArchitecture from './GitTopics/GetStartedWithGit/GitArchitecture'
+import GitInitRepository from './GitTopics/GetStartedWithGit/GitInitRepository'
 
 
 
@@ -177,6 +179,13 @@ const GitNotes = () => {
                 {/* Get Started With Git */}
                 <Route path="installing-git" element={<GitInstallation />} />
                 <Route path="configuring-git-(username,-email,-editor)" element={<ConfigGit />} />
+                <Route path='understanding-git-architecture' element={<GitArchitecture />} />
+                <Route path='initializing-a-repository-(git-init)' element={<GitInitRepository />} />
+
+
+
+
+
 
 
               </Routes>
