@@ -17,6 +17,7 @@ import GitInstallation from './GitTopics/GetStartedWithGit/GitInstallation'
 import ConfigGit from './GitTopics/GetStartedWithGit/ConfigGit'
 import GitArchitecture from './GitTopics/GetStartedWithGit/GitArchitecture'
 import GitInitRepository from './GitTopics/GetStartedWithGit/GitInitRepository'
+import GitStatus from './GitTopics/GitCommands/GitStatus'
 
 
 
@@ -182,8 +183,8 @@ const GitNotes = () => {
                 <Route path='understanding-git-architecture' element={<GitArchitecture />} />
                 <Route path='initializing-a-repository-(git-init)' element={<GitInitRepository />} />
 
-
-
+                {/* Git Commands */}
+                <Route path='git-status' element={<GitStatus />} />
 
 
 
