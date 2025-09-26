@@ -11,6 +11,10 @@ import CodeBlock from '../components/CodeBlock';
 
 // ROUTES
 import GitVersionControl from './GitTopics/Introduction/GitVersionControl';
+import BenefitsOfVersionControl from './GitTopics/Introduction/BenefitsOfVersionControl'
+
+
+
 
 const GitHeroPage = () => {
   const features = [
@@ -164,7 +168,7 @@ const GitNotes = () => {
 
                 {/* Introduction */}
                 <Route path="what-is-version-control" element={<GitVersionControl />} />
-
+                <Route path="benefits-of-version-control" element={<BenefitsOfVersionControl />} />
 
               </Routes>
             </React.Suspense>
