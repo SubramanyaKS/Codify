@@ -1,3 +1,4 @@
+// src/components/NavBar.jsx
 import { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../store/auth";
@@ -19,9 +20,11 @@ function NavBar() {
   const { theme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isColorSelectorOpen, setIsColorSelectorOpen] = useState(false);
 
   const isDark = theme === "dark";
 
+  // Compute display name
   const displayName =
     userdata?.firstName && userdata?.lastName
       ? `${userdata.firstName} ${userdata.lastName}`
@@ -29,6 +32,7 @@ function NavBar() {
         userdata?.username ||
         (userdata?.email ? userdata.email.split("@")[0] : " ");
 
+  // Compute profile image URL
   const profileImageUrl =
     userdata?.profileImage ||
     userdata?.avatar ||
@@ -39,34 +43,22 @@ function NavBar() {
 
   // Handle scroll and resize
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
-    };
-
+    const handleScroll = () => setScrolled(window.scrollY > 10);
     const handleResize = () => {
-      if (window.innerWidth > 1080) {
-        setIsMenuOpen(false);
-      }
+      if (window.innerWidth > 1080) setIsMenuOpen(false);
     };
-    window.addEventListener("resize", handleResize);
     window.addEventListener("scroll", handleScroll);
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener("resize", handleResize);
       window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
-  const [isColorSelectorOpen, setIsColorSelectorOpen] = useState(false);
-
-  const toggleColorSelector = () =>
-    setIsColorSelectorOpen(!isColorSelectorOpen);
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const toggleColorSelector = () => setIsColorSelectorOpen(!isColorSelectorOpen);
   const closeColorSelector = () => setIsColorSelectorOpen(false);
-
-  // Toggle mobile menu
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
 
   return (
     <nav
@@ -97,13 +89,11 @@ function NavBar() {
               className="flex items-center space-x-2 font-bold text-2xl sm:text-3xl text-primary transition-colors"
             >
               <FaGraduationCap className="w-7 h-7 sm:w-8 sm:h-8" />
-              <span className="font-righteous text-2xl sm:text-3xl">
-                Codify
-              </span>
+              <span className="font-righteous text-2xl sm:text-3xl">Codify</span>
             </NavLink>
           </div>
 
-          {/* Centered Buttons */}
+          {/* Centered Links */}
           <div className="hidden lg:flex flex-1 justify-center items-center space-x-6">
             <NavLink
               to="/courses"
@@ -154,7 +144,7 @@ function NavBar() {
             </NavLink>
           </div>
 
-          {/* Theme Controls */}
+          {/* Desktop Theme Controls */}
           <div className="hidden lg:flex items-center gap-6 ml-auto mr-12">
             <ThemeSwitcher />
             <ThemeColorSelector
@@ -174,7 +164,7 @@ function NavBar() {
             />
           </div>
 
-          {/* Mobile hamburger */}
+          {/* Mobile Hamburger */}
           <button
             onClick={toggleMenu}
             className={`sm:hidden flex items-center justify-center p-2 rounded-lg border transition-colors ${
@@ -187,7 +177,7 @@ function NavBar() {
             <RiMenu3Fill className="w-6 h-6" />
           </button>
 
-          {/* Profile button */}
+          {/* Profile Button */}
           <button
             onClick={toggleMenu}
             className={`hidden sm:flex items-center space-x-2 sm:space-x-3 px-2 py-1 sm:px-4 sm:py-2 rounded-xl border backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] ${
