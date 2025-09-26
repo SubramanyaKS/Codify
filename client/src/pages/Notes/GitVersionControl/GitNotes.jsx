@@ -25,6 +25,8 @@ import GitDiff from './GitTopics/GitCommands/GitDiff'
 import GitReset from './GitTopics/GitCommands/GitReset'
 import GitBranches from './GitTopics/BranchAndMerge/GitBranches'
 import GitMerge from './GitTopics/BranchAndMerge/GitMerge'
+import MergeTypes from './GitTopics/BranchAndMerge/MergeTypes'
+import ResolvingMergeConflicts from './GitTopics/BranchAndMerge/ResolvingMergeConflicts'
 
 
 
@@ -201,6 +203,16 @@ const GitNotes = () => {
                 {/* Git Branches */}
                 <Route path='creating-branches-(git-branch,-git-checkout--b)' element={<GitBranches />} />
                 <Route path='merging-branches-(git-merge)' element={<GitMerge />} />
+                <Route path='fast-forward-vs-three-way-merge' element={<MergeTypes />} />
+                <Route path='resolving-merge-conflicts' element={<ResolvingMergeConflicts />} />
+
+
+
+
+
+
+
+
 
 
               </Routes>
