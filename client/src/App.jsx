@@ -116,6 +116,15 @@ function App() {
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/editor" element={<CodeEditor />} />
                     {/* <Route path="/ide" element={<IDE />} /> */}
+                    
+                    {/* Notes page */}
+                    <Route path="/notes/*" element={<NotesPage />} />
+                    <Route path="/notes/javascript/*" element={<JavaScriptFundamentals />} />
+                    <Route path="/notes/python" element={<PythonNotes />} />
+                    <Route path="/notes/git" element={<GitNotes />} />
+                    <Route path="/notes/react" element={<ReactPattern />} />
+                    <Route path="/notes/:topic" element={<FallBackNotes />} />
+
                     <Route path="/contributorGuide" element={<ContributorsGuide />} />
                     <Route path="/admin" element={<AdminLayout />}>
                       <Route path="users" element={<AdminUsers />} />
