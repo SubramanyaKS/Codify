@@ -20,6 +20,9 @@ import GitInitRepository from './GitTopics/GetStartedWithGit/GitInitRepository'
 import GitStatus from './GitTopics/GitCommands/GitStatus'
 import GitAdd from './GitTopics/GitCommands/GitAdd'
 import GitCommit from './GitTopics/GitCommands/GitCommit'
+import GitLog from './GitTopics/GitCommands/GitLog'
+import GitDiff from './GitTopics/GitCommands/GitDiff'
+import GitReset from './GitTopics/GitCommands/GitReset'
 
 
 
@@ -189,6 +192,10 @@ const GitNotes = () => {
                 <Route path='git-status' element={<GitStatus />} />
                 <Route path='git-add' element={<GitAdd />} />
                 <Route path='git-commit' element={<GitCommit />} />
+                <Route path='git-log' element={<GitLog />} />
+                <Route path='git-diff' element={<GitDiff />} />
+                <Route path='git-reset' element={<GitReset />} />
+
 
 
 
