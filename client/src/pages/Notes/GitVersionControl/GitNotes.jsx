@@ -13,6 +13,7 @@ import CodeBlock from '../components/CodeBlock';
 import GitVersionControl from './GitTopics/Introduction/GitVersionControl';
 import BenefitsOfVersionControl from './GitTopics/Introduction/BenefitsOfVersionControl'
 import VersionControlComparison from './GitTopics/Introduction/VersionControlComparison'
+import GitInstallation from './GitTopics/GetStartedWithGit/GitInstallation'
 
 
 
@@ -171,6 +172,9 @@ const GitNotes = () => {
                 <Route path="what-is-version-control" element={<GitVersionControl />} />
                 <Route path="benefits-of-version-control" element={<BenefitsOfVersionControl />} />
                 <Route path="centralized-vs-distributed-version-control" element={<VersionControlComparison />} />
+
+                {/* Get Started With Git */}
+                <Route path="installing-git" element={<GitInstallation />} />
 
               </Routes>
             </React.Suspense>
