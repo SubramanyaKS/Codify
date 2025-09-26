@@ -23,6 +23,8 @@ import GitCommit from './GitTopics/GitCommands/GitCommit'
 import GitLog from './GitTopics/GitCommands/GitLog'
 import GitDiff from './GitTopics/GitCommands/GitDiff'
 import GitReset from './GitTopics/GitCommands/GitReset'
+import GitBranches from './GitTopics/BranchAndMerge/GitBranches'
+import GitMerge from './GitTopics/BranchAndMerge/GitMerge'
 
 
 
@@ -196,7 +198,9 @@ const GitNotes = () => {
                 <Route path='git-diff' element={<GitDiff />} />
                 <Route path='git-reset' element={<GitReset />} />
 
-
+                {/* Git Branches */}
+                <Route path='creating-branches-(git-branch,-git-checkout--b)' element={<GitBranches />} />
+                <Route path='merging-branches-(git-merge)' element={<GitMerge />} />
 
 
               </Routes>
