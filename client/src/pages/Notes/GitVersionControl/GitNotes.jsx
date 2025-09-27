@@ -29,6 +29,7 @@ import MergeTypes from './GitTopics/BranchAndMerge/MergeTypes'
 import ResolvingMergeConflicts from './GitTopics/BranchAndMerge/ResolvingMergeConflicts'
 import GitDeleteBranches from './GitTopics/BranchAndMerge/GitDeleteBranches'
 import RemoteRepository from './GitTopics/RemoteRepositories/RemoteRepository'
+import GitRemoteAdd from './GitTopics/RemoteRepositories/GitRemoteAdd'
 
 
 
@@ -211,9 +212,7 @@ const GitNotes = () => {
 
                 {/* Remote Repositories */}
                 <Route path='what-is-a-remote-repository' element={<RemoteRepository />} />
-
-
-
+                <Route path='git-remote-add' element={<GitRemoteAdd />} />
 
 
 
