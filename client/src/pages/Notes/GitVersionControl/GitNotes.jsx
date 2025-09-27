@@ -31,6 +31,8 @@ import GitDeleteBranches from './GitTopics/BranchAndMerge/GitDeleteBranches'
 import RemoteRepository from './GitTopics/RemoteRepositories/RemoteRepository'
 import GitRemoteAdd from './GitTopics/RemoteRepositories/GitRemoteAdd'
 import GitPushPull from './GitTopics/RemoteRepositories/GitPushPull'
+import GitFetch from './GitTopics/RemoteRepositories/GitFetch'
+import TrackingBranches from './GitTopics/RemoteRepositories/TrackingBranches'
 
 
 
@@ -215,7 +217,8 @@ const GitNotes = () => {
                 <Route path='what-is-a-remote-repository' element={<RemoteRepository />} />
                 <Route path='git-remote-add' element={<GitRemoteAdd />} />
                 <Route path='git-push-and-git-pull' element={<GitPushPull />} />
-
+                <Route path='git-fetch' element={<GitFetch />} />
+                <Route path='tracking-branches' element={<TrackingBranches />} />
 
 
 
