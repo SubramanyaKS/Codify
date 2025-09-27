@@ -7,6 +7,12 @@ import Breadcrumb from '../../../components/Breadcrumb';
 import useMobile from '../../../hooks/useMobile';
 import PyPageTitleManager from './PyPageTitleManager';
 import categories from './PyTopics.json';
+// Python Basics
+import Operators from './PyTopics/PythonBasics/Operators';
+import InputOutput from './PyTopics/PythonBasics/InputOutput';
+import Loops from './PyTopics/PythonBasics/Loops';
+import Functions from './PyTopics/PythonBasics/Functions';
+
 
 
 
@@ -65,6 +71,12 @@ const PythonFundamentals = () => {
             <React.Suspense fallback={<Loader />}>
               <Routes>
                 <Route index element={<PyHeroPage />} />
+                 {/* Python Basics */}
+                <Route path="operators" element={<Operators />} />
+                <Route path="input-&-output" element={<InputOutput />} />
+                <Route path="loops" element={<Loops />} />
+                <Route path="functions" element={<Functions />} />
+
 
                
               </Routes>
