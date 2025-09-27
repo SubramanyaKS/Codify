@@ -50,8 +50,8 @@ const GitNotes = lazy(() =>
 const ReactPattern = lazy(() =>
   import("./pages/Notes/ReactPatterns/ReactPattern.jsx")
 );
-const PythonNotes = lazy(() =>
-  import("./pages/Notes/PythonBasics/PythonNotes.jsx")
+const PythonFundamentals = lazy(() =>
+  import("./pages/Notes/PythonFundamentals/PythonFundamentals.jsx")
 );
 
 // Admin components
@@ -120,8 +120,8 @@ function App() {
                     {/* Notes page */}
                     <Route path="/notes/*" element={<NotesPage />} />
                     <Route path="/notes/javascript/*" element={<JavaScriptFundamentals />} />
+                    <Route path="/notes/python/*" element={<PythonFundamentals />} />
                     <Route path="/notes/git/*" element={<GitNotes />} />
-                    <Route path="/notes/python" element={<PythonNotes />} />
                     <Route path="/notes/react" element={<ReactPattern />} />
                     <Route path="/notes/:topic" element={<FallBackNotes />} />
 
