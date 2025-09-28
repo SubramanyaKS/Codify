@@ -125,6 +125,10 @@ function App() {
                     <Route path="/notes/react" element={<ReactPattern />} />
                     <Route path="/notes/:topic" element={<FallBackNotes />} />
 
+                    <Route path="/bookmarks" element={<Bookmarks />} />
+                    <Route path="/questions" element={<QuestionsPage />} />
+                    <Route path="/questions/:id" element={<QuestionDetail />} />
+                    <Route path="/Contributors" element={<ContributorsPage />} />
                     <Route path="/contributorGuide" element={<ContributorsGuide />} />
                     <Route path="/admin" element={<AdminLayout />}>
                       <Route path="users" element={<AdminUsers />} />
