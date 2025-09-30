@@ -29,8 +29,8 @@ function NavBar() {
     userdata?.firstName && userdata?.lastName
       ? `${userdata.firstName} ${userdata.lastName}`
       : userdata?.firstName ||
-        userdata?.username ||
-        (userdata?.email ? userdata.email.split("@")[0] : " ");
+      userdata?.username ||
+      (userdata?.email ? userdata.email.split("@")[0] : " ");
 
   // Compute profile image URL
   const profileImageUrl =
@@ -56,6 +56,7 @@ function NavBar() {
     };
   }, []);
 
+  const [isColorSelectorOpen, setIsColorSelectorOpen] = useState(false);
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleColorSelector = () => setIsColorSelectorOpen(!isColorSelectorOpen);
   const closeColorSelector = () => setIsColorSelectorOpen(false);
@@ -64,18 +65,15 @@ function NavBar() {
     <nav
       className={`
         sticky top-0 z-50 w-full transition-all duration-300 backdrop-blur-sm
-        ${
-          scrolled
-            ? `${
-                isDark
-                  ? "bg-dark-bg-secondary/85 border-dark-border"
-                  : "bg-light-bg-secondary/85 border-light-border"
-              } border-b`
-            : `${
-                isDark
-                  ? "bg-dark-bg-secondary/70 border-dark-border/50"
-                  : "bg-light-bg-secondary/70 border-light-border/50"
-              } border-b`
+        ${scrolled
+          ? `${isDark
+            ? "bg-dark-bg-secondary/85 border-dark-border"
+            : "bg-light-bg-secondary/85 border-light-border"
+          } border-b`
+          : `${isDark
+            ? "bg-dark-bg-secondary/70 border-dark-border/50"
+            : "bg-light-bg-secondary/70 border-light-border/50"
+          } border-b`
         }
         ${isDark ? "text-dark-text-primary" : "text-light-text-primary"}
       `}
@@ -164,6 +162,7 @@ function NavBar() {
             />
           </div>
 
+
           {/* Mobile Hamburger */}
           <button
             onClick={toggleMenu}
@@ -208,16 +207,17 @@ function NavBar() {
           </button>
         </div>
       </div>
-
-      {/* Mobile menu */}
-      <MobileMenu
-        isOpen={isMenuOpen}
-        onClose={toggleMenu}
-        isLoggedIn={isLoggedIn}
-        userdata={userdata}
-      />
-    </nav>
-  );
+  
+      {/* Mobile menu */ }
+    <MobileMenu
+    isOpen={isMenuOpen}
+    onClose={toggleMenu}
+    isLoggedIn={isLoggedIn}
+    userdata={userdata}
+    />
+      </nav>
+    );
+  
 }
 
 export default NavBar;

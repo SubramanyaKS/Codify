@@ -103,6 +103,7 @@ function Signup() {
     }
 
     // Save user data in localStorage for later registration
+    localStorage.setItem("isLoggedIn", "true");
     localStorage.setItem("signupData", JSON.stringify(user));
 
     try {
