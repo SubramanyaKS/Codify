@@ -56,7 +56,6 @@ function NavBar() {
     };
   }, []);
 
-  const [isColorSelectorOpen, setIsColorSelectorOpen] = useState(false);
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleColorSelector = () => setIsColorSelectorOpen(!isColorSelectorOpen);
   const closeColorSelector = () => setIsColorSelectorOpen(false);
