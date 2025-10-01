@@ -37,6 +37,9 @@ import GitClone from './GitTopics/CollabrativeWorkflow/GitClone'
 import ForkingWorkflow from './GitTopics/CollabrativeWorkflow/ForkingWorkflow'
 import PullRequests from './GitTopics/CollabrativeWorkflow/PullRequests'
 import CodeReviewBasics from './GitTopics/CollabrativeWorkflow/CodeReviewBasics'
+import GitCheckoutVsRestore from './GitTopics/GitUndoingChanges/GitCheckoutVsRestore'
+import GitRevert from './GitTopics/GitUndoingChanges/GitRevert'
+import GitResetExplained from './GitTopics/GitUndoingChanges/GitResetExplained'
 
 
 
@@ -229,6 +232,12 @@ const GitNotes = () => {
                 <Route path='forking-workflow' element={<ForkingWorkflow />} />
                 <Route path='pull-requests' element={<PullRequests />} />
                 <Route path='code-review-basics' element={<CodeReviewBasics />} />
+
+
+                {/* Undoing changes */}
+                <Route path='git-checkout-vs-git-restore' element={<GitCheckoutVsRestore />} />
+                <Route path='git-revert' element={<GitRevert />} />
+                <Route path='git-reset-(soft,-mixed,-hard)' element={<GitResetExplained />} />
 
 
               </Routes>
