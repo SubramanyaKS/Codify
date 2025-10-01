@@ -43,13 +43,20 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 // ✅ Register service worker for PWA support
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
+    // Use the correct base path based on environment
+    const swUrl = `${window.location.origin}/service-worker.js`;
+    
     navigator.serviceWorker
-      .register("/service-worker.js")
+      .register(swUrl)
       .then((registration) => {
         console.log("Service Worker registered with scope:", registration.scope);
       })
       .catch((error) => {
         console.error("Service Worker registration failed:", error);
+        // Fallback to relative path
+        navigator.serviceWorker.register('./service-worker.js').then(fallbackRegistration => {
+          console.log("Service Worker registered with fallback:", fallbackRegistration.scope);
+        });
       });
   });
 }
