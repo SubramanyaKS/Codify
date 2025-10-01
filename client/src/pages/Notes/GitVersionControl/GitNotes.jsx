@@ -33,6 +33,10 @@ import GitRemoteAdd from './GitTopics/RemoteRepositories/GitRemoteAdd'
 import GitPushPull from './GitTopics/RemoteRepositories/GitPushPull'
 import GitFetch from './GitTopics/RemoteRepositories/GitFetch'
 import TrackingBranches from './GitTopics/RemoteRepositories/TrackingBranches'
+import GitClone from './GitTopics/CollabrativeWorkflow/GitClone'
+import ForkingWorkflow from './GitTopics/CollabrativeWorkflow/ForkingWorkflow'
+import PullRequests from './GitTopics/CollabrativeWorkflow/PullRequests'
+import CodeReviewBasics from './GitTopics/CollabrativeWorkflow/CodeReviewBasics'
 
 
 
@@ -220,7 +224,11 @@ const GitNotes = () => {
                 <Route path='git-fetch' element={<GitFetch />} />
                 <Route path='tracking-branches' element={<TrackingBranches />} />
 
-
+                {/* Collaborative workflows */}
+                <Route path='cloning-a-repository-(git-clone)' element={<GitClone />} />
+                <Route path='forking-workflow' element={<ForkingWorkflow />} />
+                <Route path='pull-requests' element={<PullRequests />} />
+                <Route path='code-review-basics' element={<CodeReviewBasics />} />
 
 
               </Routes>
