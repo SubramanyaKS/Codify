@@ -115,6 +115,7 @@ function App() {
                     <Route path="*" element={<ErrorPage />} />
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/editor" element={<CodeEditor />} />
+                    <Route path="/oauth/callback" element={<OAuthCallback />} />
                     {/* <Route path="/ide" element={<IDE />} /> */}
                     
                     {/* Notes page */}
