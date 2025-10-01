@@ -45,7 +45,6 @@ if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     // Use the correct base path based on environment
     const swUrl = `${window.location.origin}/service-worker.js`;
-    
     navigator.serviceWorker
       .register(swUrl)
       .then((registration) => {
