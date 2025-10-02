@@ -54,10 +54,10 @@ const CallToAction = () => {
               }
             `}>
               <span className={`w-2 h-2 rounded-full animate-pulse ${
-                isDark ? 'bg-white' : 'bg-purple-600'
+                isDark ? 'bg-white' : 'bg-primary'
               }`}></span>
               <span className={`text-xs sm:text-sm font-bold drop-shadow-sm ${
-                isDark ? 'text-white' : 'text-purple-800'
+                isDark ? 'text-white' : 'text-primary'
               }`}>
                 🚀 Limited Time Offer
               </span>
@@ -66,9 +66,8 @@ const CallToAction = () => {
               isDark ? 'text-white' : 'text-gray-900'
             }`}>
               Ready to Start Your
-              <span className={`block font-righteous tracking-wider animate-pulse drop-shadow-lg ${
-                isDark ? 'text-yellow-300' : 'text-purple-600'
-              }`}>
+              <span className={`block font-righteous tracking-wider animate-pulse drop-shadow-lg text-primary`
+              }>
                 Learning Journey?
               </span>
             </h2>
@@ -87,7 +86,7 @@ const CallToAction = () => {
                   group py-3 sm:py-4 px-6 sm:px-10 font-semibold rounded-xl hover:shadow-2xl transition-all duration-300 inline-flex items-center gap-2 sm:gap-3 text-base sm:text-lg
                   ${isDark 
                     ? 'bg-white text-primary' 
-                    : 'bg-purple-600 text-white hover:bg-purple-700'
+                    : 'bg-primary text-white hover:bg-primary'
                   }
                 `}
               >
@@ -115,7 +114,7 @@ const CallToAction = () => {
                     group py-3 sm:py-4 px-6 sm:px-10 bg-transparent border-2 font-semibold rounded-xl hover:bg-white transition-all duration-300 inline-flex items-center gap-2 sm:gap-3 text-base sm:text-lg
                     ${isDark 
                       ? 'border-white text-white hover:text-primary' 
-                      : 'border-purple-600 text-purple-600 hover:text-purple-700'
+                      : 'border-primary text-primary hover:text-primary'
                     }
                   `}
                 >
