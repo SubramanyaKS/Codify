@@ -25,6 +25,10 @@ import VariablesDataTypes from './PyTopics/PythonBasics/VariablesDataTypes';
 import ClassesObjects from './PyTopics/OOP/ClassesObjects';
 import Inheritance from './PyTopics/OOP/Inheritance';
 import Encapsulation from './PyTopics/OOP/Encapsulation';
+import Polymorphism from './PyTopics/OOP/Polymorphism';
+import StaticMethods from './PyTopics/OOP/StaticMethods';
+import MagicMethods from './PyTopics/OOP/MagicMethods';
+
 
 
 
@@ -100,10 +104,14 @@ const PythonFundamentals = () => {
                 <Route path="conditional-statements" element={<ConditionalStatements />} />
                 <Route path="loops" element={<Loops />} />
                 <Route path="functions" element={<Functions />} />
-                 {/* Object-Oriented Programming */}
+                  {/* Object-Oriented Programming */}
                 <Route path="classes-&-objects" element={<ClassesObjects />} />
                 <Route path="inheritance" element={<Inheritance />} />
                 <Route path="encapsulation" element={<Encapsulation />} />
+                <Route path="polymorphism" element={<Polymorphism />} />
+                <Route path="static-methods" element={<StaticMethods />} />
+                <Route path="magic-methods" element={<MagicMethods />} />
+
                 
 
 
