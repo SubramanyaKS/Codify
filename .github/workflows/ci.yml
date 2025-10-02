@@ -12,11 +12,6 @@ jobs:
       uses: actions/setup-node@v5.0.0
     - name: Install Dependencies
       run: npm install
-    - name: Check Client Directory
-      run: |
-        ls
-        cd client
-        ls
     - name: Check Health
       env:
         VITE_SERVER_API : http://localhost:5050   
@@ -24,6 +19,7 @@ jobs:
         VITE_GITHUB_TOKEN : dummy
         VITE_RAPIDAPI_KEY : dummy
       run: |
+         cd client
          npm install
          npm run dev || exit 1 &      
          sleep  15           
