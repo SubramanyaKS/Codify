@@ -21,6 +21,12 @@ import ConditionalStatements from './PyTopics/PythonBasics/ConditionalStatements
 import Loops from './PyTopics/PythonBasics/Loops';
 import Functions from './PyTopics/PythonBasics/Functions';
 import VariablesDataTypes from './PyTopics/PythonBasics/VariablesDataTypes';
+// Object-Oriented Programming
+import ClassesObjects from './PyTopics/OOP/ClassesObjects';
+import Inheritance from './PyTopics/OOP/Inheritance';
+import Encapsulation from './PyTopics/OOP/Encapsulation';
+
+
 
 
 
@@ -94,6 +100,12 @@ const PythonFundamentals = () => {
                 <Route path="conditional-statements" element={<ConditionalStatements />} />
                 <Route path="loops" element={<Loops />} />
                 <Route path="functions" element={<Functions />} />
+                 {/* Object-Oriented Programming */}
+                <Route path="classes-&-objects" element={<ClassesObjects />} />
+                <Route path="inheritance" element={<Inheritance />} />
+                <Route path="encapsulation" element={<Encapsulation />} />
+                
+
 
 
 
