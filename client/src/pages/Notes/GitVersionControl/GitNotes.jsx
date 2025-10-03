@@ -49,6 +49,7 @@ import GitCherryPick from './GitTopics/AdvanceGit/GitCherryPick'
 import GitHooks from './GitTopics/AdvanceGit/GitHooks'
 import GitInteractiveRebase from './GitTopics/AdvanceGit/GitInteractiveRebase'
 import GitSquashingCommits from './GitTopics/AdvanceGit/GitSquashingCommits'
+import GoodCommitMessages from './GitTopics/BestPractices/GoodCommitMessages'
 
 
 
@@ -262,8 +263,8 @@ const GitNotes = () => {
                 <Route path='interactive-rebase' element={<GitInteractiveRebase />} />
                 <Route path='squashing-commits' element={<GitSquashingCommits />} />
 
-
-
+                {/* Git best practices */}
+                <Route path='writing-good-commit-messages' element={<GoodCommitMessages />} />
 
 
 
