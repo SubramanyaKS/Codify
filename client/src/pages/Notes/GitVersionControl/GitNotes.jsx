@@ -41,6 +41,7 @@ import GitCheckoutVsRestore from './GitTopics/GitUndoingChanges/GitCheckoutVsRes
 import GitRevert from './GitTopics/GitUndoingChanges/GitRevert'
 import GitResetExplained from './GitTopics/GitUndoingChanges/GitResetExplained'
 import GitStash from './GitTopics/GitStashAndTag/GitStash'
+import GitStashList from './GitTopics/GitStashAndTag/GitStashList'
 
 
 
@@ -243,7 +244,7 @@ const GitNotes = () => {
 
                 {/* Git stash and tag */}
                 <Route path='git-stash-save-&-git-stash-pop' element={<GitStash />} />
-
+                <Route path='git-stash-list' element={<GitStashList />} />
 
 
 
