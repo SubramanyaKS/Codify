@@ -45,6 +45,7 @@ import GitStashList from './GitTopics/GitStashAndTag/GitStashList'
 import GitTagging from './GitTopics/GitStashAndTag/GitTagging'
 import TagTypesComparison from './GitTopics/GitStashAndTag/TagTypeComparison'
 import GitRebase from './GitTopics/AdvanceGit/GitRebase'
+import GitCherryPick from './GitTopics/AdvanceGit/GitCherryPick'
 
 
 
@@ -253,6 +254,7 @@ const GitNotes = () => {
 
                 {/* Advance git */}
                 <Route path='rebasing-(git-rebase)' element={<GitRebase />} />
+                <Route path='cherry-picking-(git-cherry-pick)' element={<GitCherryPick />} />
 
 
 
