@@ -50,6 +50,7 @@ import GitHooks from './GitTopics/AdvanceGit/GitHooks'
 import GitInteractiveRebase from './GitTopics/AdvanceGit/GitInteractiveRebase'
 import GitSquashingCommits from './GitTopics/AdvanceGit/GitSquashingCommits'
 import GoodCommitMessages from './GitTopics/BestPractices/GoodCommitMessages'
+import BranchNamingConventions from './GitTopics/BestPractices/BranchNamingConventions'
 
 
 
@@ -265,6 +266,7 @@ const GitNotes = () => {
 
                 {/* Git best practices */}
                 <Route path='writing-good-commit-messages' element={<GoodCommitMessages />} />
+                <Route path='branch-naming-conventions' element={<BranchNamingConventions />} />
 
 
 
