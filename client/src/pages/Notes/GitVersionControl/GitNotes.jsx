@@ -44,6 +44,9 @@ import GitStash from './GitTopics/GitStashAndTag/GitStash'
 import GitStashList from './GitTopics/GitStashAndTag/GitStashList'
 import GitTagging from './GitTopics/GitStashAndTag/GitTagging'
 import TagTypesComparison from './GitTopics/GitStashAndTag/TagTypeComparison'
+import GitRebase from './GitTopics/AdvanceGit/GitRebase'
+import GitCherryPick from './GitTopics/AdvanceGit/GitCherryPick'
+import GitHooks from './GitTopics/AdvanceGit/GitHooks'
 
 
 
@@ -250,7 +253,10 @@ const GitNotes = () => {
                 <Route path='creating-tags-(git-tag)' element={<GitTagging />} />
                 <Route path='annotated-vs-lightweight-tags' element={<TagTypesComparison />} />
 
-
+                {/* Advance git */}
+                <Route path='rebasing-(git-rebase)' element={<GitRebase />} />
+                <Route path='cherry-picking-(git-cherry-pick)' element={<GitCherryPick />} />
+                <Route path='git-hooks' element={<GitHooks />} />
 
 
 
