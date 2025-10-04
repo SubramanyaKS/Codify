@@ -40,6 +40,8 @@ import CodeReviewBasics from './GitTopics/CollabrativeWorkflow/CodeReviewBasics'
 import GitCheckoutVsRestore from './GitTopics/GitUndoingChanges/GitCheckoutVsRestore'
 import GitRevert from './GitTopics/GitUndoingChanges/GitRevert'
 import GitResetExplained from './GitTopics/GitUndoingChanges/GitResetExplained'
+import GitStash from './GitTopics/GitStashAndTag/GitStash'
+import GitStashList from './GitTopics/GitStashAndTag/GitStashList'
 
 
 
@@ -238,6 +240,18 @@ const GitNotes = () => {
                 <Route path='git-checkout-vs-git-restore' element={<GitCheckoutVsRestore />} />
                 <Route path='git-revert' element={<GitRevert />} />
                 <Route path='git-reset-(soft,-mixed,-hard)' element={<GitResetExplained />} />
+
+
+                {/* Git stash and tag */}
+                <Route path='git-stash-save-&-git-stash-pop' element={<GitStash />} />
+                <Route path='git-stash-list' element={<GitStashList />} />
+
+
+
+
+
+
+
 
 
               </Routes>
