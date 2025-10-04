@@ -7,6 +7,11 @@ import Breadcrumb from '../../../components/Breadcrumb';
 import useMobile from '../../../hooks/useMobile';
 import PyPageTitleManager from './PyPageTitleManager';
 import categories from './PyTopics.json';
+// Introduction
+import PyIntroduction from './PyTopics/Introduction/PyIntroduction';
+import PythonInstallation from './PyTopics/Introduction/PythonInstallation';
+import RunningPythonCode from './PyTopics/Introduction/RunningPythonCode';
+
 // Python Basics
 import Operators from './PyTopics/PythonBasics/Operators';
 import InputOutput from './PyTopics/PythonBasics/InputOutput';
@@ -16,6 +21,16 @@ import ConditionalStatements from './PyTopics/PythonBasics/ConditionalStatements
 import Loops from './PyTopics/PythonBasics/Loops';
 import Functions from './PyTopics/PythonBasics/Functions';
 import VariablesDataTypes from './PyTopics/PythonBasics/VariablesDataTypes';
+// Object-Oriented Programming
+import ClassesObjects from './PyTopics/OOP/ClassesObjects';
+import Inheritance from './PyTopics/OOP/Inheritance';
+import Encapsulation from './PyTopics/OOP/Encapsulation';
+import Polymorphism from './PyTopics/OOP/Polymorphism';
+import StaticMethods from './PyTopics/OOP/StaticMethods';
+import MagicMethods from './PyTopics/OOP/MagicMethods';
+
+
+
 
 
 
@@ -76,8 +91,11 @@ const PythonFundamentals = () => {
             <React.Suspense fallback={<Loader />}>
               <Routes>
                 <Route index element={<PyHeroPage />} />
+               {/* Introduction */}
+                <Route path="introduction-to-python" element={<PyIntroduction />} />
+                <Route path="python-installation" element={<PythonInstallation />} />
+                <Route path="running-python-code" element={<RunningPythonCode />} />
                  {/* Python Basics */}
-                {/* Python Basics */}
                 <Route path="variables-&-data-types" element={<VariablesDataTypes />} />
                 <Route path="operators" element={<Operators />} />
                 <Route path="input-&-output" element={<InputOutput />} />
@@ -86,6 +104,16 @@ const PythonFundamentals = () => {
                 <Route path="conditional-statements" element={<ConditionalStatements />} />
                 <Route path="loops" element={<Loops />} />
                 <Route path="functions" element={<Functions />} />
+                  {/* Object-Oriented Programming */}
+                <Route path="classes-&-objects" element={<ClassesObjects />} />
+                <Route path="inheritance" element={<Inheritance />} />
+                <Route path="encapsulation" element={<Encapsulation />} />
+                <Route path="polymorphism" element={<Polymorphism />} />
+                <Route path="static-methods" element={<StaticMethods />} />
+                <Route path="magic-methods" element={<MagicMethods />} />
+
+                
+
 
 
 
