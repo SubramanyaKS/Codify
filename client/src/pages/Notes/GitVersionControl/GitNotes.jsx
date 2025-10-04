@@ -49,6 +49,10 @@ import GitCherryPick from './GitTopics/AdvanceGit/GitCherryPick'
 import GitHooks from './GitTopics/AdvanceGit/GitHooks'
 import GitInteractiveRebase from './GitTopics/AdvanceGit/GitInteractiveRebase'
 import GitSquashingCommits from './GitTopics/AdvanceGit/GitSquashingCommits'
+import GoodCommitMessages from './GitTopics/BestPractices/GoodCommitMessages'
+import BranchNamingConventions from './GitTopics/BestPractices/BranchNamingConventions'
+import KeepingReposClean from './GitTopics/BestPractices/KeepingReposClean'
+import AvoidingLargeBinaries from './GitTopics/BestPractices/AvoidingLargeBinaries'
 
 
 
@@ -262,10 +266,11 @@ const GitNotes = () => {
                 <Route path='interactive-rebase' element={<GitInteractiveRebase />} />
                 <Route path='squashing-commits' element={<GitSquashingCommits />} />
 
-
-
-
-
+                {/* Git best practices */}
+                <Route path='writing-good-commit-messages' element={<GoodCommitMessages />} />
+                <Route path='branch-naming-conventions' element={<BranchNamingConventions />} />
+                <Route path='keeping-repositories-clean' element={<KeepingReposClean />} />
+                <Route path='avoiding-large-binary-files' element={<AvoidingLargeBinaries />} />
 
               </Routes>
             </React.Suspense>
