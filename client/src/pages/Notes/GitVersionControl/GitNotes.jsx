@@ -47,6 +47,8 @@ import TagTypesComparison from './GitTopics/GitStashAndTag/TagTypeComparison'
 import GitRebase from './GitTopics/AdvanceGit/GitRebase'
 import GitCherryPick from './GitTopics/AdvanceGit/GitCherryPick'
 import GitHooks from './GitTopics/AdvanceGit/GitHooks'
+import GitInteractiveRebase from './GitTopics/AdvanceGit/GitInteractiveRebase'
+import GitSquashingCommits from './GitTopics/AdvanceGit/GitSquashingCommits'
 
 
 
@@ -257,6 +259,8 @@ const GitNotes = () => {
                 <Route path='rebasing-(git-rebase)' element={<GitRebase />} />
                 <Route path='cherry-picking-(git-cherry-pick)' element={<GitCherryPick />} />
                 <Route path='git-hooks' element={<GitHooks />} />
+                <Route path='interactive-rebase' element={<GitInteractiveRebase />} />
+                <Route path='squashing-commits' element={<GitSquashingCommits />} />
 
 
 
