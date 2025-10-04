@@ -56,9 +56,22 @@ function NavBar() {
     };
   }, []);
 
+
+  const [isColorSelectorOpen, setIsColorSelectorOpen] = useState(false);
+
+  const toggleColorSelector = () =>
+    setIsColorSelectorOpen(!isColorSelectorOpen);
+  const closeColorSelector = () => setIsColorSelectorOpen(false);
+
+  // Toggle mobile menu
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleColorSelector = () => setIsColorSelectorOpen(!isColorSelectorOpen);
   const closeColorSelector = () => setIsColorSelectorOpen(false);
+
 
   return (
     <nav
@@ -86,7 +99,9 @@ function NavBar() {
               className="flex items-center space-x-2 font-bold text-2xl sm:text-3xl text-primary transition-colors"
             >
               <FaGraduationCap className="w-7 h-7 sm:w-8 sm:h-8" />
-              <span className="font-righteous text-2xl sm:text-3xl">Codify</span>
+              <span className="font-righteous text-2xl sm:text-3xl">
+                Codify
+              </span>
             </NavLink>
           </div>
 
@@ -162,7 +177,13 @@ function NavBar() {
           </div>
 
 
+
+          {/* Mobile hamburger */}
+
+
+
           {/* Mobile Hamburger */}
+
           <button
             onClick={toggleMenu}
             className={`sm:hidden flex items-center justify-center p-2 rounded-lg border transition-colors ${
@@ -175,7 +196,11 @@ function NavBar() {
             <RiMenu3Fill className="w-6 h-6" />
           </button>
 
+
+          {/* Profile button */}
+
           {/* Profile Button */}
+
           <button
             onClick={toggleMenu}
             className={`hidden sm:flex items-center space-x-2 sm:space-x-3 px-2 py-1 sm:px-4 sm:py-2 rounded-xl border backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] ${
