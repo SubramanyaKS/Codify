@@ -53,6 +53,7 @@ import GoodCommitMessages from './GitTopics/BestPractices/GoodCommitMessages'
 import BranchNamingConventions from './GitTopics/BestPractices/BranchNamingConventions'
 import KeepingReposClean from './GitTopics/BestPractices/KeepingReposClean'
 import AvoidingLargeBinaries from './GitTopics/BestPractices/AvoidingLargeBinaries'
+import GitPageTitleManager from './GitPageTitleManager'
 
 
 
@@ -199,7 +200,7 @@ const GitNotes = () => {
           <Breadcrumb isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} className={"p-4"} />
 
           {/* Page Title Manager */}
-          {/* <GitPageTitleManager /> */}
+          <GitPageTitleManager />
 
           {/* ROUTES OF THE SUB NOTES */}
           <div className="p-4 md:p-8">
